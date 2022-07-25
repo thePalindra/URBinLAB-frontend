@@ -14,7 +14,7 @@ function LogIn() {
             <br/>
             <br/>
             <div style={{   margin: "auto",
-                            width: "40%",
+                            width: "50%",
                             border: "1px solid black",
                             background: "rgba(256, 256, 256, 0.92)",
                             borderRadius: "20px",

@@ -4,27 +4,32 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Container, Link } from '@mui/material';
 
-function login (navigate) {
-
-}
 
 export default function BasicTextFields() {
+    let navigate = useNavigate()
     const [name, setName]=React.useState('');
     const [password, setPassword]=React.useState('');
 
     const login=(e)=> {
+        window.localStorage.removeItem("token")
         e.preventDefault();
-        const researcher = {name, password}
+        var form = new FormData();
+        form.append("name", name);
+        form.append("password", password);
+        form.append("device", navigator.userAgent)
+        
         fetch("http://localhost:8080/user/login", {
             method: "POST",
-            headers: {"Content-Type": "application/json"}, 
-            body:JSON.stringify(researcher)
+            headers: window.localStorage,
+            body: form
         })
         .then(res=>res.json())
-        .then((result)=>{
-            let navigate = useNavigate();
+        .then(result=>{
             console.log(result)
-        })
+            window.localStorage.setItem('token', result);
+            navigate(`/`)
+        });
+        
   };
 
   return (

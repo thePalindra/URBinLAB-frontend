@@ -8,8 +8,8 @@ import ListDocumentQuickSearchByName from "./pages/ListDocumentQuickSearchByName
 import LogIn from "./pages/Login"
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 
-function checkToken(value) {
-  let path = value;
+function checkToken() {
+  return window.localStorage.getItem('token');
 
 }
 
@@ -19,7 +19,8 @@ function App() {
       <div className="App">
         <Router>
           <Routes>
-            <Route path="/" element={<LogIn/>}/>
+            <Route path="/" element={<div/>}/>
+            <Route path="/login" element={<LogIn/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
             <Route path="/add/document" element={<AddFiles/>}/>
