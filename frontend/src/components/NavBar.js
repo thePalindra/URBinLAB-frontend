@@ -84,8 +84,6 @@ export default function SearchAppBar() {
             sx={{ flexGrow: 0.2}}
           >
           </Typography>
-
-          
         </Toolbar>
       </AppBar>
     </Box>

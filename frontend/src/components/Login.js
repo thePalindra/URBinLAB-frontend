@@ -1,11 +1,17 @@
 import * as React from 'react';
+import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Container } from '@mui/material';
+import { Container, Link } from '@mui/material';
+
+function login (navigate) {
+
+}
 
 export default function BasicTextFields() {
     const [name, setName]=React.useState('');
     const [password, setPassword]=React.useState('');
+
     const login=(e)=> {
         e.preventDefault();
         const researcher = {name, password}
@@ -16,22 +22,45 @@ export default function BasicTextFields() {
         })
         .then(res=>res.json())
         .then((result)=>{
+            let navigate = useNavigate();
             console.log(result)
         })
   };
+
   return (
       <Container>
-          <div>
-              <form>
-                  <TextField id="username" label="Nome" variant="outlined" value = {name}
-                  onChange={(e)=>setName(e.target.value)}/>
-                      <br></br>
-                  <TextField id="password" type = "password" label="Password" variant="outlined" value = {password}
-                  onChange={(e)=>setPassword(e.target.value)}/>
-                      <br></br>
-                  <Button variant="contained" onClick={login}>Login</Button>
-              </form>
-          </div>
+            <form>
+                <TextField id="username" label="Nome" variant="outlined" 
+                style={{width: "60%"}}
+                value = {name}
+                onChange={(e)=>setName(e.target.value)}/>
+                <br/>
+                <br/>
+                <TextField id="password" type = "password" label="Password" variant="outlined" 
+                style={{width: "60%"}}
+                value = {password}
+                onChange={(e)=>setPassword(e.target.value)}/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <Button variant="contained" 
+                style={{width: "40%", backgroundColor: "black"}}
+                onClick={login}>Login</Button>
+                <br/>
+                <br/>
+                <br/>
+            </form>
+
+            <div>
+            <Link href="#" underline="hover">
+            {'Registar-me!'}
+            </Link>
+
+            <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
+            {'Recuperar conta!'}
+            </Link>
+            </div>
       </Container>
 
   );
