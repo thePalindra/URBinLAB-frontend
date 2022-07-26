@@ -1,7 +1,6 @@
 import React from 'react'
 import Login from "../components/Login"
 import Header from "../components/Header"
-import { styled, alpha } from '@mui/material/styles';
 import "../style/background.css"
 
 function LogIn() {

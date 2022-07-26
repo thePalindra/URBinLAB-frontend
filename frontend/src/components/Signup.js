@@ -74,13 +74,13 @@ export default function Signup() {
             </form>
 
             <div>
-            <Link href="#" underline="hover">
-            {'Registar-me!'}
-            </Link>
+                <Link href="#" underline="hover" onClick={navigate(`/login`)}>
+                {'Fazer Login!'}
+                </Link>
 
-            <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
-            {'Recuperar conta!'}
-            </Link>
+                <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
+                {'Recuperar conta!'}
+                </Link>
             </div>
       </Container>
 

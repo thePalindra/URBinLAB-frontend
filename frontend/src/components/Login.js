@@ -26,7 +26,7 @@ export default function BasicTextFields() {
         .then(result=>{
             console.log(result)
             window.localStorage.setItem('token', result);
-            navigate(`/`)
+            navigate(`/add/document`)
         });
         
   };
