@@ -6,6 +6,7 @@ import AllDocuments from "./pages/AllDocuments"
 import AddFiles from "./pages/AddFiles"
 import ListDocumentQuickSearchByName from "./pages/ListDocumentQuickSearchByName"
 import LogIn from "./pages/Login"
+import SignUp from "./pages/SignUp";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 
 function checkToken() {
@@ -21,6 +22,7 @@ function App() {
           <Routes>
             <Route path="/" element={<div/>}/>
             <Route path="/login" element={<LogIn/>}/>
+            <Route path="/signup" element={<SignUp/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
             <Route path="/add/document" element={<AddFiles/>}/>
