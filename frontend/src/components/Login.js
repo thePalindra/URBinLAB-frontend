@@ -6,7 +6,8 @@ import { Container, Link } from '@mui/material';
 
 
 export default function BasicTextFields() {
-    let navigate = useNavigate()
+    let navigate = useNavigate();
+    let navigate2 = useNavigate();
     const [name, setName]=React.useState('');
     const [password, setPassword]=React.useState('');
 
@@ -24,12 +25,17 @@ export default function BasicTextFields() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
-            window.localStorage.setItem('token', result);
+            const temp = JSON.stringify(result)
+            console.log(temp)
+            window.localStorage.setItem('token', temp);
             navigate(`/add/document`)
         });
         
   };
+
+  const register=(e)=> {
+    navigate2(`/signup`)
+  }
 
   return (
       <Container>
@@ -57,7 +63,7 @@ export default function BasicTextFields() {
             </form>
 
             <div>
-            <Link href="#" underline="hover">
+            <Link underline="hover" onClick={register}>
             {'Registar-me!'}
             </Link>
 

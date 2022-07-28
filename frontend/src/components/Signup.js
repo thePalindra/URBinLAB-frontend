@@ -36,6 +36,11 @@ export default function Signup() {
         console.log("wrong confirmation")
   };
 
+  const login=(e)=> {
+    navigate(`/login`)
+
+  }
+
   return (
       <Container>
             <form>

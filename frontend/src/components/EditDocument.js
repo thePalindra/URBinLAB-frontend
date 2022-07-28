@@ -83,7 +83,7 @@ export default function Adddocument() {
                     <br/>
                     <Button variant="contained" 
                     style={{width: "40%", backgroundColor: "black"}}
-                    onClick={addDocument()}>Adicionar documeto</Button>
+                    onClick={addDocument}>Adicionar documeto</Button>
                     <br/>
                 </form>
         </Container>
