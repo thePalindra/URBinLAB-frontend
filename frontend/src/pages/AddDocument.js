@@ -1,5 +1,5 @@
 import React from 'react'
-import Adddocument from "../components/EditDocument"
+import AddSocument from "../components/AddDocument"
 import Header from "../components/Header"
 
 export default function AddDocument() {
@@ -15,7 +15,7 @@ export default function AddDocument() {
                             background: "rgba(256, 256, 256, 0.92)",
                             borderRadius: "20px",
                             padding: "30px"}}>
-                    <Adddocument/>
+                    <AddDocument/>
                 </div>
             </div>
         </>
