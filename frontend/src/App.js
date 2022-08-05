@@ -8,6 +8,7 @@ import AddStatistics from './pages/AddStatistics';
 import AddDrawings from './pages/AddDrawings';
 import AddReports from './pages/AddReports';
 import AddPhoto from './pages/AddPhotography';
+import AddSatellite from './pages/AddSatellite';
 import AddSensors from './pages/AddSensors';
 import AddBaseMaps from "./pages/AddBaseMaps";
 import AddThematicMap from "./pages/AddThematicMap";
@@ -39,6 +40,7 @@ function App() {
             <Route path="/base" element={<AddBaseMaps/>}/>
             <Route path="/thematic_map" element={<AddThematicMap/>}/>
             <Route path="/LiDAR" element={<AddLiDAR/>}/>
+            <Route path="/satellite" element={<AddSatellite/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>
