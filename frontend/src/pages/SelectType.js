@@ -11,7 +11,7 @@ export default function Selecttype() {
                 <br/>
                 <div style={{   margin: "auto",
                             width: "80%",
-                            padding: "80px"}}>
+                            padding: "120px"}}>
                     <SelectType/>
                 </div>
             </div>

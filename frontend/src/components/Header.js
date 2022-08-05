@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, IconButton, Toolbar } from "@mui/material";
+import { AppBar, IconButton } from "@mui/material";
 import urbinlab from "../images/urbinlab.png"
 
 export default function Header() {

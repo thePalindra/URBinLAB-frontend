@@ -1,7 +1,6 @@
 import React from 'react'
 import Signup from "../components/Signup"
 import Header from "../components/Header"
-import { styled, alpha } from '@mui/material/styles';
 import "../style/background.css"
 
 export default function SignUp() {
