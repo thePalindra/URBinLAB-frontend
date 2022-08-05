@@ -3,7 +3,8 @@ import * as React from "react";
 import LogIn from "./pages/Login"
 import SignUp from "./pages/SignUp";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
-import AddDocument from './pages/AddDocument';
+import AddGeneric from './pages/AddGeneric';
+import AddStatistics from './pages/AddStatistics';
 import SelectType from './pages/SelectType';
 
 /*function checkToken() {
@@ -20,7 +21,8 @@ function App() {
             <Route path="/" element={<div/>}/>
             <Route path="/login" element={<LogIn/>}/>
             <Route path="/signup" element={<SignUp/>}/>
-            <Route path="/add/generic" element={<AddDocument/>}/>
+            <Route path="/generic" element={<AddGeneric/>}/>
+            <Route path="/statistics" element={<AddStatistics/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>

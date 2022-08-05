@@ -1,8 +1,8 @@
 import React from 'react'
-import Adddocument from "../components/AddDocument"
+import Addstatistics from "../components/AddStatistics"
 import Header from "../components/Header"
 
-export default function AddDocument() {
+export default function AddStatistics() {
     return (
         <>
             <div className="bg">
@@ -15,7 +15,7 @@ export default function AddDocument() {
                             background: "rgba(256, 256, 256, 0.92)",
                             borderRadius: "20px",
                             padding: "30px"}}>
-                    <Adddocument/>
+                    <Addstatistics/>
                 </div>
             </div>
         </>

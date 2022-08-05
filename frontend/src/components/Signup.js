@@ -74,7 +74,7 @@ export default function Signup() {
             </form>
 
             <div>
-                <Link href="#" underline="hover" onClick={navigate(`/login`)}>
+                <Link href="#" underline="hover">
                 {'Fazer Login!'}
                 </Link>
 
