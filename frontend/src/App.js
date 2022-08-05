@@ -9,6 +9,7 @@ import AddDrawings from './pages/AddDrawings';
 import AddReports from './pages/AddReports';
 import AddPhoto from './pages/AddPhotography';
 import SelectType from './pages/SelectType';
+import SelectCartography from './pages/SelectCartography';
 
 /*function checkToken() {
   return window.localStorage.getItem('token');
@@ -30,6 +31,7 @@ function App() {
             <Route path="/reports" element={<AddReports/>}/>
             <Route path="/photography" element={<AddPhoto/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
+            <Route path="/cartography" element={<SelectCartography/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
             <Route path="/add/document" element={<AddFiles/>}/>
