@@ -6,6 +6,7 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import AddGeneric from './pages/AddGeneric';
 import AddStatistics from './pages/AddStatistics';
 import AddDrawings from './pages/AddDrawings';
+import AddReports from './pages/AddReports';
 import SelectType from './pages/SelectType';
 
 /*function checkToken() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/generic" element={<AddGeneric/>}/>
             <Route path="/statistics" element={<AddStatistics/>}/>
             <Route path="/drawings" element={<AddDrawings/>}/>
+            <Route path="/reports" element={<AddReports/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
