@@ -12,7 +12,7 @@ export default function IsThis() {
     const [time, setTime]=React.useState('');
     const [link, setLink]=React.useState('');
     const [res, setRes]=React.useState('');
-    const [satellite, setSatellite]=React.useState('');
+    const [scale, setScale]=React.useState('');
 
     const addstat=(e)=> {
         var form = new FormData();
@@ -22,10 +22,10 @@ export default function IsThis() {
         form.append("timeScope", time+"/01/01");
         form.append("link", link);
         form.append("resolution", res)
-        form.append("satellite", satellite)
+        form.append("scale", scale)
 
         
-        fetch("http://localhost:8080/satellite_image/add_document", {
+        fetch("http://localhost:8080/aerial_photography/add_document", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -62,14 +62,14 @@ export default function IsThis() {
             onChange={(e)=>setLink(e.target.value)}/>
             <br/>
             <br/>      
-            <TextField id="link" label="Resolução da Imagem" variant="outlined" 
+            <TextField id="link" label="Escala aproximada" variant="outlined" 
+            style={{width: "30%"}}
+            onChange={(e)=>setScale(e.target.value)}/>
+            <br/>
+            <br/>
+            <TextField id="link" label="Resolução de Imagem" variant="outlined" 
             style={{width: "50%"}}
             onChange={(e)=>setRes(e.target.value)}/>
-            <br/>
-            <br/>
-            <TextField id="link" label="Nome do Satélite" variant="outlined" 
-            style={{width: "30%"}}
-            onChange={(e)=>setSatellite(e.target.value)}/>
             <br/>
             <br/>
             <TextField id="descrption" label="Descrição" variant="outlined" 
