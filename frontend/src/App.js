@@ -9,6 +9,7 @@ import AddDrawings from './pages/AddDrawings';
 import AddReports from './pages/AddReports';
 import AddPhoto from './pages/AddPhotography';
 import AddSensors from './pages/AddSensors';
+import AddBaseMaps from "./pages/AddBaseMaps"
 import SelectType from './pages/SelectType';
 import SelectAerialImage from './pages/SelectAerialImage';
 import SelectCartography from './pages/SelectCartography';
@@ -33,6 +34,7 @@ function App() {
             <Route path="/reports" element={<AddReports/>}/>
             <Route path="/photography" element={<AddPhoto/>}/>
             <Route path="/sensors" element={<AddSensors/>}/>
+            <Route path="/base" element={<AddBaseMaps/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>
