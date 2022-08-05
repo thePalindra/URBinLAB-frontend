@@ -15,7 +15,7 @@ export default function SelectType() {
     }
 
     const lidar =(e)=> {
-        getLidar(`/lidar`)
+        getLidar(`/LiDAR`)
     }
 
     const photography =(e)=> {
