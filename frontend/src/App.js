@@ -8,6 +8,7 @@ import AddStatistics from './pages/AddStatistics';
 import AddDrawings from './pages/AddDrawings';
 import AddReports from './pages/AddReports';
 import AddPhoto from './pages/AddPhotography';
+import AddSensors from './pages/AddSensors';
 import SelectType from './pages/SelectType';
 import SelectCartography from './pages/SelectCartography';
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="/drawings" element={<AddDrawings/>}/>
             <Route path="/reports" element={<AddReports/>}/>
             <Route path="/photography" element={<AddPhoto/>}/>
+            <Route path="/sensors" element={<AddSensors/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
