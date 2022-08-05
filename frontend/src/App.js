@@ -14,6 +14,7 @@ import AddBaseMaps from "./pages/AddBaseMaps";
 import AddThematicMap from "./pages/AddThematicMap";
 import AddLiDAR from "./pages/AddLidar";
 import AddAerialPhotography from "./pages/AddAerialPhotography";
+import AddOrtos from "./pages/AddOrtos";
 import SelectType from './pages/SelectType';
 import SelectAerialImage from './pages/SelectAerialImage';
 import SelectCartography from './pages/SelectCartography';
@@ -43,6 +44,7 @@ function App() {
             <Route path="/LiDAR" element={<AddLiDAR/>}/>
             <Route path="/satellite" element={<AddSatellite/>}/>
             <Route path="/aerial_photography" element={<AddAerialPhotography/>}/>
+            <Route path="/ortos" element={<AddOrtos/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>
