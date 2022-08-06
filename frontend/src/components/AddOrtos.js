@@ -43,39 +43,46 @@ export default function IsThis() {
         <br/>
         <form>
             <TextField id="name" label="Nome" variant="outlined" 
-            style={{width: "50%"}}
-            onChange={(e)=>setName(e.target.value)}/>
+            style={{width: "35%"}}
+            onChange={(e)=>setName(e.target.value)}
+            size="small"/>
             <br/>
             <br/>
             <TextField id="provider" label="Fornecedor" variant="outlined" 
-            style={{width: "50%"}}
-            onChange={(e)=>setProvider(e.target.value)}/>
+            style={{width: "35%"}}
+            onChange={(e)=>setProvider(e.target.value)}
+            size="small"/>
             <br/>
             <br/>
             <TextField id="year" label="Ano" variant="outlined" 
             style={{width: "20%"}}
-            onChange={(e)=>setTime(e.target.value)}/>
+            onChange={(e)=>setTime(e.target.value)}
+            size="small"/>
             <br/>
             <br/>
             <TextField id="link" label="URL" variant="outlined" 
-            style={{width: "50%"}}
-            onChange={(e)=>setLink(e.target.value)}/>
+            style={{width: "35%"}}
+            onChange={(e)=>setLink(e.target.value)}
+            size="small"/>
             <br/>
             <br/>      
             <TextField id="link" label="Escala" variant="outlined" 
-            style={{width: "30%"}}
-            onChange={(e)=>setScale(e.target.value)}/>
+            style={{width: "20%"}}
+            onChange={(e)=>setScale(e.target.value)}
+            size="small"/>
             <br/>
             <br/>
             <TextField id="link" label="Resolução" variant="outlined" 
-            style={{width: "50%"}}
-            onChange={(e)=>setRes(e.target.value)}/>
+            style={{width: "35%"}}
+            onChange={(e)=>setRes(e.target.value)}
+            size="small"/>
             <br/>
             <br/>
             <TextField id="descrption" label="Descrição" variant="outlined" 
             style={{width: "50%"}}
             multiline
-            onChange={(e)=>setDesc(e.target.value)}/>       
+            onChange={(e)=>setDesc(e.target.value)}
+            size="small"/>       
             <br/>
             <br/>
             <br/>
