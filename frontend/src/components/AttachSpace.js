@@ -1,22 +1,15 @@
 import * as React from 'react';
-import { MapContainer, TileLayer, useMap, Marker, Popup, Map } from 'react-leaflet'
-import { Container } from '@mui/material';
+import { MapContainer, TileLayer} from 'react-leaflet'
 
 export default function defaultFunction() {
-    const position = [37.335556, -122.009167];
+    const position = [39, -8.5];
     return (
-        <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-  <TileLayer
-    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  />
-  <Marker position={[51.505, -0.09]}>
-    <Popup>
-      A pretty CSS3 popup. <br /> Easily customizable.
-    </Popup>
-  </Marker>
-</MapContainer>
-
+        <MapContainer style={{width: "100%"}} center={position} zoom={7} scrollWheelZoom={true} minZoom={4} >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+        </MapContainer>    
     );
 }
 
