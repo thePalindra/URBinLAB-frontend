@@ -1,15 +1,121 @@
 import * as React from 'react';
-import { MapContainer, TileLayer} from 'react-leaflet'
+import { useNavigate } from "react-router-dom";
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { Container } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
+import * as L from 'leaflet';
 
-export default function defaultFunction() {
+export default function DefaultFunction() {
     const position = [39, -8.5];
+    let navigate = useNavigate()
+    const [level, setLevel]=React.useState(1);
+    const [name, setName]=React.useState('');
+    const [button, setButton]=React.useState('Pesquisar');
+    const [list, setList] = React.useState([]);
+
+    const timer =(e)=> {
+        if (button === "Pesquisar") {
+            setTimeout(function () {
+                setButton("Confirmar")
+            }, 2000);
+        } else {
+            navigate(`1/add/files`)
+        }
+    }
+
+    const getSpace =(e)=> {
+      var form = new FormData();
+      form.append("level", level);
+      
+      fetch("http://localhost:8080/space/get_all_from_level", {
+          method: "POST",
+          headers: window.localStorage,
+          body: form
+      })
+      .then(res=>res.json())
+      .then(result=>{
+          console.log(result)
+
+          var parse = require('wellknown');
+          
+          setList(result.map(doc => (
+              <GeoJSON key={doc[0]} data={parse(doc[1])} />
+          )))
+      });
+  }
+
     return (
-        <MapContainer style={{width: "100%"}} center={position} zoom={7} scrollWheelZoom={true} minZoom={4} >
+    <>
+    <div style={{   margin: "auto",
+                            width: "60%",
+                            border: "1px solid black",
+                            background: "rgba(256, 256, 256, 0.92)",
+                            borderRadius: "20px",
+                            padding: "30px",
+                            position: "fixed",
+                            right: "20px"}}>
+        <MapContainer style={{width: "100%"}} center={position} zoom={7} scrollWheelZoom={true} minZoom={4}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-        </MapContainer>    
+          {list}
+        </MapContainer>   
+      </div> 
+
+      <div style={{   margin: "auto",
+      width: "30%",
+      border: "1px solid black",
+      background: "rgba(256, 256, 256, 0.92)",
+      borderRadius: "20px",
+      padding: "30px",
+      position: "fixed",
+      left: "20px"}}>
+          <Container>
+              <FormControl>
+                  <FormLabel id="demo-radio-buttons-group-label">Tipo de Estatística</FormLabel>
+                  <RadioGroup
+                      row
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="female"
+                      name="radio-buttons-group"
+                  >
+                      <FormControlLabel value="female" control={<Radio />} label="Distritos" onClick={(e)=>setLevel(1)}/>
+                      <FormControlLabel value="male" control={<Radio />} label="Municípios" onClick={(e)=>setLevel(2)}/>
+                      <FormControlLabel value="other" control={<Radio />} label="Freguesias" onClick={(e)=>setLevel(3)}/>
+                      <Button variant="contained" 
+                      style={{backgroundColor: "grey"}}
+                      onClick={getSpace}></Button>
+                </RadioGroup>
+            </FormControl>
+            <form>
+                <br/>
+                <br/>
+                <TextField id="name" label="Nome" variant="outlined" 
+                style={{width: "60%"}}
+                value = {name}
+                onChange={(e)=>setName(e.target.value)}/>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <Button variant="contained" 
+                style={{width: "40%", backgroundColor: "black"}}
+                onClick={timer}
+                >{button}</Button>
+                <br/>
+                <br/>
+                <br/>
+            </form>
+        </Container>
+    </div>
+    </>
     );
 }
 

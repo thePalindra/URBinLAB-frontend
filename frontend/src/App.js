@@ -15,6 +15,7 @@ import AddThematicMap from "./pages/AddThematicMap";
 import AddLiDAR from "./pages/AddLidar";
 import AddAerialPhotography from "./pages/AddAerialPhotography";
 import AddOrtos from "./pages/AddOrtos";
+import UploadFiles from "./pages/UploadFiles";
 import AttachSpace from "./pages/AttachSpace";
 import SelectType from './pages/SelectType';
 import SelectAerialImage from './pages/SelectAerialImage';
@@ -47,6 +48,7 @@ function App() {
             <Route path="/aerial_photography" element={<AddAerialPhotography/>}/>
             <Route path="/ortos" element={<AddOrtos/>}/>
             <Route path="/:result/add/space" element={<AttachSpace/>}/>
+            <Route path="/:result/upload/files" element={<UploadFiles/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>
