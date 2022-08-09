@@ -47,8 +47,8 @@ function App() {
             <Route path="/satellite" element={<AddSatellite/>}/>
             <Route path="/aerial_photography" element={<AddAerialPhotography/>}/>
             <Route path="/ortos" element={<AddOrtos/>}/>
-            <Route path="/:result/add/space" element={<AttachSpace/>}/>
-            <Route path="/:result/upload/files" element={<UploadFiles/>}/>
+            <Route path="/:id/add/space" element={<AttachSpace/>}/>
+            <Route path="/:id/upload/files" element={<UploadFiles/>}/>
             <Route path="/select/document/type" element={<SelectType/>}/>
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>

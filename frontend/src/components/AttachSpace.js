@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Container } from '@mui/material';
@@ -8,25 +8,35 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup } from 'react-leaflet'
 import * as L from 'leaflet';
 
 export default function DefaultFunction() {
     const position = [39, -8.5];
     let navigate = useNavigate()
+    let {id} = useParams();
     const [level, setLevel]=React.useState(1);
     const [name, setName]=React.useState('');
     const [button, setButton]=React.useState('Pesquisar');
     const [list, setList] = React.useState([]);
+    const [spaceId, setSpaceId]=React.useState('');
 
-    const timer =(e)=> {
-        if (button === "Pesquisar") {
-            setTimeout(function () {
-                setButton("Confirmar")
-            }, 2000);
-        } else {
-            navigate(`1/add/files`)
-        }
+
+    function attachspace(setId) {
+        setSpaceId(setId)
+        var form = new FormData();
+        form.append("space", spaceId);
+        form.append("doc", id);
+
+        fetch("http://localhost:8080/space/attach", {
+          method: "POST",
+          headers: window.localStorage,
+          body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            navigate(`/${id}/upload/files`)
+        })
     }
 
     const getSpace =(e)=> {
@@ -40,12 +50,20 @@ export default function DefaultFunction() {
       })
       .then(res=>res.json())
       .then(result=>{
-          console.log(result)
+        console.log(result)
 
-          var parse = require('wellknown');
-          
-          setList(result.map(doc => (
-              <GeoJSON key={doc[0]} data={parse(doc[1])} />
+        var parse = require('wellknown');
+        
+        setList(result.map(doc => (
+            <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                <Popup>
+                    {doc[2]}
+                    <Button variant="contained" 
+                        style={{backgroundColor: "black"}}
+                        onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
+                </Popup>
+            </GeoJSON>
+
           )))
       });
   }
@@ -101,14 +119,6 @@ export default function DefaultFunction() {
                 style={{width: "60%"}}
                 value = {name}
                 onChange={(e)=>setName(e.target.value)}/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <Button variant="contained" 
-                style={{width: "40%", backgroundColor: "black"}}
-                onClick={timer}
-                >{button}</Button>
                 <br/>
                 <br/>
                 <br/>
