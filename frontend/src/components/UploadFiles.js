@@ -2,24 +2,34 @@ import React from 'react'
 import { Container } from '@mui/material';
 import { useNavigate, useParams } from "react-router-dom";
 import Button from '@mui/material/Button';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 
 export default function DefaultFunction() {
     const [list, setList]=React.useState([]);
     var {id} = useParams()
-    var allFiles = []
+    var navigate = useNavigate()
+    var allFiles = 0
 
-    const getSpace =(e)=> {
-        var form = new FormData();
-
+    const upload =(e)=> {
         
-        fetch("http://localhost:8080/space/get_all_from_level", {
-        }
+        var form = new FormData();
+        form.append("file", allFiles)
+        form.append("document", id)
+        form.append("file", allFiles.name)
+        form.append("format", allFiles.type)
+
+        fetch("http://localhost:8080/file/add", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            navigate(`/${id}/document`)
+        })
     }
 
     function addFile(e) {
-        allFiles.push(e.target.files)
+        allFiles=e.target.files[0]
     }
 
     return (
@@ -32,7 +42,6 @@ export default function DefaultFunction() {
             <input
                 type="file"
                 hidden
-                multiple
                 onChange={(e)=> {
                     addFile(e);
                 }}

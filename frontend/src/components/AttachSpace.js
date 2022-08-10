@@ -18,7 +18,6 @@ export default function DefaultFunction() {
     let {id} = useParams();
     const [level, setLevel]=React.useState(1);
     const [list, setList] = React.useState([]);
-    const [spaceId, setSpaceId]=React.useState('');
 
 
     function attachspace(setId) {
