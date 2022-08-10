@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Container } from '@mui/material';
 import Radio from '@mui/material/Radio';
@@ -8,25 +7,24 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { MapContainer, TileLayer, GeoJSON, Popup } from 'react-leaflet'
-import * as L from 'leaflet';
 
 export default function DefaultFunction() {
-    const position = [39, -8.5];
+    const position = [38.5, -16];
     let navigate = useNavigate()
     let {id} = useParams();
     const [level, setLevel]=React.useState(1);
-    const [name, setName]=React.useState('');
-    const [button, setButton]=React.useState('Pesquisar');
     const [list, setList] = React.useState([]);
     const [spaceId, setSpaceId]=React.useState('');
 
 
     function attachspace(setId) {
-        setSpaceId(setId)
         var form = new FormData();
-        form.append("space", spaceId);
-        form.append("doc", id);
+        form.append("id", setId);
+        form.append("document", id);
 
         fetch("http://localhost:8080/space/attach", {
           method: "POST",
@@ -57,13 +55,18 @@ export default function DefaultFunction() {
         setList(result.map(doc => (
             <GeoJSON key={doc[0]} data={parse(doc[1])}>
                 <Popup>
-                    {doc[2]}
+                    
+                    <ListItem>
+                        <ListItemAvatar>
+                            
+                        </ListItemAvatar>
+                        <ListItemText primary={doc[2]} />
+                    </ListItem>
                     <Button variant="contained" 
                         style={{backgroundColor: "black"}}
                         onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
                 </Popup>
             </GeoJSON>
-
           )))
       });
   }
@@ -78,7 +81,7 @@ export default function DefaultFunction() {
                             padding: "30px",
                             position: "fixed",
                             right: "20px"}}>
-        <MapContainer style={{width: "100%"}} center={position} zoom={7} scrollWheelZoom={true} minZoom={4}>
+        <MapContainer style={{width: "100%"}} center={position} zoom={6} scrollWheelZoom={true} minZoom={4}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -112,17 +115,6 @@ export default function DefaultFunction() {
                       onClick={getSpace}></Button>
                 </RadioGroup>
             </FormControl>
-            <form>
-                <br/>
-                <br/>
-                <TextField id="name" label="Nome" variant="outlined" 
-                style={{width: "60%"}}
-                value = {name}
-                onChange={(e)=>setName(e.target.value)}/>
-                <br/>
-                <br/>
-                <br/>
-            </form>
         </Container>
     </div>
     </>
