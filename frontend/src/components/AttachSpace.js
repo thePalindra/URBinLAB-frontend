@@ -10,7 +10,41 @@ import FormLabel from '@mui/material/FormLabel';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
-import { MapContainer, TileLayer, GeoJSON, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import * as Wkt from "wicket"
+import { EditControl } from "react-leaflet-draw"
+import "leaflet-draw/dist/leaflet.draw.css"
+
+function circle(e) {
+    var result =  ["CIRCLE","("+e.layer._latlng.lat, e.layer._latlng.lng+",", e.layer._mRadius+")"].join(" ")
+    console.log(result)
+    
+    return result;
+}
+
+function rectangle(e) {
+    var result = ["BOX","(" + e.layer._bounds._southWest.lat
+                , e.layer._bounds._northEast.lng+"," + e.layer._bounds._northEast.lat,
+                e.layer._bounds._southWest.lng + ")"].join(" ")
+    console.log(result)
+    return result;
+}
+
+function point(e) {
+    var result = ["POINT","(" + e.layer._latlng.lat, e.layer._latlng.lng + ")"].join(" ")
+    console.log(result)
+    return result;
+}
+
+function polygon(e) {
+    var result = "POLYGON (("
+    for (var i = 0; i < e.layer._latlngs[0].length; i++)
+        result = [result + e.layer._latlngs[0][i].lat, e.layer._latlngs[0][i].lng + ","].join(" ")
+    
+    result = [result + e.layer._latlngs[0][0].lat, e.layer._latlngs[0][0].lng + "))"].join(" ")
+    console.log(result)
+    return result;
+}
 
 export default function DefaultFunction() {
     const position = [38.5, -16];
@@ -18,7 +52,31 @@ export default function DefaultFunction() {
     let {id} = useParams();
     const [level, setLevel]=React.useState(1);
     const [list, setList] = React.useState([]);
+    const [wtk, setWtk] = React.useState(false);
+    var wkt = "new Wkt.Wkt();"
+    var size = 0
 
+    const _created=e=> {
+        console.log(e)
+        var res = 0
+        switch(e.layerType) {
+            case "circle":
+                res = circle(e)
+                break;
+            case "rectangle":
+                res = rectangle(e)
+                break;
+            case "marker":
+                res = point(e)
+                break;
+            case "polygon":
+                res = polygon(e)
+                break;
+        }
+        wkt = res
+        console.log(wkt)
+        size++
+    }
 
     function attachspace(setId) {
         var form = new FormData();
@@ -26,10 +84,10 @@ export default function DefaultFunction() {
         form.append("document", id);
 
         fetch("http://localhost:8080/space/attach", {
-          method: "POST",
-          headers: window.localStorage,
-          body: form
-        })
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+            })
         .then(res=>res.json())
         .then(result=>{
             navigate(`/${id}/upload/files`)
@@ -37,38 +95,56 @@ export default function DefaultFunction() {
     }
 
     const getSpace =(e)=> {
-      var form = new FormData();
-      form.append("level", level);
-      
-      fetch("http://localhost:8080/space/get_all_from_level", {
-          method: "POST",
-          headers: window.localStorage,
-          body: form
-      })
-      .then(res=>res.json())
-      .then(result=>{
-        console.log(result)
+        var form = new FormData();
+        form.append("level", level);
+            
+        fetch("http://localhost:8080/space/get_all_from_level", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
 
-        var parse = require('wellknown');
-        
-        setList(result.map(doc => (
-            <GeoJSON key={doc[0]} data={parse(doc[1])}>
-                <Popup>
-                    
-                    <ListItem>
-                        <ListItemAvatar>
-                            
-                        </ListItemAvatar>
-                        <ListItemText primary={doc[2]} />
-                    </ListItem>
-                    <Button variant="contained" 
-                        style={{backgroundColor: "black"}}
-                        onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
-                </Popup>
-            </GeoJSON>
-          )))
-      });
-  }
+            var parse = require('wellknown');
+                
+            setList(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={doc[2]} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))
+        });
+    }
+
+    const addSpace =(e)=> {
+        var form = new FormData();
+        form.append("document", id);
+        form.append("space", wkt);
+            
+        fetch("http://localhost:8080/space/add", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+
+            navigate(`/${id}/upload/files`)
+        });
+    }
 
     return (
     <>
@@ -80,12 +156,25 @@ export default function DefaultFunction() {
                             padding: "30px",
                             position: "fixed",
                             right: "20px"}}>
+        <Button variant="contained" 
+                      style={{backgroundColor: "black"}}
+                      onClick={addSpace}> Adicionar espaço </Button>
+        <br/>
+        <br/>
         <MapContainer style={{width: "100%"}} center={position} zoom={6} scrollWheelZoom={true} minZoom={4}>
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {list}
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <FeatureGroup>
+                <EditControl position="topright"
+                onCreated={_created}
+                draw= {{
+                    circlemarker: false,
+                    polyline: false
+                }}/>
+            </FeatureGroup>       
+            {list}
         </MapContainer>   
       </div> 
 
