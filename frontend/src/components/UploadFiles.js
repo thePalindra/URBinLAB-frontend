@@ -46,8 +46,6 @@ export default function DefaultFunction() {
             allFiles.push(e.target.files[i])
             aux.push(e.target.files[i])
         }
-
-        
         
 
         console.log(list)

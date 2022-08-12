@@ -55,7 +55,7 @@ export default function IsThis() {
         form.append("raster", raster)
 
         
-        fetch("http://localhost:8080/"+ url +"/add_document", {
+        fetch("http://localhost:8080"+ url +"/add_document", {
             method: "POST",
             headers: window.localStorage,
             body: form

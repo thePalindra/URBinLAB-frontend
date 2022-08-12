@@ -1,0 +1,15 @@
+setList(aux.map(doc => (
+            <ListItem key={doc.name}
+                secondaryAction={
+                <IconButton edge="end" aria-label="delete">
+                    <DeleteIcon />
+                </IconButton>
+                }
+                > 
+                <ListItemAvatar>
+                </ListItemAvatar>
+                <ListItemText
+                primary={doc.name} secundary={doc.size}
+                />
+            </ListItem>
+        )))
