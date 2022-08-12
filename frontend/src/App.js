@@ -32,7 +32,7 @@ function App() {
       <div className="App">
         <Router>
           <Routes>
-            <Route path="/" element={<div/>}/>
+            <Route path="/" element={<SelectType/>}/>
             <Route path="/login" element={<LogIn/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/generic" element={<AddGeneric/>}/>
