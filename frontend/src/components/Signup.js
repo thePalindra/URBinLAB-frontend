@@ -17,7 +17,7 @@ export default function Signup() {
 
             window.localStorage.removeItem("token")
             e.preventDefault();
-            var form = new FormData();
+            let form = new FormData();
             form.append("name", name);
             form.append("password", password);
             form.append("email", email);

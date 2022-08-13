@@ -4,7 +4,7 @@ import urbinlab from "../images/urbinlab.png"
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-    var navigate = useNavigate()
+    let navigate = useNavigate()
 
     const clickHandler =(e)=>{
         navigate(`/`)

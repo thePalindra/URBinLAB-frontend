@@ -15,7 +15,7 @@ export default function Addsensors() {
     const [variable, setVariable]=React.useState('');
 
     const addDocument=(e)=> {
-        var form = new FormData();
+        let form = new FormData();
         form.append("name", name);
         form.append("description", desc);
         form.append("provider", provider);

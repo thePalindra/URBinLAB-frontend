@@ -16,14 +16,14 @@ import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 
 function circle(e) {
-    var result =  ["CIRCLE","("+e.layer._latlng.lat, e.layer._latlng.lng+",", e.layer._mRadius+")"].join(" ")
+    let result =  ["CIRCLE","("+e.layer._latlng.lat, e.layer._latlng.lng+",", e.layer._mRadius+")"].join(" ")
     console.log(result)
     
     return result;
 }
 
 function rectangle(e) {
-    var result = ["BOX","(" + e.layer._bounds._southWest.lat
+    let result = ["BOX","(" + e.layer._bounds._southWest.lat
                 , e.layer._bounds._northEast.lng+"," + e.layer._bounds._northEast.lat,
                 e.layer._bounds._southWest.lng + ")"].join(" ")
     console.log(result)
@@ -31,14 +31,14 @@ function rectangle(e) {
 }
 
 function point(e) {
-    var result = ["POINT","(" + e.layer._latlng.lat, e.layer._latlng.lng + ")"].join(" ")
+    let result = ["POINT","(" + e.layer._latlng.lat, e.layer._latlng.lng + ")"].join(" ")
     console.log(result)
     return result;
 }
 
 function polygon(e) {
-    var result = "POLYGON (("
-    for (var i = 0; i < e.layer._latlngs[0].length; i++)
+    let result = "POLYGON (("
+    for (let i = 0; i < e.layer._latlngs[0].length; i++)
         result = [result + e.layer._latlngs[0][i].lat, e.layer._latlngs[0][i].lng + ","].join(" ")
     
     result = [result + e.layer._latlngs[0][0].lat, e.layer._latlngs[0][0].lng + "))"].join(" ")
@@ -53,12 +53,12 @@ export default function DefaultFunction() {
     const [level, setLevel]=React.useState(1);
     const [list, setList] = React.useState([]);
     const [wtk, setWtk] = React.useState(false);
-    var wkt = "new Wkt.Wkt();"
-    var size = 0
+    let wkt = "new Wkt.Wkt();"
+    let size = 0
 
     const _created=e=> {
         console.log(e)
-        var res = 0
+        let res = 0
         switch(e.layerType) {
             case "circle":
                 res = circle(e)
@@ -79,7 +79,7 @@ export default function DefaultFunction() {
     }
 
     function attachspace(setId) {
-        var form = new FormData();
+        let form = new FormData();
         form.append("id", setId);
         form.append("document", id);
 
@@ -95,7 +95,7 @@ export default function DefaultFunction() {
     }
 
     const getSpace =(e)=> {
-        var form = new FormData();
+        let form = new FormData();
         form.append("level", level);
             
         fetch("http://localhost:8080/space/get_all_from_level", {
@@ -107,7 +107,7 @@ export default function DefaultFunction() {
         .then(result=>{
             console.log(result)
 
-            var parse = require('wellknown');
+            let parse = require('wellknown');
                 
             setList(result.map(doc => (
                 <GeoJSON key={doc[0]} data={parse(doc[1])}>
@@ -129,7 +129,7 @@ export default function DefaultFunction() {
     }
 
     const addSpace =(e)=> {
-        var form = new FormData();
+        let form = new FormData();
         form.append("document", id);
         form.append("space", wkt);
             

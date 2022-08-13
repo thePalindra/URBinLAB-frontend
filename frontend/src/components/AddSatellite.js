@@ -15,7 +15,7 @@ export default function IsThis() {
     const [satellite, setSatellite]=React.useState('');
 
     const addstat=(e)=> {
-        var form = new FormData();
+        let form = new FormData();
         form.append("name", name);
         form.append("description", desc);
         form.append("provider", provider);

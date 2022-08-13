@@ -13,17 +13,16 @@ import IconButton from '@mui/material/IconButton';
 import FolderIcon from '@mui/icons-material/Folder';
 
 export default function DefaultFunction() {
-    const [list, setList]=React.useState("");
-    var {id} = useParams()
-    var navigate = useNavigate()
-    const allFiles = []
-
+    const [list, setList]=React.useState([]);
+    let {id} = useParams()
+    let navigate = useNavigate()
+    
     const upload =(e)=> {
-        console.log(allFiles.length)
-        for (var i = 0; i<allFiles.length; i++) {
+        console.log(list.length)
+        for (let i = 0; i<list.length; i++) {
             console.log("here")
-            var form = new FormData();
-            form.append("file", allFiles[i])
+            let form = new FormData();
+            form.append("file", list[i])
             form.append("document", id)
 
             fetch("http://localhost:8080/file/add", {
@@ -40,16 +39,15 @@ export default function DefaultFunction() {
     }
 
     function addFile(e) {
-        console.log(e.target.files)
-        var aux = []
-        for (var i = 0; i<e.target.files.length; i++) {
-            allFiles.push(e.target.files[i])
-            aux.push(e.target.files[i])
+        let arr = [...list]
+        for (let i = 0; i<e.target.files.length; i++) {
+            let current = e.target.files[i]
+            if (!arr.find(file=> file.name===current.name))
+                arr.push(e.target.files[i])
         }
-        
 
-        console.log(list)
-        console.log(allFiles)
+        setList(arr)
+        console.log(arr)
     }
 
     return (
@@ -74,7 +72,25 @@ export default function DefaultFunction() {
                             borderRadius: "20px",
                             padding: "30px"}}>
             <List>
-                {list}
+                {list?.length>0 && list.map((doc, index)=> 
+                    <ListItem key={doc.name}
+                    secondaryAction={
+                    <IconButton edge="end" aria-label="delete" onClick={()=>{
+                        let aux = [...list]
+                        aux.splice(index, 1)
+                        setList(aux)
+                    }}>
+                        <DeleteIcon />
+                    </IconButton>
+                    }
+                    > 
+                    <ListItemAvatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                    primary={doc.name} secundary={doc.size}
+                    />
+                </ListItem>
+                )}
             </List>
             </div>
             <br/>

@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { useNavigate } from "react-router-dom";
 
 function handleClick(id, navigate) {
-    var idClick = new FormData();
+    let idClick = new FormData();
     idClick.append("id", id);
 
     fetch("http://localhost:8080/document/click",{
@@ -20,9 +20,9 @@ function handleClick(id, navigate) {
 
 function ListingDocument() {
     const [list, setList] = React.useState([])
-    var page = 1;
+    let page = 1;
 
-    var form = new FormData();
+    let form = new FormData();
     form.append("page", page);
 
     let navigate = useNavigate();
