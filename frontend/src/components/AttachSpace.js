@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 import { Container } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -50,53 +51,18 @@ export default function DefaultFunction() {
     const position = [38.5, -16];
     let navigate = useNavigate()
     let {id} = useParams();
+    const [distrito, setDistrito]=React.useState("");
+    const [municipio, setMunicipio]=React.useState("");
+    const [freguesia, setFreguesia]=React.useState("");
     const [level, setLevel]=React.useState(1);
     const [list, setList] = React.useState([]);
-    const [wtk, setWtk] = React.useState(false);
     let wkt = "new Wkt.Wkt();"
-    let size = 0
+    
 
-    const _created=e=> {
-        console.log(e)
-        let res = 0
-        switch(e.layerType) {
-            case "circle":
-                res = circle(e)
-                break;
-            case "rectangle":
-                res = rectangle(e)
-                break;
-            case "marker":
-                res = point(e)
-                break;
-            case "polygon":
-                res = polygon(e)
-                break;
-        }
-        wkt = res
-        console.log(wkt)
-        size++
-    }
-
-    function attachspace(setId) {
-        let form = new FormData();
-        form.append("id", setId);
-        form.append("document", id);
-
-        fetch("http://localhost:8080/space/attach", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-            })
-        .then(res=>res.json())
-        .then(result=>{
-            navigate(`/${id}/upload/files`)
-        })
-    }
-
-    const getSpace =(e)=> {
+    function defaultFunc() {
         let form = new FormData();
         form.append("level", level);
+
             
         fetch("http://localhost:8080/space/get_all_from_level", {
             method: "POST",
@@ -126,6 +92,185 @@ export default function DefaultFunction() {
                 </GeoJSON>
             )))
         });
+    }
+
+    function searchByName(thisName) {
+        let form = new FormData();
+        form.append("level", level);
+        form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
+            
+        fetch("http://localhost:8080/space/search_by_name", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+
+            let parse = require('wellknown');
+                
+            setList(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={doc[2]} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))
+        });
+    }
+
+    function getTheLevelBellow(thisName, auxLevel) {
+        let form = new FormData();
+        form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
+        form.append("level", auxLevel);
+            
+        fetch("http://localhost:8080/space/get_the_level_bellow", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+
+            let parse = require('wellknown');
+                
+            setList(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={doc[2]} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))
+        });
+
+    }
+
+    function getEvrything(thisName) {
+        let form = new FormData();
+        form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
+            
+        fetch("http://localhost:8080/space/get_everything", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+
+            let parse = require('wellknown');
+                
+            setList(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={doc[2]} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))
+        });
+    }
+
+    const _created=e=> {
+        console.log(e)
+        let res = 0
+        switch(e.layerType) {
+            case "circle":
+                res = circle(e)
+                break;
+            case "rectangle":
+                res = rectangle(e)
+                break;
+            case "marker":
+                res = point(e)
+                break;
+            case "polygon":
+                res = polygon(e)
+                break;
+            default:
+                break;
+        }
+        wkt = res
+        console.log(wkt)
+    }
+
+    function attachspace(setId) {
+        let form = new FormData();
+        form.append("id", setId);
+        form.append("document", id);
+
+        fetch("http://localhost:8080/space/attach", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+            })
+        .then(res=>res.json())
+        .then(result=>{
+            navigate(`/${id}/upload/files`)
+        })
+    }
+
+    const getSpace =(e)=> {
+
+        switch (level) {
+            case 1:
+                setFreguesia("")
+                setMunicipio("")
+                if (distrito==="") 
+                    defaultFunc()
+                else
+                    searchByName(distrito)
+                break;
+            case 2:
+                setFreguesia("")
+                if (municipio==="" && distrito==="") 
+                    defaultFunc()
+                else if (distrito!=="")
+                    getTheLevelBellow(distrito, 1)
+                else
+                    searchByName(municipio)
+                break;      
+            case 3:
+                if (municipio==="" && distrito==="" && freguesia==="") 
+                    defaultFunc()
+                else if (municipio!=="")
+                    getTheLevelBellow(municipio, 2)
+                else if (distrito!=="")
+                    getEvrything(distrito)
+                else
+                    searchByName(freguesia)
+                break;
+            default:
+                break;
+        }
     }
 
     const addSpace =(e)=> {
@@ -203,6 +348,27 @@ export default function DefaultFunction() {
                       onClick={getSpace}></Button>
                 </RadioGroup>
             </FormControl>
+            <br/>
+            <br/>
+            <br/>
+            <TextField id="distrito" label="Distrito" variant="outlined" 
+                    style={{width: "50%"}}
+                    onChange={(e)=>setDistrito(e.target.value)}
+                    size="small"/>
+            <br/>
+            <br/>
+            <TextField id="municipio" label="Município" variant="outlined" 
+                    style={{width: "50%"}}
+                    onChange={(e)=>setMunicipio(e.target.value)}
+                    disabled={level < 2}
+                    size="small"/>  
+            <br/>
+            <br/>
+            <TextField id="freguesia" label="Freguesia" variant="outlined" 
+                    style={{width: "50%"}}
+                    onChange={(e)=>setFreguesia(e.target.value)}
+                    disabled={level < 3}
+                    size="small"/>
         </Container>
     </div>
     </>
