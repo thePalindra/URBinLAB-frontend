@@ -5,6 +5,8 @@ body, html {
     background-image: url("../images/Terreiro.jpg");
     height: 100vh;
     position: fixed;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     top: 0;
     left: 0;
     width: 100%;

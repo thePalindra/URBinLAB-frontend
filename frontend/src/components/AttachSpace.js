@@ -12,27 +12,18 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
-import * as Wkt from "wicket"
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 
 function circle(e) {
-    let result =  ["CIRCLE","("+e.layer._latlng.lat, e.layer._latlng.lng+",", e.layer._mRadius+")"].join(" ")
+    let result =  ["CIRCLE","("+e.layer._latlng.lng, e.layer._latlng.lat+",", e.layer._mRadius+")"].join(" ")
     console.log(result)
     
     return result;
 }
 
-function rectangle(e) {
-    let result = ["BOX","(" + e.layer._bounds._southWest.lat
-                , e.layer._bounds._northEast.lng+"," + e.layer._bounds._northEast.lat,
-                e.layer._bounds._southWest.lng + ")"].join(" ")
-    console.log(result)
-    return result;
-}
-
 function point(e) {
-    let result = ["POINT","(" + e.layer._latlng.lat, e.layer._latlng.lng + ")"].join(" ")
+    let result = ["POINT","(" + e.layer._latlng.lng, e.layer._latlng.lat + ")"].join(" ")
     console.log(result)
     return result;
 }
@@ -40,9 +31,9 @@ function point(e) {
 function polygon(e) {
     let result = "POLYGON (("
     for (let i = 0; i < e.layer._latlngs[0].length; i++)
-        result = [result + e.layer._latlngs[0][i].lat, e.layer._latlngs[0][i].lng + ","].join(" ")
+        result = [result + e.layer._latlngs[0][i].lng, e.layer._latlngs[0][i].lat + ","].join(" ")
     
-    result = [result + e.layer._latlngs[0][0].lat, e.layer._latlngs[0][0].lng + "))"].join(" ")
+    result = [result + e.layer._latlngs[0][0].lng, e.layer._latlngs[0][0].lat + "))"].join(" ")
     console.log(result)
     return result;
 }
@@ -207,7 +198,7 @@ export default function DefaultFunction() {
                 res = circle(e)
                 break;
             case "rectangle":
-                res = rectangle(e)
+                res = polygon(e)
                 break;
             case "marker":
                 res = point(e)
@@ -219,7 +210,6 @@ export default function DefaultFunction() {
                 break;
         }
         wkt = res
-        console.log(wkt)
     }
 
     function attachspace(setId) {
@@ -277,6 +267,7 @@ export default function DefaultFunction() {
         let form = new FormData();
         form.append("document", id);
         form.append("space", wkt);
+        console.log(wkt)
             
         fetch("http://localhost:8080/space/add", {
             method: "POST",

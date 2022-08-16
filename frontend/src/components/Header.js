@@ -16,11 +16,10 @@ export default function Header() {
                     <IconButton
                     edge="start"
                     color="inherit"
-                    aria-label="open drawer"
                     sx={{ mr: 2 }}
                     onClick={clickHandler}>
                         
-                        <img style={{size: "50% 50%"}} src={urbinlab} className="urbinlab" alt="Logo" />
+                        <img style={{size: "20% 20%"}} src={urbinlab} className="urbinlab" alt="Logo" />
                     </IconButton>
                 </div>
             </AppBar>
