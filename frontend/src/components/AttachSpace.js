@@ -15,10 +15,17 @@ import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-lea
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 
+let lat = 0
+let lng = 0
+let size = 0
+
 function circle(e) {
-    let result =  ["CIRCLE","("+e.layer._latlng.lng, e.layer._latlng.lat+",", e.layer._mRadius+")"].join(" ")
+    let result =  "c"
     console.log(result)
     
+    lng = e.layer._latlng.lng
+    lat = e.layer._latlng.lat 
+    size = e.layer._mRadius
     return result;
 }
 
@@ -266,20 +273,39 @@ export default function DefaultFunction() {
     const addSpace =(e)=> {
         let form = new FormData();
         form.append("document", id);
-        form.append("space", wkt);
-        console.log(wkt)
-            
-        fetch("http://localhost:8080/space/add", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result)
+        if (wkt === "c") {
+            form.append("lng", lng)
+            form.append("lat", lat)
+            form.append("size", size)
 
-            navigate(`/${id}/upload/files`)
-        });
+            fetch("http://localhost:8080/space/add_circle", {
+                method: "POST",
+                headers: window.localStorage,
+                body: form
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+
+                navigate(`/${id}/upload/files`)
+            });
+
+        } else {
+            form.append("space", wkt);
+            console.log(wkt)
+                
+            fetch("http://localhost:8080/space/add", {
+                method: "POST",
+                headers: window.localStorage,
+                body: form
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+
+                navigate(`/${id}/upload/files`)
+            });
+        }
     }
 
     return (
