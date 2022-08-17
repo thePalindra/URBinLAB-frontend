@@ -69,7 +69,7 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
+            console.log("other")
 
             let parse = require('wellknown');
                 
@@ -92,9 +92,10 @@ export default function DefaultFunction() {
         });
     }
 
-    function searchByName(thisName) {
+    function searchByName(thisName, thisLevel) {
         let form = new FormData();
         form.append("level", level);
+        form.append("thisLevel", thisLevel)
         form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
             
         fetch("http://localhost:8080/space/search_by_name", {
@@ -104,77 +105,7 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
-
-            let parse = require('wellknown');
-                
-            setList(result.map(doc => (
-                <GeoJSON key={doc[0]} data={parse(doc[1])}>
-                    <Popup>
-                        
-                        <ListItem>
-                            <ListItemAvatar>
-                                
-                            </ListItemAvatar>
-                            <ListItemText primary={doc[2]} />
-                        </ListItem>
-                        <Button variant="contained" 
-                            style={{backgroundColor: "black"}}
-                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
-                    </Popup>
-                </GeoJSON>
-            )))
-        });
-    }
-
-    function getTheLevelBellow(thisName, auxLevel) {
-        let form = new FormData();
-        form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
-        form.append("level", auxLevel);
-            
-        fetch("http://localhost:8080/space/get_the_level_bellow", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result)
-
-            let parse = require('wellknown');
-                
-            setList(result.map(doc => (
-                <GeoJSON key={doc[0]} data={parse(doc[1])}>
-                    <Popup>
-                        
-                        <ListItem>
-                            <ListItemAvatar>
-                                
-                            </ListItemAvatar>
-                            <ListItemText primary={doc[2]} />
-                        </ListItem>
-                        <Button variant="contained" 
-                            style={{backgroundColor: "black"}}
-                            onClick={()=> attachspace(doc[0])}> Confirmar localização </Button>
-                    </Popup>
-                </GeoJSON>
-            )))
-        });
-
-    }
-
-    function getEvrything(thisName) {
-        let form = new FormData();
-        form.append("name", thisName.charAt(0).toUpperCase() + thisName.slice(1))
-            
-        fetch("http://localhost:8080/space/get_everything", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result)
+            console.log("by name")
 
             let parse = require('wellknown');
                 
@@ -236,34 +167,35 @@ export default function DefaultFunction() {
     }
 
     const getSpace =(e)=> {
+        console.log(distrito)
+        console.log(municipio)
+        console.log(freguesia)
+        console.log(level)
 
         switch (level) {
             case 1:
-                setFreguesia("")
-                setMunicipio("")
                 if (distrito==="") 
                     defaultFunc()
                 else
-                    searchByName(distrito)
+                    searchByName(distrito, 1)
                 break;
             case 2:
-                setFreguesia("")
                 if (municipio==="" && distrito==="") 
                     defaultFunc()
-                else if (distrito!=="")
-                    getTheLevelBellow(distrito, 1)
+                else if (municipio!=="")
+                    searchByName(municipio, 2)
                 else
-                    searchByName(municipio)
+                    searchByName(distrito, 1)
                 break;      
             case 3:
                 if (municipio==="" && distrito==="" && freguesia==="") 
                     defaultFunc()
+                else if (freguesia!=="")
+                    searchByName(freguesia, 3) 
                 else if (municipio!=="")
-                    getTheLevelBellow(municipio, 2)
-                else if (distrito!=="")
-                    getEvrything(distrito)
+                    searchByName(municipio, 2)
                 else
-                    searchByName(freguesia)
+                    searchByName(distrito, 1)
                 break;
             default:
                 break;
@@ -320,7 +252,7 @@ export default function DefaultFunction() {
                             right: "20px"}}>
         <Button variant="contained" 
                       style={{backgroundColor: "black"}}
-                      onClick={addSpace}> Adicionar espaço </Button>
+                      onClick={addSpace}> Adicionar Localização </Button>
         <br/>
         <br/>
         <MapContainer style={{width: "100%"}} center={position} zoom={6} scrollWheelZoom={true} minZoom={4}>
