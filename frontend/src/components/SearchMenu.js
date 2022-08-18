@@ -7,12 +7,16 @@ import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Slider from '@mui/material/Slider';
+import Switch from '@mui/material/Switch';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import "leaflet-draw/dist/leaflet.draw.css"
 
 let lat = 0
 let lng = 0
 let size = 0
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -26,7 +30,13 @@ const style = {
     px: 4,
     pb: 3,
     borderRadius: "20px"
-  };
+};
+const minDistance = 4;
+const todaysYear = new Date().getFullYear()
+
+function valuetext(value: number) {
+    return `${value}°C`;
+}
 
 function circle(e) {
     let result =  "c"
@@ -54,14 +64,48 @@ function polygon(e) {
     return result;
 }
 
+
 export default function IsThis() {
     const position = [38.5, -16];
     const [id, setId] = React.useState()
     const [open, setOpen] = React.useState(false);
+    const [value1, setValue1] = React.useState([1960, 2000]);
+    const [getYear, setYear] = React.useState(true);
+    const [user, setUser] = React.useState('');
+    const [archiver, setArchiver] = React.useState([0,""]);
     let space = ""
     let wkt = "new Wkt.Wkt();"
 
+    function users() {
+        fetch("http://localhost:8080/user/get_archivers", {
+            method: "POST",
+            headers: window.localStorage
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setArchiver(result)
+        });
+    }
+
+    const handleChange1 = (
+        event: Event,
+        newValue: number | number[],
+        activeThumb: number,
+    ) => {
+        if (!Array.isArray(newValue)) {
+          return;
+        }
+    
+        if (activeThumb === 0) {
+          setValue1([Math.min(newValue[0], value1[1] - minDistance), value1[1]]);
+        } else {
+          setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
+        }
+    };
+
     const handleOpen = () => {
+        users()
         setOpen(true);
     };
     const handleClose = () => {
@@ -143,19 +187,63 @@ export default function IsThis() {
                     </Button>
 
                     <Modal
-                    keepMounted
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="keep-mounted-modal-title"
-                    aria-describedby="keep-mounted-modal-description"
+                        keepMounted
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="keep-mounted-modal-title"
+                        aria-describedby="keep-mounted-modal-description"
                     >
-                    <Box sx={style}>
-                        <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
-                            Text in a modal
-                        </Typography>
-                        <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                        </Typography>
+                        <Box sx={style}>
+                            <Grid justify="space-between">
+                                <TextField id="name" 
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    size="small"/>  
+                                <TextField id="provider" 
+                                    label="Fornecedor/Autor" 
+                                    variant="outlined" 
+                                    size="small"
+                                    style={{marginLeft: "20px"}}/>  
+                                <br/>
+                                <br/>
+                                <InputLabel id="demo-simple-select-label">Arquivista</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={user[1]}
+                                    label="User"
+                                    onChange={(e)=>{setUser(e.target.value)}}
+                                    style={{width: "30%"}}
+                                    size="small"
+                                >
+                                    {archiver?.length>0 && archiver.map((doc)=> {
+                                        return (<MenuItem key={doc[0]} value={doc}>{doc[1]}</MenuItem>)
+                                    })}
+                                </Select>
+                                <br/>
+                                <br/>
+                                <Typography id="Title" variant="h6" component="h2">
+                                Ano
+                                    <Switch onChange={()=>{
+                                        setYear(!getYear)
+                                        console.log(archiver)}}/>
+                                    
+                                </Typography>
+                                <Slider
+                                    getAriaLabel={() => 'Minimum distance'}
+                                    value={value1}
+                                    onChange={handleChange1}
+                                    valueLabelDisplay="auto"
+                                    getAriaValueText={valuetext}
+                                    disableSwap
+                                    min={1950}
+                                    max={todaysYear}
+                                    disabled={getYear}
+                                />
+                            </Grid>
+                            <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
+                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                            </Typography>
                         </Box>
                     </Modal>
                     <TextField id="serach" 
