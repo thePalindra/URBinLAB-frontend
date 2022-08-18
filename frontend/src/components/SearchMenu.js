@@ -12,6 +12,10 @@ import Switch from '@mui/material/Switch';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
 import "leaflet-draw/dist/leaflet.draw.css"
 
 let lat = 0
@@ -33,10 +37,6 @@ const style = {
 };
 const minDistance = 4;
 const todaysYear = new Date().getFullYear()
-
-function valuetext(value: number) {
-    return `${value}°C`;
-}
 
 function circle(e) {
     let result =  "c"
@@ -73,6 +73,9 @@ export default function IsThis() {
     const [getYear, setYear] = React.useState(true);
     const [user, setUser] = React.useState('');
     const [archiver, setArchiver] = React.useState([0,""]);
+    const [collection, setCollection] = React.useState([0,""]);
+    const [collections, setCollections] = React.useState([0,""]);
+    const [editableFG, setEditableFG] = React.useState(null);
     let space = ""
     let wkt = "new Wkt.Wkt();"
 
@@ -85,6 +88,18 @@ export default function IsThis() {
         .then(result=>{
             console.log(result)
             setArchiver(result)
+        });
+    }
+
+    function coll() {
+        fetch("http://localhost:8080/collection/get_all", {
+            method: "POST",
+            headers: window.localStorage
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setCollections(result)
         });
     }
 
@@ -102,14 +117,21 @@ export default function IsThis() {
         } else {
           setValue1([value1[0], Math.max(newValue[1], value1[0] + minDistance)]);
         }
+        console.log(value1)
     };
 
     const handleOpen = () => {
         users()
+        coll()
         setOpen(true);
     };
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const onFeatureGroupReady = reactFGref => {
+        // store the ref for future access to content
+        setEditableFG(reactFGref);
     };
 
     function getDocumentBySpaceGeometry() {
@@ -194,6 +216,12 @@ export default function IsThis() {
                         aria-describedby="keep-mounted-modal-description"
                     >
                         <Box sx={style}>
+                            <br/>
+                            <Typography id="Title" variant="h4" component="h2">
+                                Formulário
+                            </Typography>
+                            <br/>
+                            <br/>   
                             <Grid justify="space-between">
                                 <TextField id="name" 
                                     label="Nome" 
@@ -222,8 +250,24 @@ export default function IsThis() {
                                 </Select>
                                 <br/>
                                 <br/>
+                                <InputLabel id="demo-simple-select-label">Coleção</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={collection[1]}
+                                    label="User"
+                                    onChange={(e)=>{setCollection(e.target.value)}}
+                                    style={{width: "30%"}}
+                                    size="small"
+                                >
+                                    {collections?.length>0 && collections.map((doc)=> {
+                                        return (<MenuItem key={doc[0]} value={doc}>{doc[1]}</MenuItem>)
+                                    })}
+                                </Select>
+                                <br/>
+                                <br/>
                                 <Typography id="Title" variant="h6" component="h2">
-                                Ano
+                                Ano por intervalo
                                     <Switch onChange={()=>{
                                         setYear(!getYear)
                                         console.log(archiver)}}/>
@@ -234,16 +278,58 @@ export default function IsThis() {
                                     value={value1}
                                     onChange={handleChange1}
                                     valueLabelDisplay="auto"
-                                    getAriaValueText={valuetext}
                                     disableSwap
                                     min={1950}
                                     max={todaysYear}
                                     disabled={getYear}
                                 />
+                                <TextField id="ano" 
+                                    label="Ano por extenso" 
+                                    variant="outlined" 
+                                    size="small"
+                                    disabled={!getYear}
+                                    style={{width: "20%"}}/>  
+                                
+                                <br/>
+                                <br/>
+                                <FormControl>
+                                    <Typography id="Title" variant="h6" component="h2">
+                                    Tipo de documento
+                                        <Switch onChange={()=>{
+                                            console.log("Changed")}}/>
+                                    </Typography>
+                                        
+                                    
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel 
+                                            value="geomap" 
+                                            control={<Checkbox />} 
+                                            label="Mapa Geográfico"/>
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox />} 
+                                            label="Mapa Corográfico"/>
+                                        <FormControlLabel 
+                                            value="topomap" 
+                                            control={<Checkbox />} 
+                                            label="Mapa Topográfico"/>
+                                        <FormControlLabel 
+                                            value="topoplan" 
+                                            control={<Checkbox />} 
+                                            label="Planta Topográfica"/>   
+                                    </RadioGroup>
+                                </FormControl>
+                                <br/>
+                                <br/>
+                                <Button variant="contained" 
+                                    style={{backgroundColor: "black"}}> Efetuar Pesquisa
+                                </Button>
                             </Grid>
-                            <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-                                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                            </Typography>
                         </Box>
                     </Modal>
                     <TextField id="serach" 
@@ -271,7 +357,10 @@ export default function IsThis() {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />   
-                    <FeatureGroup>
+                    <FeatureGroup
+                        ref={featureGroupRef => {
+                            onFeatureGroupReady(featureGroupRef);
+                        }}>
                         <EditControl position="topright"
                             onCreated={_created}
                             draw= {{
