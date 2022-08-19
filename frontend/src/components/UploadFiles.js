@@ -18,9 +18,7 @@ export default function DefaultFunction() {
     let navigate = useNavigate()
     
     const upload =(e)=> {
-        console.log(list.length)
         for (let i = 0; i<list.length; i++) {
-            console.log("here")
             let form = new FormData();
             form.append("file", list[i])
             form.append("document", id)
@@ -100,6 +98,7 @@ export default function DefaultFunction() {
             component="label"
             style={{width: "40%", backgroundColor: "black"}}   
             onClick={upload}
+            disabeld={list.length<1}
             >
             Confirmar
             </Button>       

@@ -37,6 +37,16 @@ const style = {
 };
 const minDistance = 4;
 const todaysYear = new Date().getFullYear()
+const defaultTypes = [
+    [false, false, false, false], 
+    [false, false, false, false],
+    [false],
+    [false],
+    [false],
+    [false],
+    [false, false, false],
+    [false]
+]
 
 function circle(e) {
     let result =  "c"
@@ -67,25 +77,19 @@ function polygon(e) {
 
 export default function IsThis() {
     const position = [38.5, -16];
+    const [name, setName] = React.useState("")
+    const [provider, setProvider] = React.useState("")
     const [id, setId] = React.useState()
     const [open, setOpen] = React.useState(false);
     const [value1, setValue1] = React.useState([1960, 2000]);
+    const [types, setTypes] = React.useState(new Set().add("GENERIC"))
     const [getYear, setYear] = React.useState(true);
     const [getType, setType] = React.useState(true);
     const [user, setUser] = React.useState('');
-    const [archiver, setArchiver] = React.useState([0,""]);
+    const [archiver, setArchiver] = React.useState([[0,""]]);
     const [collection, setCollection] = React.useState([0,""]);
     const [collections, setCollections] = React.useState([0,""]);
-    const [checked, setChecked] = React.useState([
-        [false, false, false, false], 
-        [false, false, false, false],
-        [false],
-        [false],
-        [false],
-        [false],
-        [false, false, false],
-        [false]
-    ])
+    const [checked, setChecked] = React.useState(defaultTypes)
     const [editableFG, setEditableFG] = React.useState(null);
     let space = ""
     let wkt = "new Wkt.Wkt();"
@@ -179,6 +183,7 @@ export default function IsThis() {
     }
 
     const handleImagemAerea = (event: React.ChangeEvent<HTMLInputElement>) => {
+        let set = new Set(types)
         setChecked([
             [event.target.checked, event.target.checked, event.target.checked, event.target.checked], 
             [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
@@ -189,6 +194,18 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        if (event.target.checked) {
+            set.add("ORTOS")
+            set.add("AERIAL PHOTOGRAPHY")
+            set.add("LiDAR")
+            set.add("SATELLITE IMAGE")
+        } else {
+            set.delete("ORTOS")
+            set.delete("AERIAL PHOTOGRAPHY")
+            set.delete("LiDAR")
+            set.delete("SATELLITE IMAGE")
+        }
+        setTypes(set)
     };
 
     const handleFotografiaAerea = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,6 +219,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("AERIAL PHOTOGRAPHY")
+        else 
+            set.delete("AERIAL PHOTOGRAPHY")
+        setTypes(set)
     };
 
     const handleSatelite = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,6 +238,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("SATELLITE IMAGE")
+        else 
+            set.delete("SATELLITE IMAGE")
+        setTypes(set)
     };
 
     const handleOrto = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -228,6 +257,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("ORTOS")
+        else 
+            set.delete("ORTOS")
+        setTypes(set)
     };
 
     const handleLidar = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,6 +276,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("LiDAR")
+        else 
+            set.delete("LiDAR")  
+        setTypes(set)
     };
 
     const handleCartografia = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -254,6 +295,21 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) {
+            set.add("THEMATIC MAP")
+            set.add("CHOROGRAPHIC MAP")
+            set.add("GEOGRAPHIC MAP")
+            set.add("TOPOGRAPHIC PLAN")
+            set.add("TOPOGRAPHIC MAP")
+        } else {
+            set.delete("THEMATIC MAP")
+            set.delete("CHOROGRAPHIC MAP")
+            set.delete("GEOGRAPHIC MAP")
+            set.delete("TOPOGRAPHIC PLAN")
+            set.delete("TOPOGRAPHIC MAP")
+        }
+        setTypes(set)
     };
 
     const handleCartaBase = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -267,6 +323,19 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) {
+            set.add("CHOROGRAPHIC MAP")
+            set.add("GEOGRAPHIC MAP")
+            set.add("TOPOGRAPHIC PLAN")
+            set.add("TOPOGRAPHIC MAP")
+        } else {
+            set.delete("CHOROGRAPHIC MAP")
+            set.delete("GEOGRAPHIC MAP")
+            set.delete("TOPOGRAPHIC PLAN")
+            set.delete("TOPOGRAPHIC MAP")
+        }
+        setTypes(set)
     };
 
     const handleCartaTematica = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -280,6 +349,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("THEMATIC MAP")
+        else 
+            set.delete("THEMATIC MAP")
+        setTypes(set)
     };
 
     const handleGeo = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -293,6 +368,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("GEOGRAPHIC MAP")
+        else 
+            set.delete("GEOGRAPHIC MAP")    
+        setTypes(set)
     };
 
     const handleCoro = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -306,6 +387,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("CHOROGRAPHIC MAP")
+        else 
+            set.delete("CHOROGRAPHIC MAP")
+        setTypes(set)
     };
 
     const handleTopoC = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -319,6 +406,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("TOPOGRAPHIC MAP")
+        else 
+            set.delete("TOPOGRAPHIC MAP")
+        setTypes(set)
     };
 
     const handleTopoP = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -332,6 +425,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("TOPOGRAPHIC PLAN")
+        else
+            set.delete("TOPOGRAPHIC PLAN")
+        setTypes(set)
     };
 
     const handleFoto = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -345,6 +444,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("PHOTOGRAPHY")
+        else 
+            set.delete("PHOTOGRAPHY")
+        setTypes(set)
     };
 
     const handleEsta = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -358,6 +463,17 @@ export default function IsThis() {
             [event.target.checked, event.target.checked, event.target.checked],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) {
+            set.add("THEMATIC STATISTICS")
+            set.add("SURVEY")
+            set.add("CENSUS")
+        } else {
+            set.delete("THEMATIC STATISTICS")
+            set.delete("SURVEY")
+            set.delete("CENSUS")
+        }
+        setTypes(set)
     }
 
     const handleEstaTema = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -371,6 +487,12 @@ export default function IsThis() {
             [event.target.checked, checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("THEMATIC STATISTICS")
+        else 
+            set.delete("THEMATIC STATISTICS")
+        setTypes(set)
     }
 
     const handleCensos = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -384,6 +506,12 @@ export default function IsThis() {
             [checked[6][0], event.target.checked, checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("CENSUS")
+        else 
+            set.delete("CENSUS")
+        setTypes(set)
     }
 
     const handleInq = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -397,6 +525,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], event.target.checked],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("SURVEY")
+        else 
+            set.delete("SURVEY")
+        setTypes(set)
     }
 
     const handleDes = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -410,6 +544,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("DRAWINGS")
+        else 
+            set.delete("DRAWINGS")
+        setTypes(set)
     }
 
     const handleRel = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -423,6 +563,12 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [checked[7][0]]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("REPORT")
+        else 
+            set.delete("REPORT")
+        setTypes(set)
     }
 
     const handleSensor = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -436,7 +582,40 @@ export default function IsThis() {
             [checked[6][0], checked[6][1], checked[6][2]],
             [event.target.checked]
         ]);
+        let set = new Set(types)
+        if (event.target.checked) 
+            set.add("SENSORS")
+        else 
+            set.delete("SENSORS")
+        setTypes(set)
+
     }
+
+    const query=(e)=> {
+        let form = new FormData();
+        form.append("name", name);
+        form.append("provider", provider);
+        form.append("yearmax", value1[1]);
+        form.append("yearmin", value1[0]);
+        form.append("archiver", 0);
+        form.append("types", types)
+        console.log(name)
+        console.log(provider)
+        console.log(value1[1])
+        console.log(value1[0])
+        console.log(0)
+        console.log(types)
+        
+        fetch("http://localhost:8080/generic/big_query", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result);
+        });
+    } 
 
     const _created=e=> {
         console.log(e)
@@ -567,7 +746,13 @@ export default function IsThis() {
                                     <Typography id="Title" variant="h6" component="h2">
                                     Tipo de documento
                                         <Switch onChange={()=>{
-                                            setType(!getType)}}/>
+                                            setType(!getType)
+                                            if (getType) {
+                                                setTypes(new Set())
+                                            } else {
+                                                setChecked(defaultTypes)
+                                                setTypes(new Set().add("GENERIC"))
+                                            } }}/>
                                     </Typography>
                                     <RadioGroup
                                         row
@@ -794,7 +979,9 @@ export default function IsThis() {
                                 <br/>
                                 <br/>
                                 <Button variant="contained" 
-                                    style={{backgroundColor: "black"}}> Efetuar Pesquisa
+                                    style={{backgroundColor: "black"}}
+                                    onClick={query}
+                                    disabled={false}> Efetuar Pesquisa
                                 </Button>
                             </Grid>
                         </Box>
