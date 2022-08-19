@@ -71,10 +71,21 @@ export default function IsThis() {
     const [open, setOpen] = React.useState(false);
     const [value1, setValue1] = React.useState([1960, 2000]);
     const [getYear, setYear] = React.useState(true);
+    const [getType, setType] = React.useState(true);
     const [user, setUser] = React.useState('');
     const [archiver, setArchiver] = React.useState([0,""]);
     const [collection, setCollection] = React.useState([0,""]);
     const [collections, setCollections] = React.useState([0,""]);
+    const [checked, setChecked] = React.useState([
+        [false, false, false, false], 
+        [false, false, false, false],
+        [false],
+        [false],
+        [false],
+        [false],
+        [false, false, false],
+        [false]
+    ])
     const [editableFG, setEditableFG] = React.useState(null);
     let space = ""
     let wkt = "new Wkt.Wkt();"
@@ -165,6 +176,266 @@ export default function IsThis() {
                 console.log(result)
             });
         }
+    }
+
+    const handleImagemAerea = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [event.target.checked, event.target.checked, event.target.checked, event.target.checked], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleFotografiaAerea = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [event.target.checked, checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleSatelite = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], event.target.checked, checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleOrto = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], event.target.checked, checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleLidar = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], event.target.checked], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleCartografia = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [event.target.checked, event.target.checked, event.target.checked, event.target.checked], 
+            [event.target.checked],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleCartaBase = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [event.target.checked, event.target.checked, event.target.checked, event.target.checked], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleCartaTematica = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [event.target.checked],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleGeo = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [event.target.checked, checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleCoro = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], event.target.checked, checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleTopoC = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], event.target.checked, checked[1][3]],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleTopoP = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], event.target.checked],
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleFoto = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]], 
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]],
+            [checked[2][0]],
+            [event.target.checked],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    };
+
+    const handleEsta = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [event.target.checked, event.target.checked, event.target.checked],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleEstaTema = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [event.target.checked, checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleCensos = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], event.target.checked, checked[6][2]],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleInq = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], event.target.checked],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleDes = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [event.target.checked],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleRel = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [event.target.checked],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [checked[7][0]]
+        ]);
+    }
+
+    const handleSensor = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setChecked([
+            [checked[0][0], checked[0][1], checked[0][2], checked[0][3]],
+            [checked[1][0], checked[1][1], checked[1][2], checked[1][3]], 
+            [checked[2][0]],
+            [checked[3][0]],
+            [checked[4][0]],
+            [checked[5][0]],
+            [checked[6][0], checked[6][1], checked[6][2]],
+            [event.target.checked]
+        ]);
     }
 
     const _created=e=> {
@@ -296,10 +567,28 @@ export default function IsThis() {
                                     <Typography id="Title" variant="h6" component="h2">
                                     Tipo de documento
                                         <Switch onChange={()=>{
-                                            console.log("Changed")}}/>
+                                            setType(!getType)}}/>
                                     </Typography>
-                                        
-                                    
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                                            <FormControlLabel 
+                                                value="aeriali" 
+                                                control={<Checkbox 
+                                                    checked={checked[0][0] && checked[0][1] && checked[0][2] && checked[0][3]}
+                                                    indeterminate={(
+                                                        checked[0][0] || checked[0][1] || checked[0][2] || checked[0][3]) 
+                                                        && 
+                                                        !(checked[0][0] && checked[0][1] && checked[0][2] && checked[0][3])}
+                                                    onChange={handleImagemAerea}/>} 
+                                                label="Imagens Aéreas"
+                                                disabled={getType}/>
+                                        </Box>
+                                    </RadioGroup>
                                     <RadioGroup
                                         row
                                         aria-labelledby="demo-radio-buttons-group-label"
@@ -307,21 +596,199 @@ export default function IsThis() {
                                         name="radio-buttons-group"
                                     >
                                         <FormControlLabel 
-                                            value="geomap" 
-                                            control={<Checkbox />} 
-                                            label="Mapa Geográfico"/>
+                                            value="aerialf" 
+                                            control={<Checkbox
+                                                checked={checked[0][0]}
+                                                onChange={handleFotografiaAerea} />} 
+                                            label="Fotografia Aérea"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="satelite" 
+                                            control={<Checkbox
+                                                checked={checked[0][1]}
+                                                onChange={handleSatelite} />} 
+                                            label="Imagem Satélite"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="orto" 
+                                            control={<Checkbox
+                                                checked={checked[0][2]}
+                                                onChange={handleOrto} />} 
+                                            label="Ortofotomapa"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="lidar" 
+                                            control={<Checkbox
+                                                checked={checked[0][3]}
+                                                onChange={handleLidar} />} 
+                                            label="LiDAR"
+                                            disabled={getType}/>
+                                    </RadioGroup>
+                                    <br/>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                                            <FormControlLabel 
+                                                value="cartography" 
+                                                control={<Checkbox 
+                                                    checked={checked[1][0] && checked[1][1] && checked[1][2] && checked[1][3] && checked[2][0]}
+                                                    indeterminate={
+                                                        (checked[1][0] || checked[1][1] || checked[1][2] || checked[2][0]) 
+                                                        && 
+                                                        !(checked[1][0] && checked[1][1] && checked[1][2] && checked[2][0])}
+                                                    onChange={handleCartografia}/>} 
+                                                label="Cartografia"
+                                                disabled={getType}/>
+                                        </Box>
+                                    </RadioGroup>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel 
+                                            value="lidar" 
+                                            control={<Checkbox
+                                                checked={checked[1][0] && checked[1][1] && checked[1][2] && checked[1][3]}
+                                                indeterminate={
+                                                    (checked[1][0] || checked[1][1] || checked[1][2] || checked[1][3]) 
+                                                    && 
+                                                    !(checked[1][0] && checked[1][1] && checked[1][2] && checked[1][3])}
+                                                onChange={handleCartaBase} />} 
+                                            label="Carta de Base"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="lidar" 
+                                            control={<Checkbox
+                                                checked={checked[2][0]}
+                                                onChange={handleCartaTematica} />} 
+                                            label="Carta Temática"
+                                            disabled={getType}/>
+                                    </RadioGroup>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
                                         <FormControlLabel 
                                             value="choromap" 
-                                            control={<Checkbox />} 
-                                            label="Mapa Corográfico"/>
+                                            control={<Checkbox
+                                                checked={checked[1][0]}
+                                                onChange={handleGeo}  />} 
+                                            label="Carta Geográfico"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox 
+                                                checked={checked[1][1]}
+                                                onChange={handleCoro} />} 
+                                            label="Carta Corográfico"
+                                            disabled={getType}/>
                                         <FormControlLabel 
                                             value="topomap" 
-                                            control={<Checkbox />} 
-                                            label="Mapa Topográfico"/>
+                                            control={<Checkbox 
+                                                checked={checked[1][2]}
+                                                onChange={handleTopoC} />} 
+                                            label="Carta Topográfico"
+                                            disabled={getType}/>
                                         <FormControlLabel 
                                             value="topoplan" 
-                                            control={<Checkbox />} 
-                                            label="Planta Topográfica"/>   
+                                            control={<Checkbox 
+                                                checked={checked[1][3]}
+                                                onChange={handleTopoP} />} 
+                                            label="Planta Topográfica"
+                                            disabled={getType}/> 
+                                    </RadioGroup>
+                                    <br/>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                                            <FormControlLabel 
+                                                value="est" 
+                                                control={<Checkbox 
+                                                    checked={checked[6][0] && checked[6][1] && checked[6][2]}
+                                                    indeterminate={(
+                                                        checked[6][0] || checked[6][1] || checked[6][2]) 
+                                                        && 
+                                                        !(checked[6][0] && checked[6][1] && checked[6][2])}
+                                                    onChange={handleEsta}/>} 
+                                                label="Estatística"
+                                                disabled={getType}/>
+                                        </Box>
+                                    </RadioGroup>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel 
+                                            value="esttema" 
+                                            control={<Checkbox
+                                                checked={checked[6][0]}
+                                                onChange={handleEstaTema} />} 
+                                            label="Estatística Temática"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="satelite" 
+                                            control={<Checkbox
+                                                checked={checked[6][1]}
+                                                onChange={handleCensos} />} 
+                                            label="Censos"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="orto" 
+                                            control={<Checkbox
+                                                checked={checked[6][2]}
+                                                onChange={handleInq} />} 
+                                            label="Inquérito"
+                                            disabled={getType}/>
+                                    </RadioGroup>
+                                    <br/>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="female"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox
+                                                checked={checked[3][0]}
+                                                onChange={handleFoto}  />} 
+                                            label="Fotografia"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox
+                                                checked={checked[4][0]}
+                                                onChange={handleRel}  />} 
+                                            label="Relatório"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox
+                                                checked={checked[5][0]}
+                                                onChange={handleDes}  />} 
+                                            label="Desenho"
+                                            disabled={getType}/>
+                                        <FormControlLabel 
+                                            value="choromap" 
+                                            control={<Checkbox
+                                                checked={checked[7][0]}
+                                                onChange={handleSensor}  />} 
+                                            label="Dados de Outros Sensores"
+                                            disabled={getType}/>
                                     </RadioGroup>
                                 </FormControl>
                                 <br/>
