@@ -598,13 +598,13 @@ export default function IsThis() {
         form.append("yearmax", value1[1]);
         form.append("yearmin", value1[0]);
         form.append("archiver", 0);
-        form.append("types", types)
+        form.append("types", Array.from(types))
         console.log(name)
         console.log(provider)
         console.log(value1[1])
         console.log(value1[0])
         console.log(0)
-        console.log(types)
+        console.log(Array.from(types))
         
         fetch("http://localhost:8080/generic/big_query", {
             method: "POST",
