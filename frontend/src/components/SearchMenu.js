@@ -595,15 +595,15 @@ export default function IsThis() {
         let form = new FormData();
         form.append("name", name);
         form.append("provider", provider);
-        form.append("yearmax", value1[1]);
-        form.append("yearmin", value1[0]);
-        form.append("archiver", 0);
+        form.append("max", value1[1]);
+        form.append("min", value1[0]);
+        form.append("archiver", 20);
         form.append("types", Array.from(types))
         console.log(name)
         console.log(provider)
         console.log(value1[1])
         console.log(value1[0])
-        console.log(0)
+        console.log(20)
         console.log(Array.from(types))
         
         fetch("http://localhost:8080/generic/big_query", {
@@ -642,7 +642,6 @@ export default function IsThis() {
 
     return (
         <>
-            
             <Grid justify="space-between"
                 style={{
                 margin: "auto",
@@ -1019,7 +1018,8 @@ export default function IsThis() {
                             onCreated={_created}
                             draw= {{
                                 circlemarker: false,
-                                polyline: false
+                                polyline: false,
+                                marker: false
                             }}>
                         </EditControl>      
                     </FeatureGroup>   
