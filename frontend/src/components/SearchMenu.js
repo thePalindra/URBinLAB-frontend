@@ -599,6 +599,7 @@ export default function IsThis() {
         form.append("min", value1[0]);
         form.append("archiver", 20);
         form.append("types", Array.from(types))
+        form.append("page", 0)
         console.log(name)
         console.log(provider)
         console.log(value1[1])
