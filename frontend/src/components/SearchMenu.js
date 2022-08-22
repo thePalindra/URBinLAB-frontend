@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import Switch from '@mui/material/Switch';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -48,6 +48,30 @@ const defaultTypes = [
     [false]
 ]
 
+function defaultTypesSet() {
+    let set = new Set()
+    set.add("GENERIC")
+    set.add("ORTOS")
+    set.add("AERIAL PHOTOGRAPHY")
+    set.add("LiDAR")
+    set.add("SATELLITE IMAGE")
+    set.add("THEMATIC MAP")
+    set.add("CHOROGRAPHIC MAP")
+    set.add("GEOGRAPHIC MAP")
+    set.add("TOPOGRAPHIC PLAN")
+    set.add("TOPOGRAPHIC MAP")
+    set.add("PHOTOGRAPHY")
+    set.add("THEMATIC STATISTICS")
+    set.add("SURVEY")
+    set.add("CENSUS")
+    set.add("DRAWINGS")
+    set.add("REPORT")
+    set.add("SENSORS")
+
+    console.log(set)
+    return set
+}
+
 function circle(e) {
     let result =  "c"
     console.log(result)
@@ -79,20 +103,18 @@ export default function IsThis() {
     const position = [38.5, -16];
     const [name, setName] = React.useState("")
     const [provider, setProvider] = React.useState("")
-    const [id, setId] = React.useState()
     const [open, setOpen] = React.useState(false);
     const [value1, setValue1] = React.useState([1960, 2000]);
-    const [types, setTypes] = React.useState(new Set().add("GENERIC"))
+    const [types, setTypes] = React.useState(defaultTypesSet())
     const [getYear, setYear] = React.useState(true);
     const [getType, setType] = React.useState(true);
-    const [user, setUser] = React.useState('');
-    const [archiver, setArchiver] = React.useState([[0,""]]);
+    const [archiver, setArchiver] = React.useState([[0,"Nenhum"]]);
+    const [user, setUser] = React.useState("");
     const [collection, setCollection] = React.useState([0,""]);
     const [collections, setCollections] = React.useState([0,""]);
     const [checked, setChecked] = React.useState(defaultTypes)
-    const [editableFG, setEditableFG] = React.useState(null);
+    const [yearWritten, setYearWritten] = React.useState(null);
     let space = ""
-    let wkt = "new Wkt.Wkt();"
 
     function users() {
         fetch("http://localhost:8080/user/get_archivers", {
@@ -101,8 +123,10 @@ export default function IsThis() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
+            result.unshift([0,"Nenhum"])
             setArchiver(result)
+            setUser(archiver[0])
+            console.log(archiver)
         });
     }
 
@@ -142,11 +166,6 @@ export default function IsThis() {
     };
     const handleClose = () => {
         setOpen(false);
-    };
-
-    const onFeatureGroupReady = reactFGref => {
-        // store the ref for future access to content
-        setEditableFG(reactFGref);
     };
 
     function getDocumentBySpaceGeometry() {
@@ -595,18 +614,21 @@ export default function IsThis() {
         let form = new FormData();
         form.append("name", name);
         form.append("provider", provider);
-        form.append("max", value1[1]);
-        form.append("min", value1[0]);
-        form.append("archiver", 20);
-        form.append("types", Array.from(types))
+
+        if (!getYear) {
+            form.append("max", value1[1]);
+            form.append("min", value1[0]);
+        } else if (yearWritten!=="" && yearWritten!==null) {
+            form.append("max", yearWritten);
+            form.append("min", yearWritten);
+        } else {
+            form.append("max", todaysYear);
+            form.append("min", 0);
+        }
+        form.append("archiver", user[0]);
+        form.append("types", [...Array.from(types), ""])
         form.append("page", 0)
-        console.log(name)
-        console.log(provider)
-        console.log(value1[1])
-        console.log(value1[0])
-        console.log(20)
-        console.log(Array.from(types))
-        
+
         fetch("http://localhost:8080/generic/big_query", {
             method: "POST",
             headers: window.localStorage,
@@ -676,19 +698,21 @@ export default function IsThis() {
                                 <TextField id="name" 
                                     label="Nome" 
                                     variant="outlined" 
-                                    size="small"/>  
+                                    size="small"
+                                    onChange={(e)=>{setName(e.target.value)}}/>  
                                 <TextField id="provider" 
                                     label="Fornecedor/Autor" 
                                     variant="outlined" 
                                     size="small"
-                                    style={{marginLeft: "20px"}}/>  
+                                    style={{marginLeft: "20px"}}
+                                    onChange={(e)=>{setProvider(e.target.value)}}/>  
                                 <br/>
                                 <br/>
                                 <InputLabel id="demo-simple-select-label">Arquivista</InputLabel>
                                 <Select
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
-                                    value={user[1]}
+                                    value={user}
                                     label="User"
                                     onChange={(e)=>{setUser(e.target.value)}}
                                     style={{width: "30%"}}
@@ -738,7 +762,10 @@ export default function IsThis() {
                                     variant="outlined" 
                                     size="small"
                                     disabled={!getYear}
-                                    style={{width: "20%"}}/>  
+                                    style={{width: "20%"}}
+                                    onChange={(e)=> {
+                                        setYearWritten(e.target.value)
+                                    }}/>  
                                 
                                 <br/>
                                 <br/>
@@ -751,7 +778,7 @@ export default function IsThis() {
                                                 setTypes(new Set())
                                             } else {
                                                 setChecked(defaultTypes)
-                                                setTypes(new Set().add("GENERIC"))
+                                                setTypes(defaultTypesSet())
                                             } }}/>
                                     </Typography>
                                     <RadioGroup
@@ -1011,10 +1038,7 @@ export default function IsThis() {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />   
-                    <FeatureGroup
-                        ref={featureGroupRef => {
-                            onFeatureGroupReady(featureGroupRef);
-                        }}>
+                    <FeatureGroup>
                         <EditControl position="topright"
                             onCreated={_created}
                             draw= {{
