@@ -73,21 +73,21 @@ export default function DefaultFunction() {
                 {list?.length>0 && list.map((doc, index)=> 
                     <ListItem key={doc.name}
                     secondaryAction={
-                    <IconButton edge="end" aria-label="delete" onClick={()=>{
-                        let aux = [...list]
-                        aux.splice(index, 1)
-                        setList(aux)
-                    }}>
-                        <DeleteIcon />
-                    </IconButton>
-                    }
-                    > 
-                    <ListItemAvatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                    primary={doc.name} secundary={doc.size}
-                    />
-                </ListItem>
+                        <IconButton edge="end" aria-label="delete" onClick={()=>{
+                            let aux = [...list]
+                            aux.splice(index, 1)
+                            setList(aux)
+                        }}>
+                            <DeleteIcon />
+                        </IconButton>
+                        }
+                        > 
+                        <ListItemAvatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                        primary={doc.name} secundary={doc.size}
+                        />
+                    </ListItem>
                 )}
             </List>
             </div>

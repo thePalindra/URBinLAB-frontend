@@ -20,7 +20,7 @@ export default function IsThis() {
     const [raster, setRaster]=React.useState(true);
     const [res, setRes]=React.useState('');
     const [type, setType]=React.useState('');
-    const [url, setURL]=React.useState('geograp');
+    const [url, setURL]=React.useState("/geographic_map");
 
     const getGeoLink =(e)=> {
         setURL("/geographic_map")

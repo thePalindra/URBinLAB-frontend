@@ -2,6 +2,8 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { MapContainer, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Grid from '@mui/material/Grid';
@@ -16,6 +18,10 @@ import FormControl from '@mui/material/FormControl';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import RadioGroup from '@mui/material/RadioGroup';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import FolderIcon from '@mui/icons-material/Folder';
 import "leaflet-draw/dist/leaflet.draw.css"
 
 let lat = 0
@@ -104,6 +110,7 @@ export default function IsThis() {
     const [name, setName] = React.useState("")
     const [provider, setProvider] = React.useState("")
     const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
     const [value1, setValue1] = React.useState([1960, 2000]);
     const [types, setTypes] = React.useState(defaultTypesSet())
     const [getYear, setYear] = React.useState(true);
@@ -114,6 +121,7 @@ export default function IsThis() {
     const [collections, setCollections] = React.useState([0,""]);
     const [checked, setChecked] = React.useState(defaultTypes)
     const [yearWritten, setYearWritten] = React.useState(null);
+    const [documents, setDocuments] = React.useState([]);
     let space = ""
 
     function users() {
@@ -164,8 +172,17 @@ export default function IsThis() {
         coll()
         setOpen(true);
     };
+
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleOpen2 = () => {
+        setOpen2(true);
+    };
+
+    const handleClose2 = () => {
+        setOpen2(false);
     };
 
     function getDocumentBySpaceGeometry() {
@@ -636,7 +653,10 @@ export default function IsThis() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result);
+            console.log(result)
+            setDocuments(result)
+            handleClose()
+            handleOpen2()
         });
     } 
 
@@ -665,6 +685,63 @@ export default function IsThis() {
 
     return (
         <>
+            <Modal
+                        keepMounted
+                        open={open2}
+                        onClose={handleClose2}
+                        aria-labelledby="keep-mounted-modal-title"
+                        aria-describedby="keep-mounted-modal-description"
+                    >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    background: "rgba(256, 256, 256, 0.92)",
+                    border: '1px solid #000',
+                    boxShadow: 24,
+                    pt: 2,
+                    px: 4,
+                    pb: 3,
+                    borderRadius: "20px"
+                }}>
+                    <List
+                        sx={{ width: '100%', 
+                        borderRadius: "20px",
+                        height: 500,
+                        overflow: 'auto',
+                        background: "rgba(256, 256, 256, 0.92)"}}>
+
+                        {documents?.length>0 && documents.map((doc)=>
+                            <ListItemButton key={doc[0]}>
+                                <ListItemAvatar>
+                                    <FolderIcon />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={doc[2]}
+                                    secondary={
+                                        <React.Fragment>
+                                            <Box textAlign="left">
+                                                <Typography
+                                                    component="span"
+                                                    variant="body2"
+                                                    color="text.primary">
+                                                    tipo: {doc[3]}
+                                                </Typography>
+                                            </Box>
+                                            <Box textAlign="right"
+                                                    style={{ paddingRight: 5 }}>
+                                                ano:  {doc[4]}
+                                            </Box>
+                                        </React.Fragment>
+                                    }/>
+                            </ListItemButton>
+                        )}
+
+                    </List>
+                </Box>
+            </Modal>
             <Grid justify="space-between"
                 style={{
                 margin: "auto",
