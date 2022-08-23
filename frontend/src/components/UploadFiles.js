@@ -32,7 +32,8 @@ export default function DefaultFunction() {
             .then(result=>{
                 console.log(result)
             })
-        }        
+        }      
+        navigate(`/`)  
         
     }
 
@@ -69,7 +70,10 @@ export default function DefaultFunction() {
                             width: "50%",
                             borderRadius: "20px",
                             padding: "30px"}}>
-            <List>
+            <List style={{
+                maxHeight: 550,
+                overflow: 'auto'
+                }}>
                 {list?.length>0 && list.map((doc, index)=> 
                     <ListItem key={doc.name}
                     secondaryAction={

@@ -121,6 +121,7 @@ export default function IsThis() {
     const [collections, setCollections] = React.useState([0,""]);
     const [checked, setChecked] = React.useState(defaultTypes)
     const [yearWritten, setYearWritten] = React.useState(null);
+    const [editableFG, setEditableFG] = React.useState(null);
     const [documents, setDocuments] = React.useState([]);
     let space = ""
 
@@ -149,6 +150,11 @@ export default function IsThis() {
             setCollections(result)
         });
     }
+
+    const onFeatureGroupReady = reactFGref => {
+        // store the featureGroup ref for future access to content
+        setEditableFG(reactFGref);
+    };
 
     const handleChange1 = (
         event: Event,
@@ -201,7 +207,7 @@ export default function IsThis() {
             })
             .then(res=>res.json())
             .then(result=>{
-                console.log(result)
+                setDocuments(result)
             });
         } else {
             form.append("space", space);
@@ -213,7 +219,7 @@ export default function IsThis() {
             })
             .then(res=>res.json())
             .then(result=>{
-                console.log(result)
+                setDocuments(result)
             });
         }
     }
@@ -661,7 +667,14 @@ export default function IsThis() {
     } 
 
     const _created=e=> {
-        console.log(e)
+        const drawnItems = editableFG._layers;
+        if (Object.keys(drawnItems).length > 1) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editableFG.removeLayer(layer);
+            });
+        }
         let res = 0
         switch(e.layerType) {
             case "circle":
@@ -681,6 +694,7 @@ export default function IsThis() {
         }
         space = res
         getDocumentBySpaceGeometry()
+        handleOpen2()
     }
 
     return (
@@ -1115,13 +1129,19 @@ export default function IsThis() {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />   
-                    <FeatureGroup>
+                    <FeatureGroup ref={featureGroupRef => {
+                        onFeatureGroupReady(featureGroupRef);
+                    }}>
                         <EditControl position="topright"
                             onCreated={_created}
                             draw= {{
                                 circlemarker: false,
                                 polyline: false,
                                 marker: false
+                            }}
+                            edit={{ 
+                                edit: false, 
+                                remove: false 
                             }}>
                         </EditControl>      
                     </FeatureGroup>   

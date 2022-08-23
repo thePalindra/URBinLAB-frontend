@@ -49,6 +49,7 @@ export default function DefaultFunction() {
     const position = [38.5, -16];
     let navigate = useNavigate()
     let {id} = useParams();
+    const [editableFG, setEditableFG] = React.useState(null);
     const [distrito, setDistrito]=React.useState("");
     const [municipio, setMunicipio]=React.useState("");
     const [freguesia, setFreguesia]=React.useState("");
@@ -56,6 +57,10 @@ export default function DefaultFunction() {
     const [list, setList] = React.useState([]);
     let wkt = "new Wkt.Wkt();"
     
+    const onFeatureGroupReady = reactFGref => {
+        // store the featureGroup ref for future access to content
+        setEditableFG(reactFGref);
+    };
 
     function defaultFunc() {
         let form = new FormData();
@@ -129,7 +134,14 @@ export default function DefaultFunction() {
     }
 
     const _created=e=> {
-        console.log(e)
+        const drawnItems = editableFG._layers;
+        if (Object.keys(drawnItems).length > 1) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editableFG.removeLayer(layer);
+            });
+        }
         let res = 0
         switch(e.layerType) {
             case "circle":
@@ -260,13 +272,18 @@ export default function DefaultFunction() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <FeatureGroup>
+            <FeatureGroup ref={featureGroupRef => {
+                onFeatureGroupReady(featureGroupRef);
+            }}>
                 <EditControl position="topright"
-                onCreated={_created}
-                draw= {{
-                    circlemarker: false,
-                    polyline: false
-                }}/>
+                    onCreated={_created}
+                    draw= {{
+                        circlemarker: false,
+                        polyline: false
+                    }}
+                    edit={{ 
+                        edit: false
+                    }}/>
             </FeatureGroup>       
             {list}
         </MapContainer>   
