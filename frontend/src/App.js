@@ -21,6 +21,7 @@ import SelectType from './pages/SelectType';
 import SelectAerialImage from './pages/SelectAerialImage';
 import SelectCartography from './pages/SelectCartography';
 import SearchMenu from "./pages/SearchMenu"
+import NewDocument from "./pages/NewDocument"
 
 /*function checkToken() {
   return window.localStorage.getItem('token');
@@ -54,6 +55,7 @@ function App() {
             <Route path="/cartography" element={<SelectCartography/>}/>
             <Route path="/aerial_image" element={<SelectAerialImage/>}/>
             <Route path="/search_menu" element={<SearchMenu/>}/>
+            <Route path="/new_document" element={<NewDocument/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
             <Route path="/add/document" element={<AddFiles/>}/>
