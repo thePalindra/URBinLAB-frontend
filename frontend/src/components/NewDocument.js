@@ -37,7 +37,7 @@ export default function Addgeneric() {
     const [mapType, setMapType]=React.useState('');
     const [res, setRes]=React.useState('');    
     const [scale, setScale]=React.useState('');
-    const [URL, setURL]=React.useState('');
+    const [URL, setURL]=React.useState('geographic_map');
     const [raster, setRaster]=React.useState(true);
     const [docForm, setDocForm]=React.useState(
         <>
@@ -246,69 +246,179 @@ export default function Addgeneric() {
                         </FormControl>
                         <br/>
                         <br/>
-                        <form>
-                            <TextField id="name" label="Nome" variant="outlined" 
-                            onChange={(e)=>setName(e.target.value)}
-                            size="small"/>
+                        <form style={{
+                            float:"left"
+                        }}>
+                            <TextField 
+                                id="name" 
+                                label="Nome" 
+                                variant="outlined" 
+                                onChange={(e)=>setName(e.target.value)}
+                                size="small"
+                            />
                             <br/>
                             <br/>
-                            <TextField id="provider" label="Fornecedor" variant="outlined" 
-                            style={{width: "35%"}}
-                            onChange={(e)=>setProvider(e.target.value)}
-                            size="small"/>
+                            <TextField
+                                id="provider" 
+                                label="Fornecedor" 
+                                variant="outlined" 
+                                onChange={(e)=>setProvider(e.target.value)}
+                                size="small"
+                            />
                             <br/>
                             <br/>
-                            <TextField id="year" label="Ano" variant="outlined" 
-                            onChange={(e)=>setTime(e.target.value)}
-                            size="small"/>
+                            <TextField 
+                                id="year" 
+                                label="Ano" 
+                                variant="outlined" 
+                                onChange={(e)=>setTime(e.target.value)}
+                                size="small"
+                            />
                             <br/>
                             <br/>
-                            <TextField id="link" label="URL" variant="outlined" 
-                            onChange={(e)=>setLink(e.target.value)}
-                            size="small"/>
+                            <TextField 
+                                id="link" 
+                                label="URL" 
+                                variant="outlined" 
+                                onChange={(e)=>setLink(e.target.value)}
+                                size="small"
+                            />
                             <br/>
                             <br/>
-                            <TextField id="link" label="Escala" variant="outlined" 
-                            onChange={(e)=>setScale(e.target.value)}
-                            size="small"/>
+                            <TextField 
+                                id="link" 
+                                label="Escala" 
+                                variant="outlined" 
+                                onChange={(e)=>setScale(e.target.value)}
+                                size="small"
+                            />
                             <br/>
                             <br/>  
+                            </form>
                             <FormControl>
-                            <FormLabel id="l"></FormLabel>
-                            <RadioGroup
-                                row
-                                aria-labelledby="l"
-                                defaultValue="1"
-                                name="radio-buttons-group"
-                            >
-                                <FormControlLabel value="1" control={<Radio />} label="Raster" onClick={(e)=>setRaster(true)}/>
-                                <FormControlLabel value="2" control={<Radio />} label="Vetorial" onClick={(e)=>setRaster(false)}/>
-                            </RadioGroup>
+                                <FormLabel id="l"></FormLabel>
+                                <RadioGroup
+                                    row
+                                    aria-labelledby="l"
+                                    defaultValue="1"
+                                    name="radio-buttons-group"
+                                >
+                                    <FormControlLabel 
+                                        value="1" 
+                                        control={<Radio />} 
+                                        label="Raster" 
+                                        onClick={(e)=>setRaster(true)}
+                                    />
+                                    <FormControlLabel 
+                                        value="2" 
+                                        control={<Radio />} 
+                                        label="Vetorial" 
+                                        onClick={(e)=>setRaster(false)}
+                                    />
+                                </RadioGroup>
                             </FormControl> 
+                            <form style={{
+                                float:"left"
+                                }}
+                            >
                             <br/>
                             <br/>     
-                            <TextField id="link" label="Resolução da Imagem" variant="outlined" 
-                            onChange={(e)=>setRes(e.target.value)}
-                            disabled={!raster}
-                            size="small"/>
+                            <TextField
+                                id="link" 
+                                label="Resolução da Imagem" 
+                                variant="outlined" 
+                                onChange={(e)=>setRes(e.target.value)}
+                                disabled={!raster}
+                                size="small"
+                            />
                             <br/>
                             <br/>   
-                            <TextField id="link" label="Tipo de Geometria" variant="outlined" 
-                            onChange={(e)=>setType(e.target.value)}
-                            disabled={raster}
-                            size="small"/>
+                            <TextField 
+                                id="link" 
+                                label="Tipo de Geometria" 
+                                variant="outlined" 
+                                onChange={(e)=>setType(e.target.value)}
+                                disabled={raster}
+                                size="small"
+                            />
                             <br/>
                             <br/>  
-                            <TextField id="descrption" label="Descrição" variant="outlined" 
-                            multiline
-                            fullWidth
-                            onChange={(e)=>setDesc(e.target.value)}
-                            size="small"/>
+                            <TextField 
+                                id="descrption" 
+                                label="Descrição" 
+                                variant="outlined" 
+                                multiline
+                                fullWidth
+                                onChange={(e)=>setDesc(e.target.value)}
+                                size="small"
+                            />
                         </form>
                     </>
                 );
                 break;
             case "drawings":
+                setDocForm(
+                    <>
+                        <form style={{
+                            float:"left"
+                        }}>
+                            <TextField 
+                                id="name" 
+                                label="Nome" 
+                                variant="outlined" 
+                                onChange={(e)=>setName(e.target.value)}
+                                size="small"
+                            />
+                            <br/>
+                            <br/>
+                            <TextField 
+                                id="provider" 
+                                label="Fornecedor"
+                                variant="outlined" 
+                                onChange={(e)=>setProvider(e.target.value)}
+                                size="small"
+                            />
+                            <br/>
+                            <br/>
+                            <TextField 
+                                id="year" 
+                                label="Ano" 
+                                variant="outlined" 
+                                onChange={(e)=>setTime(e.target.value)}
+                                size="small"
+                            />
+                            <br/>
+                            <br/>
+                            <TextField 
+                                id="link" 
+                                label="URL" 
+                                variant="outlined" 
+                                onChange={(e)=>setLink(e.target.value)}
+                                size="small"
+                            />
+                            <br/>
+                            <br/> 
+                            <TextField 
+                                id="link" 
+                                label="Contexto" 
+                                variant="outlined" 
+                                onChange={(e)=>setContext(e.target.value)}
+                                size="small"
+                            />
+                            <br/>
+                            <br/>    
+                            <TextField 
+                                id="descrption" 
+                                label="Descrição" 
+                                variant="outlined" 
+                                multiline
+                                fullWidth
+                                onChange={(e)=>setDesc(e.target.value)}
+                                size="small"
+                            />
+                        </form>
+                    </>
+                );
                 break;
             case "LiDAR":
                 break;
