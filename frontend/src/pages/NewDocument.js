@@ -8,7 +8,6 @@ export default function AddDrawings() {
             <div className="bg">
                 <Header/>
                 <br/>
-                <br/>
                 <div>
                     <Document/>
                 </div>

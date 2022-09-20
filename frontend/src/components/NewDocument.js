@@ -85,6 +85,7 @@ export default function Addgeneric() {
     const [raster, setRaster]=React.useState(true);
     const [docForm, setDocForm]=React.useState(
         <Container style={{
+            height: 520,
             maxHeight: 550,
             overflow: 'auto'
             }}>
@@ -197,6 +198,7 @@ export default function Addgeneric() {
             case "generic":
                 setDocForm(
                     <Container style={{
+                        height: 520,
                         maxHeight: 550,
                         overflow: 'auto'
                         }}>
@@ -255,6 +257,7 @@ export default function Addgeneric() {
             case "aerial_photography":
                 setDocForm(
                     <Container style={{
+                        height: 520,
                         maxHeight: 550,
                         overflow: 'auto'
                         }}>
@@ -331,12 +334,13 @@ export default function Addgeneric() {
             case "geographic_map":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 480,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                         }}>
                         <br/>
                         <FormControl sx={{ minWidth: 200 }}>
-                            <InputLabel>Tipo de documento</InputLabel>
+                            <InputLabel>Tipo de mapa de base</InputLabel>
                             <Select
                                 size="small"
                                 value={URL}
@@ -474,7 +478,8 @@ export default function Addgeneric() {
             case "drawings":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 400,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                         }}>
                         <form style={{
@@ -541,7 +546,8 @@ export default function Addgeneric() {
             case "LiDAR":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 550,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -602,7 +608,8 @@ export default function Addgeneric() {
             case "ortos":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 550,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -678,7 +685,8 @@ export default function Addgeneric() {
             case "photography":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -753,7 +761,8 @@ export default function Addgeneric() {
             case "reports":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -829,7 +838,8 @@ export default function Addgeneric() {
             case "satellite_image":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -905,7 +915,8 @@ export default function Addgeneric() {
             case "sensors":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
@@ -972,12 +983,13 @@ export default function Addgeneric() {
             case "thematic_statistics":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <br/>
                         <FormControl sx={{ minWidth: 200 }}>
-                            <InputLabel>Tipo de documento</InputLabel>
+                            <InputLabel>Tipo de estatística</InputLabel>
                             <Select
                                 size="small"
                                 value={URL}
@@ -1059,7 +1071,8 @@ export default function Addgeneric() {
             case "thematic_map":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        height: 520,
+                        maxHeight: 520,
                         overflow: 'auto'
                     }}>
                         <form style={{
