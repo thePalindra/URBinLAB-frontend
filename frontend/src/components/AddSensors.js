@@ -37,50 +37,50 @@ export default function Addsensors() {
 
     return (
         <Container>
-                <form>
-                    <TextField id="name" label="Nome" variant="outlined" 
-                    style={{width: "35%"}}
-                    onChange={(e)=>setName(e.target.value)}
-                    size="small"/>
-                    <br/>
-                    <br/>
-                    <TextField id="provider" label="Fornecedor" variant="outlined" 
-                    style={{width: "35%"}}
-                    onChange={(e)=>setProvider(e.target.value)}
-                    size="small"/>
-                    <br/>
-                    <br/>
-                    <TextField id="year" label="Ano" variant="outlined" 
-                    style={{width: "20%"}}
-                    onChange={(e)=>setTime(e.target.value)}
-                    size="small"/>
-                    <br/>
-                    <br/>
-                    <TextField id="link" label="URL" variant="outlined" 
-                    style={{width: "35%"}}
-                    onChange={(e)=>setLink(e.target.value)}
-                    size="small"/>
-                    <br/>
-                    <br/> 
-                    <TextField id="var" label="Variável medida" variant="outlined" 
-                    style={{width: "35%"}}
-                    onChange={(e)=>setVariable(e.target.value)}
-                    size="small"/>
-                    <br/>
-                    <br/>       
-                    <TextField id="descrption" label="Descrição" variant="outlined" 
-                    style={{width: "50%"}}
-                    size="small"
-                    multiline
-                    onChange={(e)=>setDesc(e.target.value)}/>        
-                    <br/>
-                    <br/>
-                    <br/>
-                    <Button variant="contained" 
-                    style={{width: "30%", backgroundColor: "black"}}
-                    onClick={addDocument}>Definir espaço</Button>
-                    <br/>
-                </form>
+            <form>
+                <TextField id="name" label="Nome" variant="outlined" 
+                style={{width: "35%"}}
+                onChange={(e)=>setName(e.target.value)}
+                size="small"/>
+                <br/>
+                <br/>
+                <TextField id="provider" label="Fornecedor" variant="outlined" 
+                style={{width: "35%"}}
+                onChange={(e)=>setProvider(e.target.value)}
+                size="small"/>
+                <br/>
+                <br/>
+                <TextField id="year" label="Ano" variant="outlined" 
+                style={{width: "20%"}}
+                onChange={(e)=>setTime(e.target.value)}
+                size="small"/>
+                <br/>
+                <br/>
+                <TextField id="link" label="URL" variant="outlined" 
+                style={{width: "35%"}}
+                onChange={(e)=>setLink(e.target.value)}
+                size="small"/>
+                <br/>
+                <br/> 
+                <TextField id="var" label="Variável medida" variant="outlined" 
+                style={{width: "35%"}}
+                onChange={(e)=>setVariable(e.target.value)}
+                size="small"/>
+                <br/>
+                <br/>       
+                <TextField id="descrption" label="Descrição" variant="outlined" 
+                style={{width: "50%"}}
+                size="small"
+                multiline
+                onChange={(e)=>setDesc(e.target.value)}/>        
+                <br/>
+                <br/>
+                <br/>
+                <Button variant="contained" 
+                style={{width: "30%", backgroundColor: "black"}}
+                onClick={addDocument}>Definir espaço</Button>
+                <br/>
+            </form>
         </Container>
     );
 }
