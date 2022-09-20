@@ -10,7 +10,14 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
+import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
+import DeleteIcon from '@mui/icons-material/Delete';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import IconButton from '@mui/material/IconButton';
+import ListItemText from '@mui/material/ListItemText';
 
 const MenuProps = {
     PaperProps: {
@@ -96,6 +103,20 @@ export default function Addgeneric() {
             </form>
         </Container>
     );
+    const [list, setList]=React.useState([]);
+
+
+    function addFile(e) {
+        let arr = [...list]
+        for (let i = 0; i<e.target.files.length; i++) {
+            let current = e.target.files[i]
+            if (!arr.find(file=> file.name===current.name))
+                arr.push(e.target.files[i])
+        }
+
+        setList(arr)
+        console.log(arr)
+    }
 
     function allFormAppend() {
     
@@ -240,7 +261,7 @@ export default function Addgeneric() {
             case "geographic_map":
                 setDocForm(
                     <Container style={{
-                        maxHeight: 500,
+                        maxHeight: 480,
                         overflow: 'auto'
                         }}>
                         <br/>
@@ -1108,7 +1129,7 @@ export default function Addgeneric() {
         <Container>
             <div style={{   
                 margin: "auto",
-                width: "18%",
+                width: "22%",
                 border: "1px solid black",
                 background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
@@ -1149,8 +1170,86 @@ export default function Addgeneric() {
                 <br/>
                 {docForm}
                 <br/>
-                <br/>
             </div>
+            <div style={{   
+                margin: "auto",
+                padding: "10px",
+                position: "fixed",
+                left: "25%"}}>
+
+                <div style={{   
+                margin: "auto",
+                width: "30%",
+                border: "1px solid black",
+                background: "rgba(256, 256, 256, 0.92)",
+                borderRadius: "20px",
+                padding: "10px",
+                position: "fixed"}}>
+                    Form espacial
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div style={{   
+                margin: "auto",
+                width: "30%",
+                border: "1px solid black",
+                background: "rgba(256, 256, 256, 0.92)",
+                borderRadius: "20px",
+                padding: "10px",
+                position: "fixed"}}>
+                    <Container>
+                        <Button
+                        variant="contained"
+                        component="label"
+                        >
+                        Upload
+                        <input
+                            type="file"
+                            hidden
+                            multiple
+                            onChange={(e)=> {
+                                addFile(e);
+                            }}
+                        />
+                        </Button>
+                        <br/>
+                        <div style={{   margin: "auto",
+                                        width: "90%",
+                                        borderRadius: "20px",
+                                        padding: "30px"}}>
+                            <List 
+                                fullWidth
+                                style={{
+                                    maxHeight: 300,
+                                    overflow: 'auto'
+                                }}>
+                                {list?.length>0 && list.map((doc, index)=> 
+                                    <ListItem key={doc.name}
+                                    secondaryAction={
+                                        <IconButton edge="end" aria-label="delete" onClick={()=>{
+                                            let aux = [...list]
+                                            aux.splice(index, 1)
+                                            setList(aux)
+                                        }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        }
+                                        > 
+                                        <ListItemAvatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                        primary={doc.name} secundary={doc.size}
+                                        />
+                                    </ListItem>
+                                )}
+                            </List>
+                        </div>      
+                    </Container>
+
+                </div>
+            </div>
+            
         </Container>
     );
 }
