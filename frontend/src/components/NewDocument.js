@@ -18,6 +18,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { EditControl } from "react-leaflet-draw"
+import "leaflet-draw/dist/leaflet.draw.css"
+import { maxHeight } from '@mui/system';
+
+let lat = 0
+let lng = 0
+let size = 0
 
 const MenuProps = {
     PaperProps: {
@@ -27,7 +35,35 @@ const MenuProps = {
     },
 };
 
+function circle(e) {
+    let result =  "c"
+    console.log(result)
+    
+    lng = e.layer._latlng.lng
+    lat = e.layer._latlng.lat 
+    size = e.layer._mRadius
+    return result;
+}
+
+function point(e) {
+    let result = ["POINT","(" + e.layer._latlng.lng, e.layer._latlng.lat + ")"].join(" ")
+    console.log(result)
+    return result;
+}
+
+function polygon(e) {
+    let result = "POLYGON (("
+    for (let i = 0; i < e.layer._latlngs[0].length; i++)
+        result = [result + e.layer._latlngs[0][i].lng, e.layer._latlngs[0][i].lat + ","].join(" ")
+    
+    result = [result + e.layer._latlngs[0][0].lng, e.layer._latlngs[0][0].lat + "))"].join(" ")
+    console.log(result)
+    return result;
+}
+
 export default function Addgeneric() {
+    const position = [38.5, -16];
+    let wkt = "new Wkt.Wkt();"
     let navigate = useNavigate()
     let form = new FormData();
     const [docType, setDocType]=React.useState("generic");
@@ -103,8 +139,42 @@ export default function Addgeneric() {
             </form>
         </Container>
     );
+    const [editableFG, setEditableFG] = React.useState(null);
     const [list, setList]=React.useState([]);
 
+    const _created=e=> {
+        const drawnItems = editableFG._layers;
+        if (Object.keys(drawnItems).length > 1) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editableFG.removeLayer(layer);
+            });
+        }
+        let res = 0
+        switch(e.layerType) {
+            case "circle":
+                res = circle(e)
+                break;
+            case "rectangle":
+                res = polygon(e)
+                break;
+            case "marker":
+                res = point(e)
+                break;
+            case "polygon":
+                res = polygon(e)
+                break;
+            default:
+                break;
+        }
+        wkt = res
+    }
+
+    const onFeatureGroupReady = reactFGref => {
+        // store the featureGroup ref for future access to content
+        setEditableFG(reactFGref);
+    };
 
     function addFile(e) {
         let arr = [...list]
@@ -1219,7 +1289,6 @@ export default function Addgeneric() {
                                         borderRadius: "20px",
                                         padding: "30px"}}>
                             <List 
-                                fullWidth
                                 style={{
                                     maxHeight: 300,
                                     overflow: 'auto'
@@ -1249,7 +1318,45 @@ export default function Addgeneric() {
 
                 </div>
             </div>
-            
+            <div style={{   margin: "auto",
+                            width: "37%",
+                            border: "1px solid black",
+                            background: "rgba(256, 256, 256, 0.92)",
+                            borderRadius: "20px",
+                            padding: "30px",
+                            position: "fixed",
+                            left: "58%",
+                            maxHeight: 600}}>
+        <MapContainer 
+            style={{
+                width: "100%",
+                height: 600
+            }} 
+            center={position} 
+            zoom={5} 
+            scrollWheelZoom={true} 
+            minZoom={4}
+        >
+            <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <FeatureGroup ref={featureGroupRef => {
+                onFeatureGroupReady(featureGroupRef);
+            }}>
+                <EditControl position="topright"
+                    onCreated={_created}
+                    draw= {{
+                        circlemarker: false,
+                        polyline: false
+                    }}
+                    edit={{ 
+                        edit: false
+                    }}/>
+            </FeatureGroup>       
+            {list}
+        </MapContainer>   
+      </div> 
         </Container>
     );
 }
