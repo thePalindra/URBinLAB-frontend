@@ -79,7 +79,7 @@ export default function Addgeneric() {
     const [satellite, setSatellite]=React.useState('');
     const [variable, setVariable]=React.useState('');
     const [mapType, setMapType]=React.useState('');
-    const [res, setRes]=React.useState('');    
+    const [resolution, setRes]=React.useState('');    
     const [scale, setScale]=React.useState('');
     const [URL, setURL]=React.useState('geographic_map');
     const [raster, setRaster]=React.useState(true);
@@ -142,6 +142,8 @@ export default function Addgeneric() {
     );
     const [editableFG, setEditableFG] = React.useState(null);
     const [list, setList]=React.useState([]);
+    const [spatialHierarchy, setSH]=React.useState(getSH());
+    const [spatialLevel, setSL]=React.useState([]);
 
     const _created=e=> {
         const drawnItems = editableFG._layers;
@@ -187,6 +189,21 @@ export default function Addgeneric() {
 
         setList(arr)
         console.log(arr)
+    }
+
+    function getSH() {
+        let sh = []
+        fetch("http://localhost:8080/space/get_hierarchy", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            sh = result;
+            console.log(result)
+        })
+        return sh
     }
 
     function allFormAppend() {
@@ -1268,11 +1285,60 @@ export default function Addgeneric() {
                 borderRadius: "20px",
                 padding: "10px",
                 position: "fixed"}}>
-                    Form espacial
+                    <br/>
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel>Hierarquia Espacial</InputLabel>
+                        <Select
+                            size="small"
+                            value={docType}
+                            label="Tipo de documento"
+                            MenuProps={MenuProps}
+                            onChange={(e)=>{
+                                setSH(e.target.value)
+                                console.log(e.target.value)
+                            }}
+                        >
+                            {
+                                spatialHierarchy?.length>0 && spatialHierarchy.map(doc=>
+                                    <MenuItem valuekey={doc[0]}>{doc[0]}</MenuItem>   
+                                )
+                            }
+                        </Select>
+                    </FormControl>
+                    <br/>
+                    <br/>
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel>Escala</InputLabel>
+                        <Select
+                            size="small"
+                            value={docType}
+                            label="Tipo de documento"
+                            MenuProps={MenuProps}
+                            onChange={(e)=>{
+                                setDocType(e.target.value)
+                                setFormulário(e.target.value)
+                                console.log(docType)
+                                console.log(docForm)
+                            }}
+                        >
+                            {
+                                spatialLevel?.length>0 && spatialLevel.map(doc=>
+                                    <MenuItem valuekey={doc[0]}>{doc[0]}</MenuItem>   
+                                )
+                            }
+                        </Select>
+                    </FormControl>
                 </div>
-                <br/>
-                <br/>
-                <br/>
+                <>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </>
                 <div style={{   
                 margin: "auto",
                 width: "30%",
