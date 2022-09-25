@@ -62,6 +62,7 @@ function polygon(e) {
 }
 
 export default function Addgeneric() {
+    const high = 570
     const position = [38.5, -16];
     let wkt = "new Wkt.Wkt();"
     let navigate = useNavigate()
@@ -142,10 +143,10 @@ export default function Addgeneric() {
     );
     const [editableFG, setEditableFG] = React.useState(null);
     const [list, setList]=React.useState([]);
-    const [selectedHierarchy, setSelectedHierarchy]=React.useState("");
-    const [selectedLevel, setSelectedLevel]=React.useState(1);
+    const [selectedHierarchy, setSelectedHierarchy]=React.useState("CAOP");
+    const [selectedLevel, setSelectedLevel]=React.useState("Escopo");
     const [spatialHierarchy, setSH]=React.useState([["CAOP", ["distrito", "municipio", "freguesia"]]]);
-    const [spatialLevel, setSL]=React.useState([]);
+    const [spatialLevel, setSL]=React.useState(["Escopo","distrito", "municipio", "freguesia"]);
 
     const _created=e=> {
         const drawnItems = editableFG._layers;
@@ -231,13 +232,13 @@ export default function Addgeneric() {
         <Container>
             <div style={{   
                 margin: "auto",
-                width: "22%",
+                width: "18%",
                 border: "1px solid black",
                 background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
                 padding: "10px",
                 position: "fixed",
-                left: "20px"}}>
+                left: "5px"}}>
                 <br/>
                 <FormControl sx={{ minWidth: 200 }}>
                     <InputLabel>Tipo de documento</InputLabel>
@@ -252,18 +253,18 @@ export default function Addgeneric() {
                             console.log(docForm)
                         }}
                     >
-                        <MenuItem key="generic" value="generic">Documento genérico</MenuItem>
-                        <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
-                        <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
                         <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
-                        <MenuItem key="LiDAR" value="LiDAR">LiDAR</MenuItem>
-                        <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
-                        <MenuItem key="photography" value="photography">Fotografia</MenuItem>
-                        <MenuItem key="reports" value="reports">Relatório</MenuItem>
-                        <MenuItem key="satellite_image" value="satellite_image">Imagem satélite</MenuItem>
-                        <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
+                        <MenuItem key="generic" value="generic">Documento</MenuItem>
                         <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
-                        <MenuItem key="thematic_map" value="thematic_map">Mapa temático</MenuItem>
+                        <MenuItem key="photography" value="photography">Fotografia</MenuItem>
+                        <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
+                        <MenuItem key="satellite_image" value="satellite_image">Imagem satélite</MenuItem>
+                        <MenuItem key="LiDAR" value="LiDAR">LiDAR</MenuItem>
+                        <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
+                        <MenuItem key="thematic_map" value="thematic_map">Mapa Temático</MenuItem>
+                        <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
+                        <MenuItem key="reports" value="reports">Relatório</MenuItem>
+                        <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
                     </Select>
                 </FormControl>
                 <br/>
@@ -272,8 +273,8 @@ export default function Addgeneric() {
                 <>
                     {docType==="thematic_map" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -390,8 +391,8 @@ export default function Addgeneric() {
                     }
                     {docType==="thematics_stastics" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <br/>
@@ -476,8 +477,8 @@ export default function Addgeneric() {
                     }
                     {docType==="sensors" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -542,8 +543,8 @@ export default function Addgeneric() {
                     }
                     {docType==="satellite_image" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -617,8 +618,8 @@ export default function Addgeneric() {
                     }
                     {docType==="reports" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -692,8 +693,8 @@ export default function Addgeneric() {
                     }
                     {docType==="photography" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -766,8 +767,8 @@ export default function Addgeneric() {
                     }
                     {docType==="ortos" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -841,8 +842,8 @@ export default function Addgeneric() {
                     }
                     {docType==="LiDAR" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -901,8 +902,8 @@ export default function Addgeneric() {
                     }
                     {docType==="generic" && 
                         <Container style={{
-                            height: 520,
-                            maxHeight: 550,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -958,8 +959,8 @@ export default function Addgeneric() {
                     }
                     {docType==="aerial_photography" && 
                         <Container style={{
-                            height: 520,
-                            maxHeight: 550,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -1033,8 +1034,8 @@ export default function Addgeneric() {
                     }
                     {docType==="drawings" &&
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -1099,8 +1100,8 @@ export default function Addgeneric() {
                     }
                     {docType==="geographic_map" && 
                         <Container style={{
-                            height: 520,
-                            maxHeight: 520,
+                            height: 600,
+                            maxHeight: 600,
                             overflow: 'auto'
                             }}>
                             <br/>
@@ -1244,13 +1245,12 @@ export default function Addgeneric() {
             </div>
             <div style={{   
                 margin: "auto",
-                padding: "10px",
                 position: "fixed",
-                left: "25%"}}>
+                left: "20%"}}>
 
                 <div style={{   
                 margin: "auto",
-                width: "30%",
+                width: "20%",
                 border: "1px solid black",
                 background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
@@ -1265,15 +1265,16 @@ export default function Addgeneric() {
                             label="Hierarquia Espacial"
                             MenuProps={MenuProps}
                             onChange={(e)=>{
-                                console.log(selectedHierarchy)
                                 setSelectedHierarchy(e.target.value[0])
-                                setSL(e.target.value[1])
+                                let listOfLevels = e.target.value[1]
+                                listOfLevels.splice(0, 0, "Escopo")
+                                setSL(listOfLevels)
                                 console.log(e.target.value)
                             }}
                         >
                             {
                                 spatialHierarchy?.length>0 && spatialHierarchy.map(doc=>
-                                    <MenuItem key={doc[0]} value={doc}>{doc[0]}</MenuItem>   
+                                    <MenuItem key={doc[0]} value={doc[0]}>{doc[0]}</MenuItem>   
                                 )
                             }
                         </Select>
@@ -1322,7 +1323,7 @@ export default function Addgeneric() {
                 </>
                 <div style={{   
                 margin: "auto",
-                width: "30%",
+                width: "20%",
                 border: "1px solid black",
                 background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
@@ -1380,19 +1381,19 @@ export default function Addgeneric() {
             </div>
             <div style={{   
                 margin: "auto",
-                width: "37%",
+                width: "54.2%",
                 border: "1px solid black",
                 background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
                 padding: "30px",
                 position: "fixed",
-                left: "58%",
-                maxHeight: 600}}
+                left: "41.7%",
+                maxHeight: 670}}
             >
                 <MapContainer 
                     style={{
                         width: "100%",
-                        height: 600
+                        height: 670
                     }} 
                     center={position} 
                     zoom={5} 
