@@ -16,7 +16,17 @@ export default function AddDrawings() {
                     </Typography>
                 </div>
                 <div style={{
-                    paddingTop:"30px"
+                    paddingTop:"20px"
+                }}/>
+                <div style={{
+                    paddingTop:"10px",
+                    margin: "auto",
+                    width: "100%",
+                    height: "83vh",
+                    border: "1px solid black",
+                    background: "rgba(256, 256, 256, 0.92)",
+                    borderRadius: "20px",
+                    position: "fixed"
                 }}
                 >
                     <Document/>

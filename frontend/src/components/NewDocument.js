@@ -61,12 +61,11 @@ function polygon(e) {
     return result;
 }
 
-export default function Addgeneric() {
+export default function DefaultFunction() {
     const high = 570
-    const position = [38.5, -16];
+    const position = [38, -17];
     let wkt = "new Wkt.Wkt();"
     let navigate = useNavigate()
-    let form = new FormData();
     const [docType, setDocType]=React.useState("generic");
     const [name, setName]=React.useState('');
     const [desc, setDesc]=React.useState('');
@@ -143,10 +142,20 @@ export default function Addgeneric() {
     );
     const [editableFG, setEditableFG] = React.useState(null);
     const [list, setList]=React.useState([]);
-    const [selectedHierarchy, setSelectedHierarchy]=React.useState("CAOP");
-    const [selectedLevel, setSelectedLevel]=React.useState("Escopo");
-    const [spatialHierarchy, setSH]=React.useState([["CAOP", ["distrito", "municipio", "freguesia"]]]);
-    const [spatialLevel, setSL]=React.useState(["Escopo","distrito", "municipio", "freguesia"]);
+    const [selectedHierarchy, setSelectedHierarchy]=React.useState("");
+    const [selectedLevel, setSelectedLevel]=React.useState("");
+    const [spatialHierarchy, setSH]=React.useState([[]]);
+    const [spatialLevel, setSL]=React.useState([]);
+    const [spatialQuery, setSQ] =React.useState("");
+    const [spatialList, setSpatialList]=React.useState(<></>);
+
+    React.useEffect(() => {
+        let ignore = false;
+
+        if (!ignore)  
+            getSH()
+        return () => { ignore = true; }
+    },[]);
 
     const _created=e=> {
         const drawnItems = editableFG._layers;
@@ -203,8 +212,10 @@ export default function Addgeneric() {
         })
         .then(res=>res.json())
         .then(result=>{
-            sh = result;
-            console.log(result)
+            for (let i = 0; i<result.length; i++) {
+                result[i][1] = result[i][1].split(" ");
+                sh.push(result[i])
+            }
         })
         setSH(sh)
     }
@@ -214,6 +225,7 @@ export default function Addgeneric() {
     }
 
     const addDocument=(e)=> {
+        let form = new FormData();
         allFormAppend()
         
         fetch("http://localhost:8080/"+ docType +"/add_document", {
@@ -228,13 +240,48 @@ export default function Addgeneric() {
         });
     }
 
+    const returnSpaces =()=> {
+        let form = new FormData();
+        form.append("name", spatialQuery.charAt(0).toUpperCase() + spatialQuery.slice(1))
+        form.append("level", selectedLevel)
+        form.append("hierarchy", selectedHierarchy)
+
+        fetch("http://localhost:8080/space/search_by_name", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+
+            let parse = require('wellknown');
+                
+            setSpatialList(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={doc[2]} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))
+        })
+    }
+
     return (
         <Container>
             <div style={{   
                 margin: "auto",
                 width: "18%",
+                height: "80vh",
                 border: "1px solid black",
-                background: "rgba(256, 256, 256, 0.92)",
                 borderRadius: "20px",
                 padding: "10px",
                 position: "fixed",
@@ -389,12 +436,12 @@ export default function Addgeneric() {
                             </form>
                         </Container>
                     }
-                    {docType==="thematics_stastics" &&
+                    {docType==="thematic_statistics" &&
                         <Container style={{
                             height: 600,
                             maxHeight: 600,
                             overflow: 'auto'
-                        }}>
+                            }}>
                             <br/>
                             <FormControl sx={{ minWidth: 200 }}>
                                 <InputLabel>Tipo de estatística</InputLabel>
@@ -1249,13 +1296,13 @@ export default function Addgeneric() {
                 left: "20%"}}>
 
                 <div style={{   
-                margin: "auto",
-                width: "20%",
-                border: "1px solid black",
-                background: "rgba(256, 256, 256, 0.92)",
-                borderRadius: "20px",
-                padding: "10px",
-                position: "fixed"}}>
+                    margin: "auto",
+                    width: "20%",
+                    border: "1px solid black",
+                    borderRadius: "20px",
+                    padding: "10px",
+                    position: "fixed"}}
+                >
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
                         <InputLabel>Hierarquia Espacial</InputLabel>
@@ -1265,16 +1312,15 @@ export default function Addgeneric() {
                             label="Hierarquia Espacial"
                             MenuProps={MenuProps}
                             onChange={(e)=>{
+                                console.log(e.target.value)
                                 setSelectedHierarchy(e.target.value[0])
                                 let listOfLevels = e.target.value[1]
-                                listOfLevels.splice(0, 0, "Escopo")
                                 setSL(listOfLevels)
-                                console.log(e.target.value)
                             }}
                         >
                             {
                                 spatialHierarchy?.length>0 && spatialHierarchy.map(doc=>
-                                    <MenuItem key={doc[0]} value={doc[0]}>{doc[0]}</MenuItem>   
+                                    <MenuItem key={doc[0]} value={doc}>{doc[0]}</MenuItem>   
                                 )
                             }
                         </Select>
@@ -1282,13 +1328,14 @@ export default function Addgeneric() {
                     <br/>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>Escala</InputLabel>
+                        <InputLabel>Escopo</InputLabel>
                         <Select
                             size="small"
                             value={selectedLevel}
                             MenuProps={MenuProps}
-                            label="Escala"
+                            label="Escopo"
                             onChange={(e)=>{
+                                console.log(e.target.value)
                                 setSelectedLevel(e.target.value)
                             }}
                         >
@@ -1301,9 +1348,18 @@ export default function Addgeneric() {
                     </FormControl>
                     <br/>
                     <br/>
+                    <TextField 
+                        id={selectedLevel}  
+                        label={selectedLevel} 
+                        variant="outlined" 
+                        onChange={(e)=>setSQ(e.target.value)}
+                        size="small"
+                    />
+                    <br/>
+                    <br/>
                     <Button variant="contained" 
                       style={{backgroundColor: "black"}}
-                      onClick={false}>Pesquisar</Button>
+                      onClick={returnSpaces}>Pesquisar</Button>
                     <br/>
                     <br/>
                 </div>
@@ -1320,15 +1376,17 @@ export default function Addgeneric() {
                     <br/>
                     <br/>
                     <br/>
+                    <br/>
+                    <br/>
+                    <br/>
                 </>
                 <div style={{   
-                margin: "auto",
-                width: "20%",
-                border: "1px solid black",
-                background: "rgba(256, 256, 256, 0.92)",
-                borderRadius: "20px",
-                padding: "10px",
-                position: "fixed"}}>
+                    margin: "auto",
+                    width: "20%",
+                    border: "1px solid black",
+                    borderRadius: "20px",
+                    padding: "10px",
+                    position: "fixed"}}>
                     <Container>
                         <Button
                         variant="contained"
@@ -1345,10 +1403,11 @@ export default function Addgeneric() {
                         />
                         </Button>
                         <br/>
-                        <div style={{   margin: "auto",
-                                        width: "90%",
-                                        borderRadius: "20px",
-                                        padding: "30px"}}>
+                        <div style={{   
+                            margin: "auto",
+                            width: "90%",
+                            borderRadius: "20px",
+                            padding: "30px"}}>
                             <List 
                                 style={{
                                     maxHeight: 300,
@@ -1381,22 +1440,19 @@ export default function Addgeneric() {
             </div>
             <div style={{   
                 margin: "auto",
-                width: "54.2%",
-                border: "1px solid black",
-                background: "rgba(256, 256, 256, 0.92)",
-                borderRadius: "20px",
-                padding: "30px",
+                width: "57.5%",
+                padding: "1px",
                 position: "fixed",
                 left: "41.7%",
-                maxHeight: 670}}
-            >
+                height: "80vh",
+                }}>
                 <MapContainer 
                     style={{
                         width: "100%",
-                        height: 670
+                        height: "82vh"
                     }} 
                     center={position} 
-                    zoom={5} 
+                    zoom={6} 
                     scrollWheelZoom={true} 
                     minZoom={4}
                 >
@@ -1417,7 +1473,7 @@ export default function Addgeneric() {
                                 edit: false
                             }}/>
                     </FeatureGroup>       
-                    {list}
+                    {spatialList}
                 </MapContainer>   
             </div> 
         </Container>
