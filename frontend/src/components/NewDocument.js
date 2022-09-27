@@ -22,6 +22,9 @@ import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-lea
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 import { maxHeight } from '@mui/system';
+import Typography from '@mui/material/Typography';
+import ListItemButton from '@mui/material/ListItemButton';
+import PublicIcon from '@mui/icons-material/Public';
 
 let lat = 0
 let lng = 0
@@ -256,6 +259,7 @@ export default function DefaultFunction() {
             console.log(result)
 
             let parse = require('wellknown');
+            console.log(parse(result[0][1]))
                 
             setSpatialList(result.map(doc => (
                 <GeoJSON key={doc[0]} data={parse(doc[1])}>
@@ -275,6 +279,59 @@ export default function DefaultFunction() {
         })
     }
 
+    function getGeometria(file) {
+        let form = new FormData();
+        form.append("file", file)
+        
+        for (const temp of list) {
+            if (file!=temp)
+                form.append('aux', temp);
+        }
+
+        fetch("http://localhost:5050/transform/vector", {
+            method: "POST",
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result.features)
+
+            let parse = require('wellknown');
+
+            setSpatialList(
+                <GeoJSON data={result}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={1} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )
+                
+            /*setSpatialList(result.features.map((doc, index) => (
+                <GeoJSON key={index} data={doc}>
+                    <Popup>
+                        
+                        <ListItem>
+                            <ListItemAvatar>
+                                
+                            </ListItemAvatar>
+                            <ListItemText primary={index} />
+                        </ListItem>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
+                    </Popup>
+                </GeoJSON>
+            )))*/
+        })
+    }
+
     return (
         <Container>
             <div style={{   
@@ -286,6 +343,9 @@ export default function DefaultFunction() {
                 padding: "10px",
                 position: "fixed",
                 left: "5px"}}>
+                <Typography variant="h6" component="h2">
+                        Formulário do documento
+                    </Typography>
                 <br/>
                 <FormControl sx={{ minWidth: 200 }}>
                     <InputLabel>Tipo de documento</InputLabel>
@@ -1301,8 +1361,10 @@ export default function DefaultFunction() {
                     border: "1px solid black",
                     borderRadius: "20px",
                     padding: "10px",
-                    position: "fixed"}}
-                >
+                    position: "fixed"}}>
+                    <Typography variant="h6" component="h2">
+                        Formulário Espacial
+                    </Typography>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
                         <InputLabel>Hierarquia Espacial</InputLabel>
@@ -1379,6 +1441,8 @@ export default function DefaultFunction() {
                     <br/>
                     <br/>
                     <br/>
+                    <br/>
+                    <br/>
                 </>
                 <div style={{   
                     margin: "auto",
@@ -1388,6 +1452,10 @@ export default function DefaultFunction() {
                     padding: "10px",
                     position: "fixed"}}>
                     <Container>
+                        <Typography variant="h6" component="h2">
+                            Upload
+                        </Typography>
+                        <br/>
                         <Button
                         variant="contained"
                         component="label"
@@ -1421,15 +1489,14 @@ export default function DefaultFunction() {
                                             aux.splice(index, 1)
                                             setList(aux)
                                         }}>
-                                            <DeleteIcon />
+                                            <DeleteIcon/>
                                         </IconButton>
-                                        }
-                                        > 
-                                        <ListItemAvatar>
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                        primary={doc.name} secundary={doc.size}
-                                        />
+                                        }> 
+                                        <ListItemButton role={undefined} onClick={()=>{getGeometria(doc)}} dense>
+                                            <ListItemText
+                                            primary={doc.name} secundary={doc.size}
+                                            />
+                                        </ListItemButton>
                                     </ListItem>
                                 )}
                             </List>
