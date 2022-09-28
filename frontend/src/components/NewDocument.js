@@ -26,6 +26,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import PublicIcon from '@mui/icons-material/Public';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import Modal from '@mui/material/Modal';
 
 let lat = 0
 let lng = 0
@@ -63,6 +64,15 @@ function polygon(e) {
     result = [result + e.layer._latlngs[0][0].lng, e.layer._latlngs[0][0].lat + "))"].join(" ")
     console.log(result)
     return result;
+}
+
+function polygonAux(origin, limit) {
+    let res = "POLYGON (("
+    res = [res+origin[0],origin[1]+","].join(" ")
+    res = [res+origin[0],limit[1]+","].join(" ")
+    res = [res+limit[0],limit[1]+","].join(" ")
+    res = [res+limit[0],origin[1]+"))"].join(" ")
+    return res;
 }
 
 export default function DefaultFunction() {
@@ -152,6 +162,11 @@ export default function DefaultFunction() {
     const [spatialLevel, setSL]=React.useState([]);
     const [spatialQuery, setSQ] =React.useState("");
     const [spatialList, setSpatialList]=React.useState(<></>);
+    const [open, setOpen] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const [open3, setOpen3] = React.useState(false);
+    const [fileType, setFileType] = React.useState("vector");
+    const [selectedFile, setSelectedFile] = React.useState();
 
     React.useEffect(() => {
         let ignore = false;
@@ -162,6 +177,7 @@ export default function DefaultFunction() {
     },[]);
 
     const _created=e=> {
+        setSpatialList(<></>)
         const drawnItems = editableFG._layers;
         if (Object.keys(drawnItems).length > 1) {
             Object.keys(drawnItems).forEach((layerid, index) => {
@@ -279,61 +295,163 @@ export default function DefaultFunction() {
         })
     }
 
-    function getGeometria(file) {
+    function getGeometria() {
         let form = new FormData();
-        form.append("file", file)
+        form.append("file", selectedFile)
         
         for (const temp of list) {
-            if (file!=temp)
+            if (selectedFile!=temp)
                 form.append('aux', temp);
         }
 
-        fetch("http://localhost:5050/transform/vector", {
-            method: "POST",
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result.features)
+        if (fileType==="raster") {
+            fetch("http://localhost:5050/transform/raster", {
+                method: "POST",
+                body: form
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result)
 
-            let parse = require('wellknown');
+                let wellknown = polygonAux(result.origin, result.limit)
+                let parse = require('wellknown');
 
-            setSpatialList(
-                <GeoJSON data={result}>
-                    <Popup>
-                        
-                        <ListItem>
-                            <ListItemAvatar>
-                                
-                            </ListItemAvatar>
-                            <ListItemText primary={1} />
-                        </ListItem>
-                        <Button variant="contained" 
-                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
-                    </Popup>
-                </GeoJSON>
-            )
-                
-            /*setSpatialList(result.features.map((doc, index) => (
-                <GeoJSON key={index} data={doc}>
-                    <Popup>
-                        
-                        <ListItem>
-                            <ListItemAvatar>
-                                
-                            </ListItemAvatar>
-                            <ListItemText primary={index} />
-                        </ListItem>
-                        <Button variant="contained" 
-                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
-                    </Popup>
-                </GeoJSON>
-            )))*/
-        })
+                setSpatialList(<></>)
+                setSpatialList(
+                    <GeoJSON data={parse(wellknown)}>
+                        <Popup>
+                            
+                            <ListItem>
+                                <ListItemAvatar>
+                                    
+                                </ListItemAvatar>
+                                <ListItemText primary={1} />
+                            </ListItem>
+                            <Button variant="contained" 
+                                style={{backgroundColor: "black"}}
+                                onClick={()=>setSpatialList(<></>)}> Apagar </Button>
+                        </Popup>
+                    </GeoJSON>
+                )
+            })
+        } else {
+            fetch("http://localhost:5050/transform/vector", {
+                method: "POST",
+                body: form
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result.features)
+
+                let parse = require('wellknown');
+
+                setSpatialList(
+                    <GeoJSON data={result}>
+                        <Popup>
+                            
+                            <ListItem>
+                                <ListItemAvatar>
+                                    
+                                </ListItemAvatar>
+                                <ListItemText primary={1} />
+                            </ListItem>
+                            <Button variant="contained" 
+                                style={{backgroundColor: "black"}}
+                                onClick={()=>setSpatialList(<></>)}> Apagar </Button>
+                        </Popup>
+                    </GeoJSON>
+                )
+                    
+                /*setSpatialList(result.features.map((doc, index) => (
+                    <GeoJSON key={index} data={doc}>
+                        <Popup>
+                            
+                            <ListItem>
+                                <ListItemAvatar>
+                                    
+                                </ListItemAvatar>
+                                <ListItemText primary={index} />
+                            </ListItem>
+                            <Button variant="contained" 
+                                style={{backgroundColor: "black"}}> Confirmar localização </Button>
+                        </Popup>
+                    </GeoJSON>
+                )))*/
+            })
+        }
     }
 
     return (
         <Container>
+            <Modal 
+                keepMounted
+                open={open}
+                onClose={()=>{setOpen(false)}}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "25%",
+                        background: "rgba(256, 256, 256, 0.92)",
+                        border: '5px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "20px",
+                        textAlign: "center"
+                    }}>
+                        <br/>
+                        <Typography variant="h6" component="h2">
+                                Formulário do documento
+                        </Typography>
+                        <br/>
+                        <FormControl sx={{ minWidth: 200 }}>
+                            <InputLabel>Tipo de ficheiro</InputLabel>
+                            <Select
+                                size="small"
+                                value={fileType}
+                                label="Tipo de ficheiro"
+                                MenuProps={MenuProps}
+                                onChange={(e)=>{
+                                    setFileType(e.target.value)
+                                }}>
+                                <MenuItem key="0" value="raster">Ficheiro Raster</MenuItem>
+                                <MenuItem key="1" value="vector">Ficheiro Vetorial</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=>{getGeometria()}}>
+                                Utilizar como espaço
+                        </Button>
+                        <br/>
+                        <br/>
+                    </div>
+            </Modal>
+            <Modal 
+                keepMounted
+                open={open2}
+                onClose={()=>{setOpen2(false)}}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "25%",
+                        background: "rgba(256, 256, 256, 0.92)",
+                        border: '5px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "20px",
+                        textAlign: "center"
+                    }}>
+                    <br/>
+                    <Typography variant="h6" component="h2">
+                            Ajuda
+                    </Typography>
+                    <br/>
+                </div>
+            </Modal>
             <div style={{   
                 margin: "auto",
                 width: "98%",
@@ -353,7 +471,8 @@ export default function DefaultFunction() {
                     <IconButton style={{
                         right:"3%",
                         position: "fixed",
-                    }}>
+                    }}
+                        onClick={()=>setOpen2(true)}>
                         <QuestionMarkIcon sx={{fontSize: 40}}/>
                     </IconButton>
 
@@ -392,8 +511,7 @@ export default function DefaultFunction() {
                             setDocType(e.target.value)
                             console.log(docType)
                             console.log(docForm)
-                        }}
-                    >
+                        }}>
                         <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
                         <MenuItem key="generic" value="generic">Documento</MenuItem>
                         <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
@@ -410,7 +528,6 @@ export default function DefaultFunction() {
                 </FormControl>
                 <br/>
                 <br/>
-                <br/>
                 <>
                     {docType==="thematic_map" &&
                         <Container style={{
@@ -421,10 +538,12 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}> 
+                                <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
+                                    required
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
                                 />
@@ -559,12 +678,14 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}> 
+                                <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
+                                    required
                                 />
                                 <br/>
                                 <br/>
@@ -625,8 +746,10 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}> 
+                                <br/>
                                 <TextField 
                                     id="name" 
+                                    required
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -697,6 +820,7 @@ export default function DefaultFunction() {
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
+                                    required
                                 />
                                 <br/>
                                 <br/>
@@ -766,8 +890,10 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}> 
+                            <br/>
                                 <TextField 
                                     id="name" 
+                                    required
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -841,9 +967,11 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}> 
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
+                                    required
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
@@ -915,9 +1043,11 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
+                                    required
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
@@ -990,10 +1120,12 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
+                                    required
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"/>
                                 <br/>
@@ -1050,8 +1182,10 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
+                                    required
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -1107,12 +1241,14 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
+                                    required
                                 />
                                 <br/>
                                 <br/>
@@ -1182,10 +1318,12 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
+                                    required
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
                                 />
@@ -1269,10 +1407,12 @@ export default function DefaultFunction() {
                             <form style={{
                                 float:"left"
                             }}>
+                            <br/>
                                 <TextField 
                                     id="name" 
                                     label="Nome" 
                                     variant="outlined" 
+                                    required
                                     onChange={(e)=>setName(e.target.value)}
                                     size="small"
                                 />
@@ -1411,8 +1551,7 @@ export default function DefaultFunction() {
                                 setSelectedHierarchy(e.target.value[0])
                                 let listOfLevels = e.target.value[1]
                                 setSL(listOfLevels)
-                            }}
-                        >
+                            }}>
                             {
                                 spatialHierarchy?.length>0 && spatialHierarchy.map(doc=>
                                     <MenuItem key={doc[0]} value={doc}>{doc[0]}</MenuItem>   
@@ -1481,8 +1620,10 @@ export default function DefaultFunction() {
                     margin: "auto",
                     width: "20%",
                     borderRadius: "20px",
-                    padding: "10px",
-                    position: "fixed"}}>
+                    padding: "1px",
+                    position: "fixed",
+                    paddingTop: "10px",
+                    border: "5px solid black",}}>
                     <Container>
                         <Button
                         variant="contained"
@@ -1519,7 +1660,11 @@ export default function DefaultFunction() {
                                             <DeleteIcon/>
                                         </IconButton>
                                         }> 
-                                        <ListItemButton role={undefined} onClick={()=>{getGeometria(doc)}} dense>
+                                        <ListItemButton role={undefined} onClick={()=>{
+                                            setSelectedFile(doc)
+                                            setOpen(true)
+                                        }} 
+                                            dense>
                                             <ListItemText
                                             primary={doc.name} secundary={doc.size}
                                             />
