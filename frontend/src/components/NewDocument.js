@@ -21,10 +21,11 @@ import ListItemText from '@mui/material/ListItemText';
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
-import { maxHeight } from '@mui/system';
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
 import PublicIcon from '@mui/icons-material/Public';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 let lat = 0
 let lng = 0
@@ -65,10 +66,10 @@ function polygon(e) {
 }
 
 export default function DefaultFunction() {
-    const high = 570
     const position = [38, -17];
     let wkt = "new Wkt.Wkt();"
-    let navigate = useNavigate()
+    let navigateCancel = useNavigate()
+    let navigateConfirm = useNavigate()
     const [docType, setDocType]=React.useState("generic");
     const [name, setName]=React.useState('');
     const [desc, setDesc]=React.useState('');
@@ -239,7 +240,6 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             console.log(result);
-            navigate(`/${result}/add/space`)
         });
     }
 
@@ -336,9 +336,43 @@ export default function DefaultFunction() {
         <Container>
             <div style={{   
                 margin: "auto",
+                width: "98%",
+                padding: "10px",
+                position: "fixed",
+                left: "5px"}}>
+                    <IconButton style={{
+                        left:"3%",
+                        position: "fixed",
+                    }}
+                        onClick={()=>{
+                            navigateCancel(`/`)
+                    }}>
+                        <ArrowBackIcon sx={{ fontSize: 40 }}/>
+                    </IconButton>
+
+                    <IconButton style={{
+                        right:"3%",
+                        position: "fixed",
+                    }}>
+                        <QuestionMarkIcon sx={{fontSize: 40}}/>
+                    </IconButton>
+
+                    <Button variant="contained" component="label" style={{
+                        backgroundColor: "black",
+                        paddingTop: "1vh"}}>
+                        Confirmar
+                    </Button>
+            </div>
+            <>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+            </>
+            <div style={{   
+                margin: "auto",
                 width: "18%",
-                height: "80vh",
-                border: "1px solid black",
+                height: "70vh",
                 borderRadius: "20px",
                 padding: "10px",
                 position: "fixed",
@@ -380,7 +414,7 @@ export default function DefaultFunction() {
                 <>
                     {docType==="thematic_map" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                         }}>
@@ -498,7 +532,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="thematic_statistics" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                             }}>
@@ -584,7 +618,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="sensors" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                         }}>
@@ -800,7 +834,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="photography" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                         }}>
@@ -949,7 +983,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="LiDAR" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                         }}>
@@ -1009,7 +1043,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="generic" && 
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                             }}>
@@ -1066,7 +1100,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="aerial_photography" && 
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                             }}>
@@ -1141,7 +1175,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="drawings" &&
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                             }}>
@@ -1207,7 +1241,7 @@ export default function DefaultFunction() {
                     }
                     {docType==="geographic_map" && 
                         <Container style={{
-                            height: 600,
+                            height: "50vh",
                             maxHeight: 600,
                             overflow: 'auto'
                             }}>
@@ -1353,12 +1387,11 @@ export default function DefaultFunction() {
             <div style={{   
                 margin: "auto",
                 position: "fixed",
-                left: "20%"}}>
+                left: "15%"}}>
 
                 <div style={{   
                     margin: "auto",
                     width: "20%",
-                    border: "1px solid black",
                     borderRadius: "20px",
                     padding: "10px",
                     position: "fixed"}}>
@@ -1447,15 +1480,10 @@ export default function DefaultFunction() {
                 <div style={{   
                     margin: "auto",
                     width: "20%",
-                    border: "1px solid black",
                     borderRadius: "20px",
                     padding: "10px",
                     position: "fixed"}}>
                     <Container>
-                        <Typography variant="h6" component="h2">
-                            Upload
-                        </Typography>
-                        <br/>
                         <Button
                         variant="contained"
                         component="label"
@@ -1470,7 +1498,6 @@ export default function DefaultFunction() {
                             }}
                         />
                         </Button>
-                        <br/>
                         <div style={{   
                             margin: "auto",
                             width: "90%",
@@ -1478,7 +1505,7 @@ export default function DefaultFunction() {
                             padding: "30px"}}>
                             <List 
                                 style={{
-                                    maxHeight: 300,
+                                    maxHeight: "30vh",
                                     overflow: 'auto'
                                 }}>
                                 {list?.length>0 && list.map((doc, index)=> 
@@ -1507,16 +1534,16 @@ export default function DefaultFunction() {
             </div>
             <div style={{   
                 margin: "auto",
-                width: "57.5%",
+                width: "63.5%",
                 padding: "1px",
                 position: "fixed",
-                left: "41.7%",
-                height: "80vh",
+                left: "35.7%",
+                height: "70vh",
                 }}>
                 <MapContainer 
                     style={{
                         width: "100%",
-                        height: "82vh"
+                        height: "72vh"
                     }} 
                     center={position} 
                     zoom={6} 
