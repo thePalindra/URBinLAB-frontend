@@ -31,6 +31,7 @@ import Modal from '@mui/material/Modal';
 let lat = 0
 let lng = 0
 let size = 0
+let wkt = "new Wkt.Wkt();"
 
 const MenuProps = {
     PaperProps: {
@@ -77,7 +78,6 @@ function polygonAux(origin, limit) {
 
 export default function DefaultFunction() {
     const position = [38, -17];
-    let wkt = "new Wkt.Wkt();"
     let navigateCancel = useNavigate()
     let navigateConfirm = useNavigate()
     const [docType, setDocType]=React.useState("generic");
@@ -166,7 +166,9 @@ export default function DefaultFunction() {
     const [open2, setOpen2] = React.useState(false);
     const [open3, setOpen3] = React.useState(false);
     const [fileType, setFileType] = React.useState("vector");
-    const [selectedFile, setSelectedFile] = React.useState();
+    const [selectedFile, setSelectedFile]=React.useState("");
+    const [spaceName, setSpaceName]=React.useState();
+    const [spaceForm, setSpaceForm]=React.useState(<></>);
 
     React.useEffect(() => {
         let ignore = false;
@@ -186,24 +188,23 @@ export default function DefaultFunction() {
                 editableFG.removeLayer(layer);
             });
         }
-        let res = 0
+        let parse = require('wellknown');
         switch(e.layerType) {
             case "circle":
-                res = circle(e)
+                wkt = circle(e)
                 break;
             case "rectangle":
-                res = polygon(e)
+                wkt = parse(polygon(e))
                 break;
             case "marker":
-                res = point(e)
+                wkt = parse(point(e))
                 break;
             case "polygon":
-                res = polygon(e)
+                wkt = parse(polygon(e))
                 break;
             default:
                 break;
         }
-        wkt = res
     }
 
     const onFeatureGroupReady = reactFGref => {
@@ -241,25 +242,142 @@ export default function DefaultFunction() {
     }
 
     function allFormAppend() {
-    
+        let form = new FormData()
+        form.append("name", name);
+        form.append("description", desc);
+        form.append("provider", provider);
+        form.append("timeScope", time+"/01/01");
+        form.append("link", link);
+
+        switch(docType) {
+            case "aerial_photography": 
+                form.append("resolution", resolution)
+                form.append("scale", scale)
+                break;
+            case "geographic_map":
+                form.append("scale", scale)
+                form.append("resolution", resolution)
+                form.append("type", type)
+                form.append("raster", raster)
+                break;
+            case "drawings":
+                form.append("context", context);
+                break;
+            case "LiDAR":
+                form.append("resolution", resolution)
+                break;
+            case "ortos":
+                form.append("resolution", resolution)
+                form.append("scale", scale)
+                break;
+            case "photography":
+                form.append("color", color);
+                form.append("resolution", resolution)
+                break;
+            case "reports":
+                form.append("context", context);
+                form.append("theme", theme)
+                break;
+            case "satellite_image":
+                form.append("resolution", resolution)
+                form.append("satellite", satellite)
+                break;
+            case "sensors":
+                form.append("variable", variable);
+                break;
+            case "thematic_statistics":
+                form.append("theme", theme)
+                break;
+            case "thematic_map":
+                form.append("scale", scale)
+                form.append("resolution", resolution)
+                form.append("type", type)
+                form.append("raster", raster)
+                form.append("theme", theme)
+                form.append("mapType", mapType)
+                break;
+            default:
+                break;
+        }
+        return form;
     }
 
-    const addDocument=(e)=> {
-        let form = new FormData();
-        allFormAppend()
+    async function addDocument() {
+        let form = allFormAppend()
         
-        fetch("http://localhost:8080/"+ docType +"/add_document", {
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
             headers: window.localStorage,
             body: form
         })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result);
-        });
+        docId = await docId.json();
+
+        let sform = new FormData();
+        sform.append("document", docId);
+
+        switch(typeof wkt) {
+            case typeof 1:
+                console.log(wkt)
+                sform.append("id", wkt);
+                fetch("http://localhost:8080/space/attach", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: sform
+                })
+                break;
+            case typeof "c":
+                console.log("default")
+                sform.append("lng", lng)
+                sform.append("lat", lat)
+                sform.append("size", size)
+                sform.append("name", spaceName)
+                fetch("http://localhost:8080/space/add_circle", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: sform
+                })
+                break;
+            default:
+                console.log(wkt)
+                wkt = JSON.stringify(wkt);
+                sform.append("name", spaceName)
+                sform.append("space", wkt)
+                fetch("http://localhost:8080/space/add_Geo", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: sform
+                })
+                break;
+        }
+
+        for (let i = 0; i<list.length; i++) {
+            let fform = new FormData();
+            fform.append("file", list[i])
+            fform.append("document", docId)
+
+            fetch("http://localhost:8080/file/add", {
+                method: "POST",
+                headers: window.localStorage,
+                body: fform
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+            })
+        }
+        console.log("terminou tudo bem")
     }
 
     const returnSpaces =()=> {
+        const drawnItems = editableFG._layers;
+        if (Object.keys(drawnItems).length > 0) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editableFG.removeLayer(layer);
+            });
+        }
+
         let form = new FormData();
         form.append("name", spatialQuery.charAt(0).toUpperCase() + spatialQuery.slice(1))
         form.append("level", selectedLevel)
@@ -288,7 +406,29 @@ export default function DefaultFunction() {
                             <ListItemText primary={doc[2]} />
                         </ListItem>
                         <Button variant="contained" 
-                            style={{backgroundColor: "black"}}> Confirmar localização </Button>
+                            style={{backgroundColor: "black"}}
+                            onClick={()=>{setSpatialList(
+                                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                                    <Popup>
+                                        
+                                        <ListItem>
+                                            <ListItemAvatar>
+                                            </ListItemAvatar>
+                                            <ListItemText primary={doc[2]} />
+                                        </ListItem>
+                                        <Button variant="contained" 
+                                            style={{backgroundColor: "black"}}
+                                            onClick={()=>setSpatialList(<></>)}> Apagar </Button>
+                                    </Popup>
+                                </GeoJSON>)
+                                wkt=doc[0]
+                                console.log(wkt)
+                            }}> Confirmar localização </Button>
+                        <br/>
+                        <br/>
+                        <Button variant="contained" 
+                            style={{backgroundColor: "black"}}
+                            onClick={()=>setSpatialList(<></>)}> Apagar </Button>
                     </Popup>
                 </GeoJSON>
             )))
@@ -296,6 +436,14 @@ export default function DefaultFunction() {
     }
 
     function getGeometria() {
+        const drawnItems = editableFG._layers;
+        if (Object.keys(drawnItems).length > 0) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editableFG.removeLayer(layer);
+            });
+        }
         let form = new FormData();
         form.append("file", selectedFile)
         
@@ -313,12 +461,12 @@ export default function DefaultFunction() {
             .then(result=>{
                 console.log(result)
 
-                let wellknown = polygonAux(result.origin, result.limit)
                 let parse = require('wellknown');
-
+                wkt = parse(polygonAux(result.origin, result.limit))
+                console.log(typeof wkt)
                 setSpatialList(<></>)
                 setSpatialList(
-                    <GeoJSON data={parse(wellknown)}>
+                    <GeoJSON data={wkt}>
                         <Popup>
                             
                             <ListItem>
@@ -343,10 +491,10 @@ export default function DefaultFunction() {
             .then(result=>{
                 console.log(result.features)
 
-                let parse = require('wellknown');
-
+                wkt = result
+                console.log(wkt)
                 setSpatialList(
-                    <GeoJSON data={result}>
+                    <GeoJSON data={wkt}>
                         <Popup>
                             
                             <ListItem>
@@ -401,7 +549,7 @@ export default function DefaultFunction() {
                     }}>
                         <br/>
                         <Typography variant="h6" component="h2">
-                                Formulário do documento
+                                {selectedFile.name}
                         </Typography>
                         <br/>
                         <FormControl sx={{ minWidth: 200 }}>
@@ -452,6 +600,49 @@ export default function DefaultFunction() {
                     <br/>
                 </div>
             </Modal>
+            <Modal 
+                keepMounted
+                open={open3}
+                onClose={()=>{setOpen3(false)}}>
+                    <div style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "25%",
+                        background: "rgba(256, 256, 256, 0.92)",
+                        border: '5px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "20px",
+                        textAlign: "center"
+                    }}>
+                    <br/>
+                    <Typography variant="h6" component="h2">
+                        Confirmar documento
+                    </Typography>
+                    <hr/>
+                    <Typography variant="h7" component="h4">
+                        Adicionar espaço
+                    </Typography>
+                    <br/>
+                    <TextField 
+                        id="name" 
+                        label="Nome" 
+                        variant="outlined" 
+                        required
+                        onChange={(e)=>setSpaceName(e.target.value)}
+                        size="small"/>
+                    <br/>
+                    <br/>
+                    <Button variant="contained" 
+                        style={{backgroundColor: "black"}}
+                        onClick={()=>{addDocument()}}>
+                            Confirmar
+                    </Button>
+                    <br/>
+                    <br/>
+                </div>
+            </Modal>
             <div style={{   
                 margin: "auto",
                 width: "98%",
@@ -478,7 +669,8 @@ export default function DefaultFunction() {
 
                     <Button variant="contained" component="label" style={{
                         backgroundColor: "black",
-                        paddingTop: "1vh"}}>
+                        paddingTop: "1vh"}}
+                        onClick={()=>setOpen3(true)}>
                         Confirmar
                     </Button>
             </div>
@@ -489,16 +681,16 @@ export default function DefaultFunction() {
                 <br/>
             </>
             <div style={{   
-                margin: "auto",
                 width: "18%",
                 height: "70vh",
                 borderRadius: "20px",
                 padding: "10px",
                 position: "fixed",
-                left: "5px"}}>
+                left: "-2%"}}>
                 <Typography variant="h6" component="h2">
-                        Formulário do documento
-                    </Typography>
+                    Formulário do documento
+                </Typography>
+                <hr/>
                 <br/>
                 <FormControl sx={{ minWidth: 200 }}>
                     <InputLabel>Tipo de documento</InputLabel>
@@ -509,6 +701,7 @@ export default function DefaultFunction() {
                         MenuProps={MenuProps}
                         onChange={(e)=>{
                             setDocType(e.target.value)
+                            setURL(e.target.value)
                             console.log(docType)
                             console.log(docForm)
                         }}>
@@ -532,8 +725,10 @@ export default function DefaultFunction() {
                     {docType==="thematic_map" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
-                            overflow: 'auto'
+                            maxHeight: "50vh",
+                            width: "80%",
+                            overflow: 'auto',
+                            left: "0px"
                         }}>
                             <form style={{
                                 float:"left"
@@ -652,7 +847,8 @@ export default function DefaultFunction() {
                     {docType==="thematic_statistics" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                             }}>
                             <br/>
@@ -740,7 +936,8 @@ export default function DefaultFunction() {
                     {docType==="sensors" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -807,8 +1004,9 @@ export default function DefaultFunction() {
                     }
                     {docType==="satellite_image" &&
                         <Container style={{
-                            height: 600,
-                            maxHeight: 600,
+                            height: "50vh",
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -883,8 +1081,9 @@ export default function DefaultFunction() {
                     }
                     {docType==="reports" &&
                         <Container style={{
-                            height: 600,
-                            maxHeight: 600,
+                            height: "50vh",
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -961,7 +1160,8 @@ export default function DefaultFunction() {
                     {docType==="photography" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -1036,8 +1236,9 @@ export default function DefaultFunction() {
                     }
                     {docType==="ortos" &&
                         <Container style={{
-                            height: 600,
-                            maxHeight: 600,
+                            height: "50vh",
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -1114,7 +1315,8 @@ export default function DefaultFunction() {
                     {docType==="LiDAR" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                         }}>
                             <form style={{
@@ -1176,7 +1378,8 @@ export default function DefaultFunction() {
                     {docType==="generic" && 
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -1235,7 +1438,8 @@ export default function DefaultFunction() {
                     {docType==="aerial_photography" && 
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -1312,7 +1516,8 @@ export default function DefaultFunction() {
                     {docType==="drawings" &&
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                             }}>
                             <form style={{
@@ -1380,7 +1585,8 @@ export default function DefaultFunction() {
                     {docType==="geographic_map" && 
                         <Container style={{
                             height: "50vh",
-                            maxHeight: 600,
+                            maxHeight: "50vh",
+                            width: "80%",
                             overflow: 'auto'
                             }}>
                             <br/>
@@ -1538,6 +1744,7 @@ export default function DefaultFunction() {
                     <Typography variant="h6" component="h2">
                         Formulário Espacial
                     </Typography>
+                    <hr/>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
                         <InputLabel>Hierarquia Espacial</InputLabel>
