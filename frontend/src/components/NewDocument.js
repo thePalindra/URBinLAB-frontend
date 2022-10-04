@@ -1,5 +1,6 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import { Container } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import Select from '@mui/material/Select';
@@ -74,6 +75,15 @@ function polygonAux(origin, limit) {
     res = [res+limit[0],limit[1]+","].join(" ")
     res = [res+limit[0],origin[1]+"))"].join(" ")
     return res;
+}
+
+function range(min, max) {
+    var len = max - min + 1;
+    var arr = new Array(len);
+    for (var i=0; i<len; i++) {
+      arr[i] = (min + i).toString();
+    }
+    return arr;
 }
 
 export default function DefaultFunction() {
@@ -169,12 +179,18 @@ export default function DefaultFunction() {
     const [selectedFile, setSelectedFile]=React.useState("");
     const [spaceName, setSpaceName]=React.useState();
     const [spaceForm, setSpaceForm]=React.useState(<></>);
+    const [allProviders, setAllProviders]=React.useState([]);
+    const [allURLs, setAllURLs]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
 
-        if (!ignore)  
+        if (!ignore) {
             getSH()
+            getAllProviders()
+            getAllURLS()
+        }
+            
         return () => { ignore = true; }
     },[]);
 
@@ -239,6 +255,31 @@ export default function DefaultFunction() {
             }
         })
         setSH(sh)
+    }
+
+    function getAllProviders() {
+        fetch("http://localhost:8080/generic/get_all_providers", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllProviders(result)
+        })
+        
+    }
+    
+    function getAllURLS() {
+        fetch("http://localhost:8080/generic/get_all_urls", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllURLs(result)
+        })
     }
 
     function allFormAppend() {
@@ -735,7 +776,6 @@ export default function DefaultFunction() {
                             }}> 
                                 <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     required
@@ -876,7 +916,6 @@ export default function DefaultFunction() {
                             }}> 
                                 <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -945,7 +984,6 @@ export default function DefaultFunction() {
                             }}> 
                                 <br/>
                                 <TextField 
-                                    id="name" 
                                     required
                                     label="Nome" 
                                     variant="outlined" 
@@ -1013,7 +1051,6 @@ export default function DefaultFunction() {
                                 float:"left"
                             }}> 
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -1091,7 +1128,6 @@ export default function DefaultFunction() {
                             }}> 
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     required
                                     label="Nome" 
                                     variant="outlined" 
@@ -1169,7 +1205,6 @@ export default function DefaultFunction() {
                             }}> 
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     required
                                     variant="outlined" 
@@ -1246,7 +1281,6 @@ export default function DefaultFunction() {
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     required
                                     variant="outlined" 
@@ -1324,7 +1358,6 @@ export default function DefaultFunction() {
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     required
@@ -1380,14 +1413,14 @@ export default function DefaultFunction() {
                             height: "50vh",
                             maxHeight: "50vh",
                             width: "80%",
-                            overflow: 'auto'
+                            overflowY: 'auto'
                             }}>
                             <form style={{
                                 float:"left"
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
+                                    style={{width: "80%", float:"left"}}
                                     required
                                     label="Nome" 
                                     variant="outlined" 
@@ -1396,31 +1429,54 @@ export default function DefaultFunction() {
                                 />
                                 <br/>
                                 <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
                                     size="small"
-                                />
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>setProvider(e.target.value)}/>}
+                                    />
                                 <br/>
                                 <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear()).reverse()}
                                     size="small"
-                                />
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required
+                                        onChange={(e)=>setTime(e.target.value)}/>}
+                                    />
                                 <br/>
                                 <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
                                     size="small"
-                                />
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    />
+                                <br/>
                                 <br/>
                                 <br/>
                                 <TextField 
@@ -1429,7 +1485,9 @@ export default function DefaultFunction() {
                                     variant="outlined" 
                                     multiline
                                     fullWidth
+                                    rows={4}
                                     onChange={(e)=>setDesc(e.target.value)}
+                                    style={{width: "80%", float:"left"}}
                                     size="small"
                                 />
                             </form>
@@ -1447,7 +1505,6 @@ export default function DefaultFunction() {
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     onChange={(e)=>setName(e.target.value)}
@@ -1525,7 +1582,6 @@ export default function DefaultFunction() {
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     required
@@ -1600,8 +1656,7 @@ export default function DefaultFunction() {
                                     onChange={(e)=>{
                                         setURL(e.target.value)
                                         console.log(URLs)
-                                    }}
-                                >
+                                    }}>
                                     <MenuItem value="geographic_map">Mapa Geográfico</MenuItem>
                                     <MenuItem value="chorographic_map">Mapa Corográfico</MenuItem>
                                     <MenuItem value="topographic_map">Mapa Topográfico</MenuItem>
@@ -1615,7 +1670,6 @@ export default function DefaultFunction() {
                             }}>
                             <br/>
                                 <TextField 
-                                    id="name" 
                                     label="Nome" 
                                     variant="outlined" 
                                     required
