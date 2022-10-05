@@ -168,7 +168,7 @@ export default function DefaultFunction() {
     const [list, setList]=React.useState([]);
     const [selectedHierarchy, setSelectedHierarchy]=React.useState("");
     const [selectedLevel, setSelectedLevel]=React.useState("");
-    const [spatialHierarchy, setSH]=React.useState([[]]);
+    const [spatialHierarchy, setSH]=React.useState([]);
     const [spatialLevel, setSL]=React.useState([]);
     const [spatialQuery, setSQ] =React.useState("");
     const [spatialList, setSpatialList]=React.useState(<></>);
@@ -181,6 +181,7 @@ export default function DefaultFunction() {
     const [spaceForm, setSpaceForm]=React.useState(<></>);
     const [allProviders, setAllProviders]=React.useState([]);
     const [allURLs, setAllURLs]=React.useState([]);
+    const [allSpatialNames, setAllSpatialNames]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -241,7 +242,6 @@ export default function DefaultFunction() {
     }
 
     function getSH() {
-        let sh = []
         fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
             headers: window.localStorage,
@@ -249,12 +249,23 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            for (let i = 0; i<result.length; i++) {
-                result[i][1] = result[i][1].split(" ");
-                sh.push(result[i])
-            }
+            setSH(result)
         })
-        setSH(sh)
+    }
+
+    function getSL(hier) {
+        let form = new FormData();
+        form.append("hierarchy", hier)
+
+        fetch("http://localhost:8080/space/get_levels", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setSL(result)
+        })
     }
 
     function getAllProviders() {
@@ -279,6 +290,22 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllURLs(result)
+        })
+    }
+
+    function get_names_from_level(level) {
+        let form = new FormData();
+        form.append("hierarchy", selectedHierarchy)
+        form.append("level", level)
+
+        fetch("http://localhost:8080/space/get_names", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSpatialNames(result)
         })
     }
 
@@ -1441,7 +1468,12 @@ export default function DefaultFunction() {
                                             float:"left"}} 
                                         {...params} 
                                         label="Fornecedor" 
-                                        onChange={(e)=>setProvider(e.target.value)}/>}
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
                                 <br/>
                                 <br/>
@@ -1457,8 +1489,8 @@ export default function DefaultFunction() {
                                             float:"left"}} 
                                         {...params} 
                                         label="Ano" 
-                                        required
-                                        onChange={(e)=>setTime(e.target.value)}/>}
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
                                 <br/>
                                 <br/>
@@ -1475,6 +1507,7 @@ export default function DefaultFunction() {
                                         {...params} 
                                         label="URL" 
                                         onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
                                 <br/>
                                 <br/>
@@ -1801,57 +1834,61 @@ export default function DefaultFunction() {
                     <hr/>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>Hierarquia Espacial</InputLabel>
-                        <Select
+                        <Autocomplete
+                            disablePortal
+                            options={spatialHierarchy}
                             size="small"
-                            value={selectedHierarchy}
-                            label="Hierarquia Espacial"
-                            MenuProps={MenuProps}
-                            onChange={(e)=>{
-                                console.log(e.target.value)
-                                setSelectedHierarchy(e.target.value[0])
-                                let listOfLevels = e.target.value[1]
-                                setSL(listOfLevels)
-                            }}>
-                            {
-                                spatialHierarchy?.length>0 && spatialHierarchy.map(doc=>
-                                    <MenuItem key={doc[0]} value={doc}>{doc[0]}</MenuItem>   
-                                )
-                            }
-                        </Select>
+                            renderInput={(params) => <TextField 
+                                style={{
+                                    float:"left"}} 
+                                {...params} 
+                                label="Hierarquia"/>}
+                            onChange={(e, values)=>{
+                                setSelectedHierarchy(values)
+                                getSL(values)}}
+                            />
                     </FormControl>
                     <br/>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
-                        <InputLabel>Escopo</InputLabel>
-                        <Select
+                        <Autocomplete
+                            disablePortal
+                            options={spatialLevel}
                             size="small"
-                            value={selectedLevel}
-                            MenuProps={MenuProps}
-                            label="Escopo"
-                            onChange={(e)=>{
-                                console.log(e.target.value)
-                                setSelectedLevel(e.target.value)
+                            renderInput={(params) => <TextField 
+                                style={{
+                                    float:"left"}} 
+                                {...params} 
+                                label="Escopo" 
+                                />}
+                            onChange={(e, values)=>{
+                                setSelectedLevel(values)
+                                get_names_from_level(values)
                             }}
-                        >
-                            {
-                                spatialLevel?.length>0 && spatialLevel.map(doc=>
-                                    <MenuItem key={doc} value={doc}>{doc}</MenuItem>   
-                                )
-                            }
-                        </Select>
+                        />
                     </FormControl>
                     <br/>
                     <br/>
-                    <TextField 
-                        id={selectedLevel}  
-                        label={selectedLevel} 
-                        variant="outlined" 
-                        onChange={(e)=>setSQ(e.target.value)}
+                    <FormControl sx={{ minWidth: 200 }}>
+                    <Autocomplete
+                        freeSolo
+                        options={allSpatialNames}
                         size="small"
-                    />
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField 
+                            style={{
+                                width: "80%"}} 
+                            {...params} 
+                            label={selectedLevel} 
+                            onChange={(e)=>{
+                                setSQ(e.target.value)
+                            }}/>}
+                            onChange={(e, values)=>{
+                                setSQ(values)
+                            }}
+                        />
                     <br/>
-                    <br/>
+                    </FormControl>
                     <Button variant="contained" 
                       style={{backgroundColor: "black"}}
                       onClick={returnSpaces}>Pesquisar</Button>
