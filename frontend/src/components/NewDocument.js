@@ -2315,15 +2315,10 @@ export default function DefaultFunction() {
             <div style={{   
                 margin: "auto",
                 position: "fixed",
-                width: "20%",
+                width: "17%",
                 left: "0%"}}>
-                <div style={{   
-                    margin: "auto",
-                    borderRadius: "20px",
-                    padding: "10px",
-                    position: "fixed"}}>
                     <Typography variant="h6" component="h2">
-                        Formulário Espacial
+                        Procurar espaços
                     </Typography>
                     <hr/>
                     <br/>
@@ -2388,7 +2383,6 @@ export default function DefaultFunction() {
                       onClick={returnSpaces}>Pesquisar</Button>
                     <br/>
                     <br/>
-                </div>
                 <>
                     <br/>
                     <br/>
@@ -2408,20 +2402,23 @@ export default function DefaultFunction() {
                     <br/>
                     <br/>
                 </>
-                <div style={{   
+                
+            </div>
+            <div style={{   
                     margin: "auto",
-                    width: "20%",
+                    width: "18%",
+                    left: "17%",
                     borderRadius: "20px",
-                    padding: "1px",
                     position: "fixed",
                     paddingTop: "10px",
                     border: "5px solid black",}}>
                     <Container>
+                        <br/>
                         <Button
                         variant="contained"
                         component="label"
                         >
-                        Upload
+                        Upload de ficheiros
                         <input
                             type="file"
                             hidden
@@ -2468,7 +2465,6 @@ export default function DefaultFunction() {
                     </Container>
 
                 </div>
-            </div>
             <div style={{   
                 margin: "auto",
                 width: "63.5%",
