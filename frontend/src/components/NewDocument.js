@@ -77,10 +77,10 @@ function polygonAux(origin, limit) {
     return res;
 }
 
-function range(min, max) {
+function range(min, max, step) {
     var len = max - min + 1;
     var arr = new Array(len);
-    for (var i=0; i<len; i++) {
+    for (var i=0; i<len; i+=step) {
       arr[i] = (min + i).toString();
     }
     return arr;
@@ -686,21 +686,1138 @@ export default function DefaultFunction() {
                     }}>
                     <br/>
                     <Typography variant="h6" component="h2">
-                        Confirmar documento
+                        Formulário do documento
                     </Typography>
                     <hr/>
-                    <Typography variant="h7" component="h4">
-                        Adicionar espaço
-                    </Typography>
                     <br/>
-                    <TextField 
-                        id="name" 
-                        label="Nome" 
-                        variant="outlined" 
-                        required
-                        onChange={(e)=>setSpaceName(e.target.value)}
-                        size="small"/>
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <InputLabel>Tipo de documento</InputLabel>
+                        <Select
+                            size="small"
+                            value={docType}
+                            label="Tipo de documento"
+                            MenuProps={MenuProps}
+                            onChange={(e)=>{
+                                setDocType(e.target.value)
+                                setURL(e.target.value)
+                                console.log(docType)
+                                console.log(docForm)
+                            }}>
+                            <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
+                            <MenuItem key="generic" value="generic">Documento</MenuItem>
+                            <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
+                            <MenuItem key="photography" value="photography">Fotografia</MenuItem>
+                            <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
+                            <MenuItem key="satellite_image" value="satellite_image">Imagem satélite</MenuItem>
+                            <MenuItem key="LiDAR" value="LiDAR">LiDAR</MenuItem>
+                            <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
+                            <MenuItem key="thematic_map" value="thematic_map">Mapa Temático</MenuItem>
+                            <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
+                            <MenuItem key="reports" value="reports">Relatório</MenuItem>
+                            <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
+                        </Select>
+                    </FormControl>
                     <br/>
+                    <br/>
+                    <>
+                        {docType==="thematic_map" &&
+                            <Container style={{
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
+                            }}>
+                                <br/>
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala" 
+                                        onChange={(e)=>setScale(e.target.value)}/>}
+                                    onChange={(e, values)=>setScale(values)}
+                                />
+                                <br/>
+                                <br/>  
+                                <br/>  
+                                <FormControl>
+                                    <FormLabel id="l"></FormLabel>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="l"
+                                        defaultValue="1"
+                                        name="radio-buttons-group"
+                                    >
+                                        <FormControlLabel value="1" control={<Radio />} label="Raster" onClick={(e)=>setRaster(true)}/>
+                                        <FormControlLabel value="2" control={<Radio />} label="Vetorial" onClick={(e)=>setRaster(false)}/>
+                                    </RadioGroup>
+                                </FormControl> 
+                                <br/>
+                                <br/>  
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
+                                        disabled={!raster}
+                                    />}
+                                    onChange={(e, values)=>setScale(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>   
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tipo de Geometria" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>setType(e.target.value)}
+                                        size="small"
+                                        disabled={raster}
+                                    />}
+                                    onChange={(e, values)=>setType(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>  
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tema" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>setTheme(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>setTheme(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tipo de Mapa" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>setMapType(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>setMapType(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{width: "80%", float:"left"}}
+                                    size="small"
+                                />
+                            </Container>
+                        }
+                        {docType==="thematic_statistics" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                                }}>
+                                <br/>
+                                <FormControl sx={{ minWidth: 200 }}>
+                                    <InputLabel>Tipo de estatística</InputLabel>
+                                    <Select
+                                        size="small"
+                                        value={URLs}
+                                        label="Tipo de documento"
+                                        MenuProps={MenuProps}
+                                        onChange={(e)=>{
+                                            setURL(e.target.value)
+                                            console.log(e.target.value)
+                                        }}
+                                    >
+                                        <MenuItem value="thematic_statistics">Estatística Temática</MenuItem>
+                                        <MenuItem value="census">Censos</MenuItem>
+                                        <MenuItem value="surveys">Inquérito</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <br/>
+                                <br/>
+                                <form style={{
+                                    float:"left"
+                                }}> 
+                                    <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                        required
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano"
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="Tema" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTheme(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>      
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        fullWidth
+                                        multiline
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />
+                                </form>
+                            </Container>
+                        }
+                        {docType==="sensors" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}> 
+                                    <br/>
+                                    <TextField 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/> 
+                                    <TextField 
+                                        id="var" 
+                                        label="Variável medida" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setVariable(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>       
+                                    <TextField 
+                                        id="descrption"
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        size="small"
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                    />      
+                                </form>
+                            </Container>
+                        }
+                        {docType==="satellite_image" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}> 
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                        required
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>      
+                                    <TextField 
+                                        id="link" 
+                                        label="Resolução da Imagem" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="Nome do Satélite" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setSatellite(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        size="small"
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                    />   
+                                </form>
+                            </Container>
+                        }
+                        {docType==="reports" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}> 
+                                <br/>
+                                    <TextField 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/> 
+                                    <TextField 
+                                        id="link" 
+                                        label="Contexto" 
+                                        variant="outlined" 
+                                        size="small"
+                                        onChange={(e)=>setContext(e.target.value)}
+                                    />
+                                    <br/>
+                                    <br/>    
+                                    <TextField 
+                                        id="link" 
+                                        label="Tema" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTheme(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>    
+                                    <TextField 
+                                        id="descrption"
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"                                            
+                                    /> 
+                                </form>
+                            </Container>
+                        }
+                        {docType==="photography" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}> 
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        required
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/> 
+                                    <Switch
+                                        checked={color}
+                                        onChange={() => setColor(!color)}
+                                        name="A cores"
+                                        color="primary"
+                                    />
+                                    <br/>
+                                    <br/>    
+                                    <TextField 
+                                        id="link" 
+                                        label="Resolução" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>    
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição"
+                                        variant="outlined" 
+                                        fullWidth
+                                        multiline
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />   
+                                </form>
+                            </Container>
+                        }
+                        {docType==="ortos" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}>
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        required
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>      
+                                    <TextField 
+                                        id="link" 
+                                        label="Escala" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setScale(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="Resolução" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />   
+                                </form>
+                            </Container>
+                        }
+                        {docType==="LiDAR" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                            }}>
+                                <form style={{
+                                    float:"left"
+                                }}>
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        required
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"/>
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"/>
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"/>
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"/>
+                                    <br/>
+                                    <br/>      
+                                    <TextField 
+                                        id="link" 
+                                        label="Resolução da Imagem" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"/>
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"/>   
+                                </form>
+                            </Container>
+                        }
+                        {docType==="generic" && 
+                            <Container style={{
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
+                                }}>
+                                <br/>
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{width: "80%", float:"left"}}
+                                    size="small"
+                                />
+                            </Container>
+                        }
+                        {docType==="aerial_photography" && 
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                                }}>
+                                <form style={{
+                                    float:"left"
+                                }}>
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                        required
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>      
+                                    <TextField 
+                                        id="link" 
+                                        label="Escala aproximada" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setScale(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link"
+                                        label="Resolução de Imagem" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="descrption"
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />
+                                </form>
+                            </Container>
+                        }
+                        {docType==="drawings" &&
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                                }}>
+                                <form style={{
+                                    float:"left"
+                                }}>
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        required
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="provider" 
+                                        label="Fornecedor"
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/> 
+                                    <TextField 
+                                        id="link" 
+                                        label="Contexto" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setContext(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>    
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />
+                                </form>
+                            </Container>
+                        }
+                        {docType==="geographic_map" && 
+                            <Container style={{
+                                height: "50vh",
+                                maxHeight: "50vh",
+                                width: "80%",
+                                overflow: 'auto'
+                                }}>
+                                <br/>
+                                <FormControl sx={{ minWidth: 200 }}>
+                                    <InputLabel>Tipo de mapa de base</InputLabel>
+                                    <Select
+                                        size="small"
+                                        value={URLs}
+                                        label="Tipo de documento"
+                                        MenuProps={MenuProps}
+                                        onChange={(e)=>{
+                                            setURL(e.target.value)
+                                            console.log(URLs)
+                                        }}>
+                                        <MenuItem value="geographic_map">Mapa Geográfico</MenuItem>
+                                        <MenuItem value="chorographic_map">Mapa Corográfico</MenuItem>
+                                        <MenuItem value="topographic_map">Mapa Topográfico</MenuItem>
+                                        <MenuItem value="topographic_plan">Planta Topográfica</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <br/>
+                                <br/>
+                                <form style={{
+                                    float:"left"
+                                }}>
+                                <br/>
+                                    <TextField 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        required
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField
+                                        id="provider" 
+                                        label="Fornecedor" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setProvider(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="year" 
+                                        label="Ano" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setTime(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="URL" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setLink(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>
+                                    <TextField 
+                                        id="link" 
+                                        label="Escala" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setScale(e.target.value)}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>  
+                                    </form>
+                                    <FormControl>
+                                        <FormLabel id="l"></FormLabel>
+                                        <RadioGroup
+                                            row
+                                            aria-labelledby="l"
+                                            defaultValue="1"
+                                            name="radio-buttons-group"
+                                        >
+                                            <FormControlLabel 
+                                                value="1" 
+                                                control={<Radio />} 
+                                                label="Raster" 
+                                                onClick={(e)=>{
+                                                    setRaster(true)
+                                                    console.log(raster)
+                                                }}
+                                            />
+                                            <FormControlLabel 
+                                                value="2" 
+                                                control={<Radio />} 
+                                                label="Vetorial" 
+                                                onClick={(e)=>{
+                                                    setRaster(false)
+                                                    console.log(raster)
+                                                }}
+                                            />
+                                        </RadioGroup>
+                                    </FormControl> 
+                                    <form style={{
+                                        float:"left"
+                                        }}
+                                    >
+                                    <br/>
+                                    <br/>     
+                                    <TextField
+                                        id="link" 
+                                        label="Resolução da Imagem" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setRes(e.target.value)}
+                                        disabled={!raster}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>   
+                                    <TextField 
+                                        id="link" 
+                                        label="Tipo de Geometria" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setType(e.target.value)}
+                                        disabled={raster}
+                                        size="small"
+                                    />
+                                    <br/>
+                                    <br/>  
+                                    <TextField 
+                                        id="descrption" 
+                                        label="Descrição" 
+                                        variant="outlined" 
+                                        multiline
+                                        fullWidth
+                                        onChange={(e)=>setDesc(e.target.value)}
+                                        size="small"
+                                    />
+                                </form>
+                            </Container>
+                        }
+                    </>
                     <br/>
                     <Button variant="contained" 
                         style={{backgroundColor: "black"}}
@@ -748,1075 +1865,6 @@ export default function DefaultFunction() {
                 <br/>
                 <br/>
             </>
-            <div style={{   
-                width: "18%",
-                height: "70vh",
-                borderRadius: "20px",
-                padding: "10px",
-                position: "fixed",
-                left: "-2%"}}>
-                <Typography variant="h6" component="h2">
-                    Formulário do documento
-                </Typography>
-                <hr/>
-                <br/>
-                <FormControl sx={{ minWidth: 200 }}>
-                    <InputLabel>Tipo de documento</InputLabel>
-                    <Select
-                        size="small"
-                        value={docType}
-                        label="Tipo de documento"
-                        MenuProps={MenuProps}
-                        onChange={(e)=>{
-                            setDocType(e.target.value)
-                            setURL(e.target.value)
-                            console.log(docType)
-                            console.log(docForm)
-                        }}>
-                        <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
-                        <MenuItem key="generic" value="generic">Documento</MenuItem>
-                        <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
-                        <MenuItem key="photography" value="photography">Fotografia</MenuItem>
-                        <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
-                        <MenuItem key="satellite_image" value="satellite_image">Imagem satélite</MenuItem>
-                        <MenuItem key="LiDAR" value="LiDAR">LiDAR</MenuItem>
-                        <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
-                        <MenuItem key="thematic_map" value="thematic_map">Mapa Temático</MenuItem>
-                        <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
-                        <MenuItem key="reports" value="reports">Relatório</MenuItem>
-                        <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
-                    </Select>
-                </FormControl>
-                <br/>
-                <br/>
-                <>
-                    {docType==="thematic_map" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto',
-                            left: "0px"
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                                <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    required
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="Escala" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setScale(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>  
-                                <FormControl>
-                                    <FormLabel id="l"></FormLabel>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="l"
-                                        defaultValue="1"
-                                        name="radio-buttons-group"
-                                    >
-                                        <FormControlLabel value="1" control={<Radio />} label="Raster" onClick={(e)=>setRaster(true)}/>
-                                        <FormControlLabel value="2" control={<Radio />} label="Vetorial" onClick={(e)=>setRaster(false)}/>
-                                    </RadioGroup>
-                                </FormControl> 
-                                <br/>
-                                <br/>     
-                                <TextField 
-                                    id="link" 
-                                    label="Resolução da Imagem" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"
-                                    disabled={!raster}
-                                />
-                                <br/>
-                                <br/>   
-                                <TextField 
-                                    id="link" 
-                                    label="Tipo de Geometria"
-                                    variant="outlined" 
-                                    size="small"
-                                    onChange={(e)=>setType(e.target.value)}
-                                    disabled={raster}
-                                />
-                                <br/>
-                                <br/>  
-                                <TextField 
-                                    id="link" 
-                                    label="Tema" 
-                                    variant="outlined" 
-                                    style={{width: "35%"}}
-                                    size="small"
-                                    onChange={(e)=>setTheme(e.target.value)}
-                                />
-                                <br/>
-                                <br/> 
-                                <TextField 
-                                    id="link" 
-                                    label="Tipo de Mapa Temático" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setMapType(e.target.value)}
-                                />
-                                <br/>
-                                <br/> 
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    size="small"
-                                    fullWidth
-                                    multiline
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                />   
-                            </form>
-                        </Container>
-                    }
-                    {docType==="thematic_statistics" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                            }}>
-                            <br/>
-                            <FormControl sx={{ minWidth: 200 }}>
-                                <InputLabel>Tipo de estatística</InputLabel>
-                                <Select
-                                    size="small"
-                                    value={URLs}
-                                    label="Tipo de documento"
-                                    MenuProps={MenuProps}
-                                    onChange={(e)=>{
-                                        setURL(e.target.value)
-                                        console.log(e.target.value)
-                                    }}
-                                >
-                                    <MenuItem value="thematic_statistics">Estatística Temática</MenuItem>
-                                    <MenuItem value="census">Censos</MenuItem>
-                                    <MenuItem value="surveys">Inquérito</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <br/>
-                            <br/>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                                <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                    required
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano"
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="Tema" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTheme(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>      
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    fullWidth
-                                    multiline
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />
-                            </form>
-                        </Container>
-                    }
-                    {docType==="sensors" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                                <br/>
-                                <TextField 
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/> 
-                                <TextField 
-                                    id="var" 
-                                    label="Variável medida" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setVariable(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>       
-                                <TextField 
-                                    id="descrption"
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    size="small"
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                />      
-                            </form>
-                        </Container>
-                    }
-                    {docType==="satellite_image" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                    required
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>      
-                                <TextField 
-                                    id="link" 
-                                    label="Resolução da Imagem" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="Nome do Satélite" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setSatellite(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    size="small"
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                />   
-                            </form>
-                        </Container>
-                    }
-                    {docType==="reports" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                            <br/>
-                                <TextField 
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/> 
-                                <TextField 
-                                    id="link" 
-                                    label="Contexto" 
-                                    variant="outlined" 
-                                    size="small"
-                                    onChange={(e)=>setContext(e.target.value)}
-                                />
-                                <br/>
-                                <br/>    
-                                <TextField 
-                                    id="link" 
-                                    label="Tema" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTheme(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>    
-                                <TextField 
-                                    id="descrption"
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"                                            
-                                /> 
-                            </form>
-                        </Container>
-                    }
-                    {docType==="photography" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}> 
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    required
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/> 
-                                <Switch
-                                    checked={color}
-                                    onChange={() => setColor(!color)}
-                                    name="A cores"
-                                    color="primary"
-                                />
-                                <br/>
-                                <br/>    
-                                <TextField 
-                                    id="link" 
-                                    label="Resolução" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>    
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição"
-                                    variant="outlined" 
-                                    fullWidth
-                                    multiline
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />   
-                            </form>
-                        </Container>
-                    }
-                    {docType==="ortos" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    required
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>      
-                                <TextField 
-                                    id="link" 
-                                    label="Escala" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setScale(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="Resolução" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />   
-                            </form>
-                        </Container>
-                    }
-                    {docType==="LiDAR" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                        }}>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    required
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"/>
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"/>
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"/>
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"/>
-                                <br/>
-                                <br/>      
-                                <TextField 
-                                    id="link" 
-                                    label="Resolução da Imagem" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"/>
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"/>   
-                            </form>
-                        </Container>
-                    }
-                    {docType==="generic" && 
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflowY: 'auto'
-                            }}>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    style={{width: "80%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <br/>
-                                <Autocomplete
-                                    freeSolo
-                                    options={allProviders}
-                                    size="small"
-                                    sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField 
-                                        style={{
-                                            width: "80%", 
-                                            float:"left"}} 
-                                        {...params} 
-                                        label="Fornecedor" 
-                                        onChange={(e)=>{
-                                            setProvider(e.target.value)
-                                        }}/>}
-                                        onChange={(e, values)=>{
-                                            setProvider(values)
-                                        }}
-                                    />
-                                <br/>
-                                <br/>
-                                <br/>
-                                <Autocomplete
-                                    disablePortal
-                                    options={range(1700, new Date().getFullYear()).reverse()}
-                                    size="small"
-                                    sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField 
-                                        style={{
-                                            width: "60%", 
-                                            float:"left"}} 
-                                        {...params} 
-                                        label="Ano" 
-                                        required/>}
-                                    onChange={(e, values)=>setTime(values)}
-                                    />
-                                <br/>
-                                <br/>
-                                <br/>
-                                <Autocomplete
-                                    freeSolo
-                                    options={allURLs}
-                                    size="small"
-                                    sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField 
-                                        style={{
-                                            width: "80%", 
-                                            float:"left"}} 
-                                        {...params} 
-                                        label="URL" 
-                                        onChange={(e)=>setLink(e.target.value)}/>}
-                                    onChange={(e, values)=>setLink(values)}
-                                    />
-                                <br/>
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="descrption"
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    rows={4}
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    style={{width: "80%", float:"left"}}
-                                    size="small"
-                                />
-                            </form>
-                        </Container>
-                    }
-                    {docType==="aerial_photography" && 
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                            }}>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                    required
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>      
-                                <TextField 
-                                    id="link" 
-                                    label="Escala aproximada" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setScale(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link"
-                                    label="Resolução de Imagem" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="descrption"
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />
-                            </form>
-                        </Container>
-                    }
-                    {docType==="drawings" &&
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                            }}>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    required
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="provider" 
-                                    label="Fornecedor"
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/> 
-                                <TextField 
-                                    id="link" 
-                                    label="Contexto" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setContext(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>    
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />
-                            </form>
-                        </Container>
-                    }
-                    {docType==="geographic_map" && 
-                        <Container style={{
-                            height: "50vh",
-                            maxHeight: "50vh",
-                            width: "80%",
-                            overflow: 'auto'
-                            }}>
-                            <br/>
-                            <FormControl sx={{ minWidth: 200 }}>
-                                <InputLabel>Tipo de mapa de base</InputLabel>
-                                <Select
-                                    size="small"
-                                    value={URLs}
-                                    label="Tipo de documento"
-                                    MenuProps={MenuProps}
-                                    onChange={(e)=>{
-                                        setURL(e.target.value)
-                                        console.log(URLs)
-                                    }}>
-                                    <MenuItem value="geographic_map">Mapa Geográfico</MenuItem>
-                                    <MenuItem value="chorographic_map">Mapa Corográfico</MenuItem>
-                                    <MenuItem value="topographic_map">Mapa Topográfico</MenuItem>
-                                    <MenuItem value="topographic_plan">Planta Topográfica</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <br/>
-                            <br/>
-                            <form style={{
-                                float:"left"
-                            }}>
-                            <br/>
-                                <TextField 
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    required
-                                    onChange={(e)=>setName(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField
-                                    id="provider" 
-                                    label="Fornecedor" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setProvider(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="year" 
-                                    label="Ano" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setTime(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="URL" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setLink(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>
-                                <TextField 
-                                    id="link" 
-                                    label="Escala" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setScale(e.target.value)}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>  
-                                </form>
-                                <FormControl>
-                                    <FormLabel id="l"></FormLabel>
-                                    <RadioGroup
-                                        row
-                                        aria-labelledby="l"
-                                        defaultValue="1"
-                                        name="radio-buttons-group"
-                                    >
-                                        <FormControlLabel 
-                                            value="1" 
-                                            control={<Radio />} 
-                                            label="Raster" 
-                                            onClick={(e)=>{
-                                                setRaster(true)
-                                                console.log(raster)
-                                            }}
-                                        />
-                                        <FormControlLabel 
-                                            value="2" 
-                                            control={<Radio />} 
-                                            label="Vetorial" 
-                                            onClick={(e)=>{
-                                                setRaster(false)
-                                                console.log(raster)
-                                            }}
-                                        />
-                                    </RadioGroup>
-                                </FormControl> 
-                                <form style={{
-                                    float:"left"
-                                    }}
-                                >
-                                <br/>
-                                <br/>     
-                                <TextField
-                                    id="link" 
-                                    label="Resolução da Imagem" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setRes(e.target.value)}
-                                    disabled={!raster}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>   
-                                <TextField 
-                                    id="link" 
-                                    label="Tipo de Geometria" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setType(e.target.value)}
-                                    disabled={raster}
-                                    size="small"
-                                />
-                                <br/>
-                                <br/>  
-                                <TextField 
-                                    id="descrption" 
-                                    label="Descrição" 
-                                    variant="outlined" 
-                                    multiline
-                                    fullWidth
-                                    onChange={(e)=>setDesc(e.target.value)}
-                                    size="small"
-                                />
-                            </form>
-                        </Container>
-                    }
-                </>
-                <br/>
-            </div>
             <div style={{   
                 margin: "auto",
                 position: "fixed",
