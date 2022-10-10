@@ -690,7 +690,11 @@ export default function DefaultFunction() {
                     </Typography>
                     <hr/>
                     <br/>
-                    <FormControl sx={{ minWidth: 200 }}>
+                    <FormControl sx={{ 
+                        width: "90%",
+                        left: '5%',
+                        float:"left"
+                    }}>
                         <InputLabel>Tipo de documento</InputLabel>
                         <Select
                             size="small"
@@ -717,7 +721,6 @@ export default function DefaultFunction() {
                             <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
                         </Select>
                     </FormControl>
-                    <br/>
                     <br/>
                     <>
                         {docType==="thematic_map" &&
@@ -840,7 +843,7 @@ export default function DefaultFunction() {
                                         size="small"
                                         disabled={!raster}
                                     />}
-                                    onChange={(e, values)=>setScale(values)}
+                                    onChange={(e, values)=>setRes(values)}
                                 />   
                                 <br/>
                                 <br/>
@@ -914,20 +917,22 @@ export default function DefaultFunction() {
                                     fullWidth
                                     rows={4}
                                     onChange={(e)=>setDesc(e.target.value)}
-                                    style={{width: "80%", float:"left"}}
+                                    style={{float:"left"}}
                                     size="small"
                                 />
                             </Container>
                         }
                         {docType==="thematic_statistics" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                                }}>
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
+                            }}>
                                 <br/>
-                                <FormControl sx={{ minWidth: 200 }}>
+                                <FormControl sx={{ 
+                                    width: "50%",
+                                    float:"left" 
+                                }}>
                                     <InputLabel>Tipo de estatística</InputLabel>
                                     <Select
                                         size="small"
@@ -946,501 +951,804 @@ export default function DefaultFunction() {
                                 </FormControl>
                                 <br/>
                                 <br/>
-                                <form style={{
-                                    float:"left"
-                                }}> 
-                                    <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                        required
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <br/>
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
-                                        label="Ano"
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Tema" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setTheme(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>      
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        fullWidth
-                                        multiline
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setTheme(values)}
+                                /> 
+                                <br/>
+                                <br/>
+                                <br/>      
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />
                             </Container>
                         }
                         {docType==="sensors" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
-                                }}> 
-                                    <br/>
-                                    <TextField 
-                                        required
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
+                            }}> 
+                                <br/>
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/> 
-                                    <TextField 
-                                        id="var" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Variável medida" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setVariable(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setVariable(e.target.value)}/>}
+                                    onChange={(e, values)=>setVariable(values)}
                                     />
-                                    <br/>
-                                    <br/>       
-                                    <TextField 
-                                        id="descrption"
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        size="small"
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                    />      
-                                </form>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />   
                             </Container>
                         }
                         {docType==="satellite_image" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}> 
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                        required
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <br/>
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/>      
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                /> 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Nome do Satélite" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setSatellite(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        size="small"
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                    />   
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setSatellite(values)}
+                                /> 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />
                             </Container>
                         }
                         {docType==="reports" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
-                                }}> 
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
+                                }}>
                                 <br/>
-                                    <TextField 
-                                        required
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/> 
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Contexto" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
                                         variant="outlined" 
-                                        size="small"
+                                        {...params}
                                         onChange={(e)=>setContext(e.target.value)}
-                                    />
-                                    <br/>
-                                    <br/>    
-                                    <TextField 
-                                        id="link" 
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>setContext(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Tema" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setTheme(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>    
-                                    <TextField 
-                                        id="descrption"
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"                                            
-                                    /> 
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setTheme(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/> 
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />
                             </Container>
                         }
                         {docType==="photography" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}> 
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        required
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/> 
-                                    <Switch
-                                        checked={color}
-                                        onChange={() => setColor(!color)}
-                                        name="A cores"
-                                        color="primary"
-                                    />
-                                    <br/>
-                                    <br/>    
-                                    <TextField 
-                                        id="link" 
-                                        label="Resolução" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <FormControlLabel control={<Switch
+                                    checked={color}
+                                    onChange={() => setColor(!color)}
+                                    label="A cores"
+                                    color="primary"
+                                />} label="Fotografia a cores" />
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>    
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição"
-                                        variant="outlined" 
-                                        fullWidth
-                                        multiline
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />   
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />      
                             </Container>
                         }
                         {docType==="ortos" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}>
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        required
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/>      
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Escala" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setScale(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                        onChange={(e)=>setScale(e.target.value)}/>}
+                                    onChange={(e, values)=>setScale(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Resolução" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />   
-                                </form>
+                                        disabled={!raster}
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                /> 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />       
                             </Container>
                         }
                         {docType==="LiDAR" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                            }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}>
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        required
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"/>
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"/>
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"/>
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"/>
-                                    <br/>
-                                    <br/>      
-                                    <TextField 
-                                        id="link" 
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
-                                        size="small"/>
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"/>   
-                                </form>
+                                        size="small"
+                                        disabled={!raster}
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>  
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />     
                             </Container>
                         }
                         {docType==="generic" && 
@@ -1524,170 +1832,256 @@ export default function DefaultFunction() {
                                     fullWidth
                                     rows={4}
                                     onChange={(e)=>setDesc(e.target.value)}
-                                    style={{width: "80%", float:"left"}}
+                                    style={{float:"left"}}
                                     size="small"
                                 />
                             </Container>
                         }
                         {docType==="aerial_photography" && 
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                                }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}>
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                        required
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/>      
-                                    <TextField 
-                                        id="link" 
-                                        label="Escala aproximada" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
-                                        onChange={(e)=>setScale(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link"
-                                        label="Resolução de Imagem" 
-                                        variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="descrption"
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />
-                                </form>
+                                        disabled={!raster}
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala aproximada" 
+                                        onChange={(e)=>setScale(e.target.value)}/>}
+                                    onChange={(e, values)=>setScale(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />
                             </Container>
                         }
                         {docType==="drawings" &&
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
-                                }}>
-                                <form style={{
-                                    float:"left"
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}>
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        required
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
+                                        }}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="provider" 
-                                        label="Fornecedor"
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
                                     />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
                                     />
-                                    <br/>
-                                    <br/> 
-                                    <TextField 
-                                        id="link" 
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Contexto" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setContext(e.target.value)}
                                         size="small"
-                                    />
-                                    <br/>
-                                    <br/>    
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setContext(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                />
                             </Container>
                         }
                         {docType==="geographic_map" && 
                             <Container style={{
-                                height: "50vh",
-                                maxHeight: "50vh",
-                                width: "80%",
-                                overflow: 'auto'
+                                maxHeight: "40vh",
+                                overflowY: 'auto',
+                                textAlign: "center"
                                 }}>
                                 <br/>
-                                <FormControl sx={{ minWidth: 200 }}>
+                                <FormControl sx={{ 
+                                    width: "50%",
+                                    float:"left"}}>
                                     <InputLabel>Tipo de mapa de base</InputLabel>
                                     <Select
                                         size="small"
                                         value={URLs}
-                                        label="Tipo de documento"
+                                        label="Tipo de mapa de base"
                                         MenuProps={MenuProps}
                                         onChange={(e)=>{
                                             setURL(e.target.value)
@@ -1701,120 +2095,173 @@ export default function DefaultFunction() {
                                 </FormControl>
                                 <br/>
                                 <br/>
-                                <form style={{
-                                    float:"left"
-                                }}>
                                 <br/>
-                                    <TextField 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        required
-                                        onChange={(e)=>setName(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField
-                                        id="provider" 
+                                <TextField 
+                                    style={{width: "60%", float:"left"}}
+                                    required
+                                    label="Nome" 
+                                    variant="outlined" 
+                                    onChange={(e)=>setName(e.target.value)}
+                                    size="small"
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
                                         label="Fornecedor" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setProvider(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="year" 
-                                        label="Ano" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setTime(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
-                                        label="URL" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setLink(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>
-                                    <TextField 
-                                        id="link" 
-                                        label="Escala" 
-                                        variant="outlined" 
-                                        onChange={(e)=>setScale(e.target.value)}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>  
-                                    </form>
-                                    <FormControl>
-                                        <FormLabel id="l"></FormLabel>
-                                        <RadioGroup
-                                            row
-                                            aria-labelledby="l"
-                                            defaultValue="1"
-                                            name="radio-buttons-group"
-                                        >
-                                            <FormControlLabel 
-                                                value="1" 
-                                                control={<Radio />} 
-                                                label="Raster" 
-                                                onClick={(e)=>{
-                                                    setRaster(true)
-                                                    console.log(raster)
-                                                }}
-                                            />
-                                            <FormControlLabel 
-                                                value="2" 
-                                                control={<Radio />} 
-                                                label="Vetorial" 
-                                                onClick={(e)=>{
-                                                    setRaster(false)
-                                                    console.log(raster)
-                                                }}
-                                            />
-                                        </RadioGroup>
-                                    </FormControl> 
-                                    <form style={{
-                                        float:"left"
+                                        onChange={(e)=>{
+                                            setProvider(e.target.value)
+                                        }}/>}
+                                        onChange={(e, values)=>{
+                                            setProvider(values)
                                         }}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>setTime(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>setLink(e.target.value)}/>}
+                                    onChange={(e, values)=>setLink(values)}
+                                    />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala aproximada" 
+                                        onChange={(e)=>setScale(e.target.value)}/>}
+                                    onChange={(e, values)=>setScale(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>
+                                <FormControl>
+                                    <FormLabel id="l"></FormLabel>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="l"
+                                        defaultValue="1"
+                                        name="radio-buttons-group"
                                     >
-                                    <br/>
-                                    <br/>     
-                                    <TextField
-                                        id="link" 
+                                        <FormControlLabel 
+                                            value="1" 
+                                            control={<Radio />} 
+                                            label="Raster" 
+                                            onClick={(e)=>{
+                                                setRaster(true)
+                                                console.log(raster)
+                                            }}
+                                        />
+                                        <FormControlLabel 
+                                            value="2" 
+                                            control={<Radio />} 
+                                            label="Vetorial" 
+                                            onClick={(e)=>{
+                                                setRaster(false)
+                                                console.log(raster)
+                                            }}
+                                        />
+                                    </RadioGroup>
+                                </FormControl> 
+                                <br/>
+                                <br/>  
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setRes(e.target.value)}
+                                        size="small"
                                         disabled={!raster}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>   
-                                    <TextField 
-                                        id="link" 
+                                    />}
+                                    onChange={(e, values)=>setRes(values)}
+                                />   
+                                <br/>
+                                <br/>
+                                <br/>   
+                                <Autocomplete
+                                    freeSolo
+                                    options={[1,2,3]}
+                                    size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField  
                                         label="Tipo de Geometria" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
                                         variant="outlined" 
+                                        {...params}
                                         onChange={(e)=>setType(e.target.value)}
+                                        size="small"
                                         disabled={raster}
-                                        size="small"
-                                    />
-                                    <br/>
-                                    <br/>  
-                                    <TextField 
-                                        id="descrption" 
-                                        label="Descrição" 
-                                        variant="outlined" 
-                                        multiline
-                                        fullWidth
-                                        onChange={(e)=>setDesc(e.target.value)}
-                                        size="small"
-                                    />
-                                </form>
+                                    />}
+                                    onChange={(e, values)=>setType(values)}
+                                />
+                                <br/>
+                                <br/>
+                                <br/>  
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>setDesc(e.target.value)}
+                                    style={{float:"left"}}
+                                    size="small"
+                                /> 
                             </Container>
                         }
                     </>
@@ -1868,11 +2315,10 @@ export default function DefaultFunction() {
             <div style={{   
                 margin: "auto",
                 position: "fixed",
-                left: "15%"}}>
-
+                width: "20%",
+                left: "0%"}}>
                 <div style={{   
                     margin: "auto",
-                    width: "20%",
                     borderRadius: "20px",
                     padding: "10px",
                     position: "fixed"}}>
