@@ -551,15 +551,16 @@ export default function DefaultFunction() {
                 )
             })
         } else {
-            fetch("http://localhost:5050/transform/vector", {
+            fetch("http://localhost:5050/mbox", {
                 method: "POST",
                 body: form
             })
             .then(res=>res.json())
             .then(result=>{
-                console.log(result.features)
+                console.log(result)
 
-                wkt = result
+                let parse = require('wellknown');
+                wkt = parse(polygonAux(result.origin, result.limit))
                 console.log(wkt)
                 setSpatialList(
                     <GeoJSON data={wkt}>
