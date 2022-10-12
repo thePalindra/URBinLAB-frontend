@@ -193,7 +193,10 @@ export default function DefaultFunction() {
     const [allMapImageResolution, setAllMapImageResolution]=React.useState([]);
     const [allMapScale, setAllMapScale]=React.useState([]);
     const [allMapGeometryType, setAllMapGeometryType]=React.useState([]);
-    
+    const [allMapTheme, setAllMapTheme]=React.useState([]);
+    const [allMapType, setAllMapType]=React.useState([]);
+    const [allOrtosScale, setAllOrtosScale]=React.useState([]);
+    const [allOrtosResolution, setAllOrtosResolution]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -213,6 +216,10 @@ export default function DefaultFunction() {
             getAllMapGeometryType()
             getAllMapImageResolution()
             getAllMapScale()
+            getAllMapTheme()
+            getAllMapType()
+            getAllOrtosScale()
+            getAllOrtosResolution()
         }
             
         return () => { ignore = true; }
@@ -405,6 +412,54 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllMapGeometryType(result)
+        })
+    }
+
+    function getAllMapType() {
+        fetch("http://localhost:8080/thematic_map/get_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapType(result)
+        })
+    }
+
+    function getAllMapTheme() {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapTheme(result)
+        })
+    }
+
+    function getAllOrtosScale() {
+        fetch("http://localhost:8080/ortos/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosScale(result)
+        })
+    }
+
+    function getAllOrtosResolution() {
+        fetch("http://localhost:8080/ortos/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosResolution(result)
         })
     }
 
@@ -954,7 +1009,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapScale}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField 
@@ -985,7 +1040,7 @@ export default function DefaultFunction() {
                                 <br/>  
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapImageResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1006,7 +1061,7 @@ export default function DefaultFunction() {
                                 <br/>   
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapGeometryType}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1027,7 +1082,7 @@ export default function DefaultFunction() {
                                 <br/>  
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapTheme}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1047,7 +1102,7 @@ export default function DefaultFunction() {
                                 <br/> 
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapType}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -2320,7 +2375,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapScale}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField 
@@ -2367,7 +2422,7 @@ export default function DefaultFunction() {
                                 <br/>  
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapImageResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -2388,7 +2443,7 @@ export default function DefaultFunction() {
                                 <br/>   
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allMapGeometryType}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -2655,9 +2710,6 @@ export default function DefaultFunction() {
                             draw= {{
                                 circlemarker: false,
                                 polyline: false
-                            }}
-                            edit={{ 
-                                edit: false
                             }}/>
                     </FeatureGroup>       
                     {spatialList}
