@@ -187,6 +187,8 @@ export default function DefaultFunction() {
     const [allPhotoImageResolution, setAllPhotoImageResolution]=React.useState([]);
     const [allAerialPhotoImageResolution, setAllAerialPhotoImageResolution]=React.useState([]);
     const [allAerialPhotoScale, setAllAerialPhotoScale]=React.useState([]);
+    const [allSatellite, setAllSatellite]=React.useState([]);
+    const [allSatelliteResolution, setAllSatelliteResolution]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -200,6 +202,8 @@ export default function DefaultFunction() {
             getAllPhotoImageResolution()
             getAllAerialPhotoImageResolution()
             getAllAerialPhotoScale()
+            getAllSatellite()
+            getAllSatelliteResolution()
         }
             
         return () => { ignore = true; }
@@ -320,6 +324,30 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllStatisticsThemes(result)
+        })
+    }
+
+    function getAllSatelliteResolution() {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatelliteResolution(result)
+        })
+    }
+
+    function getAllSatellite() {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatellite(result)
         })
     }
 
@@ -1300,7 +1328,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allSatelliteResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1320,7 +1348,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allSatellite}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
