@@ -182,6 +182,7 @@ export default function DefaultFunction() {
     const [allProviders, setAllProviders]=React.useState([]);
     const [allURLs, setAllURLs]=React.useState([]);
     const [allSpatialNames, setAllSpatialNames]=React.useState([]);
+    const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -190,6 +191,7 @@ export default function DefaultFunction() {
             getSH()
             getAllProviders()
             getAllURLS()
+            getAllDrawingsContext()
         }
             
         return () => { ignore = true; }
@@ -250,6 +252,18 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setSH(result)
+        })
+    }
+
+    function getAllDrawingsContext() {
+        fetch("http://localhost:8080/drawings/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllDrawingsContext(result)
         })
     }
 
@@ -2037,7 +2051,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allDrawingsContext}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -2316,8 +2330,12 @@ export default function DefaultFunction() {
             <div style={{   
                 margin: "auto",
                 position: "fixed",
-                width: "17%",
                 left: "0%"}}>
+                <div style={{   
+                    margin: "auto",
+                    position: "fixed",
+                    width: "25%",
+                    left: "0%"}}>   
                     <Typography variant="h6" component="h2">
                         Procurar espaços
                     </Typography>
@@ -2379,11 +2397,14 @@ export default function DefaultFunction() {
                         />
                     <br/>
                     </FormControl>
+                    <br/>
+                    <br/>
                     <Button variant="contained" 
                       style={{backgroundColor: "black"}}
                       onClick={returnSpaces}>Pesquisar</Button>
                     <br/>
                     <br/>
+                </div>
                 <>
                     <br/>
                     <br/>
@@ -2403,12 +2424,9 @@ export default function DefaultFunction() {
                     <br/>
                     <br/>
                 </>
-                
-            </div>
-            <div style={{   
+                <div style={{   
                     margin: "auto",
-                    width: "18%",
-                    left: "17%",
+                    width: "25%",
                     borderRadius: "20px",
                     position: "fixed",
                     paddingTop: "10px",
@@ -2436,7 +2454,7 @@ export default function DefaultFunction() {
                             padding: "30px"}}>
                             <List 
                                 style={{
-                                    maxHeight: "30vh",
+                                    maxHeight: "28vh",
                                     overflow: 'auto'
                                 }}>
                                 {list?.length>0 && list.map((doc, index)=> 
@@ -2464,14 +2482,14 @@ export default function DefaultFunction() {
                             </List>
                         </div>      
                     </Container>
-
                 </div>
+            </div>      
             <div style={{   
                 margin: "auto",
-                width: "63.5%",
+                width: "73%",
                 padding: "1px",
                 position: "fixed",
-                left: "35.7%",
+                left: "26%",
                 height: "70vh",
                 }}>
                 <MapContainer 
