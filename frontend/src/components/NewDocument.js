@@ -185,6 +185,8 @@ export default function DefaultFunction() {
     const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
     const [allStatisticsThemes, setAllStatisticsThemes]=React.useState([]);
     const [allPhotoImageResolution, setAllPhotoImageResolution]=React.useState([]);
+    const [allAerialPhotoImageResolution, setAllAerialPhotoImageResolution]=React.useState([]);
+    const [allAerialPhotoScale, setAllAerialPhotoScale]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -196,6 +198,8 @@ export default function DefaultFunction() {
             getAllDrawingsContext()
             getAllStatisticsThemes()
             getAllPhotoImageResolution()
+            getAllAerialPhotoImageResolution()
+            getAllAerialPhotoScale()
         }
             
         return () => { ignore = true; }
@@ -268,6 +272,32 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoImageResolution () {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setAllAerialPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoScale () {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setAllAerialPhotoScale(result)
         })
     }
 
@@ -1955,13 +1985,13 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allAerialPhotoImageResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
                                         style={{
-                                            width: "80%", 
+                                            width: "60%", 
                                             float:"left"}}
                                         variant="outlined" 
                                         {...params}
@@ -1976,7 +2006,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allAerialPhotoScale}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField 
