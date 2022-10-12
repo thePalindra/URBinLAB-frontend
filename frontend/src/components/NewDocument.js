@@ -184,6 +184,7 @@ export default function DefaultFunction() {
     const [allSpatialNames, setAllSpatialNames]=React.useState([]);
     const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
     const [allStatisticsThemes, setAllStatisticsThemes]=React.useState([]);
+    const [allPhotoImageResolution, setAllPhotoImageResolution]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -194,6 +195,7 @@ export default function DefaultFunction() {
             getAllURLS()
             getAllDrawingsContext()
             getAllStatisticsThemes()
+            getAllPhotoImageResolution()
         }
             
         return () => { ignore = true; }
@@ -257,6 +259,18 @@ export default function DefaultFunction() {
         })
     }
 
+    function getAllPhotoImageResolution () {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllPhotoImageResolution(result)
+        })
+    }
+
     function getAllDrawingsContext() {
         fetch("http://localhost:8080/drawings/get_context", {
             method: "POST",
@@ -277,7 +291,6 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
             setAllStatisticsThemes(result)
         })
     }
@@ -1519,7 +1532,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allPhotoImageResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
