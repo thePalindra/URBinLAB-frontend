@@ -190,6 +190,10 @@ export default function DefaultFunction() {
     const [allSatellite, setAllSatellite]=React.useState([]);
     const [allSatelliteResolution, setAllSatelliteResolution]=React.useState([]);
     const [allLiDARResolution, setAllLiDARResolution]=React.useState([]);
+    const [allMapImageResolution, setAllMapImageResolution]=React.useState([]);
+    const [allMapScale, setAllMapScale]=React.useState([]);
+    const [allMapGeometryType, setAllMapGeometryType]=React.useState([]);
+    
 
     React.useEffect(() => {
         let ignore = false;
@@ -206,6 +210,9 @@ export default function DefaultFunction() {
             getAllSatellite()
             getAllSatelliteResolution()
             getAllLiDARResolution()
+            getAllMapGeometryType()
+            getAllMapImageResolution()
+            getAllMapScale()
         }
             
         return () => { ignore = true; }
@@ -362,6 +369,42 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllLiDARResolution(result)
+        })
+    }
+
+    function getAllMapImageResolution() {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapImageResolution(result)
+        })
+    }
+
+    function getAllMapScale() {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapScale(result)
+        })
+    }
+
+    function getAllMapGeometryType() {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapGeometryType(result)
         })
     }
 
