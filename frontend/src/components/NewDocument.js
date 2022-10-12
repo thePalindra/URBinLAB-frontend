@@ -189,6 +189,7 @@ export default function DefaultFunction() {
     const [allAerialPhotoScale, setAllAerialPhotoScale]=React.useState([]);
     const [allSatellite, setAllSatellite]=React.useState([]);
     const [allSatelliteResolution, setAllSatelliteResolution]=React.useState([]);
+    const [allLiDARResolution, setAllLiDARResolution]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -204,6 +205,7 @@ export default function DefaultFunction() {
             getAllAerialPhotoScale()
             getAllSatellite()
             getAllSatelliteResolution()
+            getAllLiDARResolution()
         }
             
         return () => { ignore = true; }
@@ -348,6 +350,18 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllSatellite(result)
+        })
+    }
+
+    function getAllLiDARResolution() {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllLiDARResolution(result)
         })
     }
 
@@ -1818,7 +1832,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allLiDARResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
