@@ -283,7 +283,6 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
             setAllAerialPhotoImageResolution(result)
         })
     }
@@ -296,7 +295,6 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
             setAllAerialPhotoScale(result)
         })
     }
