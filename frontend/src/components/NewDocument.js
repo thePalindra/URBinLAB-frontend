@@ -183,6 +183,7 @@ export default function DefaultFunction() {
     const [allURLs, setAllURLs]=React.useState([]);
     const [allSpatialNames, setAllSpatialNames]=React.useState([]);
     const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
+    const [allStatisticsThemes, setAllStatisticsThemes]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -192,6 +193,7 @@ export default function DefaultFunction() {
             getAllProviders()
             getAllURLS()
             getAllDrawingsContext()
+            getAllStatisticsThemes()
         }
             
         return () => { ignore = true; }
@@ -264,6 +266,19 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllDrawingsContext(result)
+        })
+    }
+
+    function getAllStatisticsThemes() {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setAllStatisticsThemes(result)
         })
     }
 
