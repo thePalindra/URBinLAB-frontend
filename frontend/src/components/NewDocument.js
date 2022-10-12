@@ -197,6 +197,9 @@ export default function DefaultFunction() {
     const [allMapType, setAllMapType]=React.useState([]);
     const [allOrtosScale, setAllOrtosScale]=React.useState([]);
     const [allOrtosResolution, setAllOrtosResolution]=React.useState([]);
+    const [allReportsTheme, setAllReportsTheme]=React.useState([]);
+    const [allReportsContext, setAllReportsContext]=React.useState([]);
+    const [allSensorsVariable, setAllSensorsVariable]=React.useState([]);
 
     React.useEffect(() => {
         let ignore = false;
@@ -220,6 +223,9 @@ export default function DefaultFunction() {
             getAllMapType()
             getAllOrtosScale()
             getAllOrtosResolution()
+            getAllReportsContext()
+            getAllReportsTheme()
+            getAllSensorsVariable()
         }
             
         return () => { ignore = true; }
@@ -460,6 +466,42 @@ export default function DefaultFunction() {
         .then(res=>res.json())
         .then(result=>{
             setAllOrtosResolution(result)
+        })
+    }
+
+    function getAllReportsContext() {
+        fetch("http://localhost:8080/reports/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsContext(result)
+        })
+    }
+
+    function getAllReportsTheme() {
+        fetch("http://localhost:8080/reports/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsTheme(result)
+        })
+    }
+
+    function getAllSensorsVariable() {
+        fetch("http://localhost:8080/sensors/get_variable", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSensorsVariable(result)
         })
     }
 
@@ -1337,7 +1379,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={allURLs}
+                                    options={allSensorsVariable}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField 
@@ -1566,7 +1608,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allReportsContext}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1586,7 +1628,7 @@ export default function DefaultFunction() {
                                 <br/> 
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allReportsTheme}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
@@ -1806,7 +1848,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allOrtosScale}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField 
@@ -1823,7 +1865,7 @@ export default function DefaultFunction() {
                                 <br/>
                                 <Autocomplete
                                     freeSolo
-                                    options={[1,2,3]}
+                                    options={allOrtosResolution}
                                     size="small"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
