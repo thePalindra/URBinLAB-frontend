@@ -24,15 +24,14 @@ import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 import Typography from '@mui/material/Typography';
 import ListItemButton from '@mui/material/ListItemButton';
-import PublicIcon from '@mui/icons-material/Public';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Modal from '@mui/material/Modal';
+import CircularProgress from '@mui/material/CircularProgress';
 
 let lat = 0
 let lng = 0
 let size = 0
-let wkt = "new Wkt.Wkt();"
 
 const MenuProps = {
     PaperProps: {
@@ -87,10 +86,9 @@ function range(min, max, step) {
 }
 
 export default function DefaultFunction() {
-    const position = [38, -17];
+    const position = [38, -17.7];
     let navigateCancel = useNavigate()
-    let navigateConfirm = useNavigate()
-    const [docType, setDocType]=React.useState("generic");
+    const [docType, setDocType]=React.useState("none");
     const [name, setName]=React.useState('');
     const [desc, setDesc]=React.useState('');
     const [provider, setProvider]=React.useState('');
@@ -107,63 +105,6 @@ export default function DefaultFunction() {
     const [scale, setScale]=React.useState('');
     const [URLs, setURL]=React.useState('geographic_map');
     const [raster, setRaster]=React.useState(true);
-    const [docForm, setDocForm]=React.useState(
-        <Container style={{
-            height: 520,
-            maxHeight: 550,
-            overflow: 'auto'
-            }}>
-            <form style={{
-                float:"left"
-            }}>
-                <TextField 
-                    id="name" 
-                    label="Nome" 
-                    variant="outlined" 
-                    onChange={(e)=>setName(e.target.value)}
-                    size="small"
-                />
-                <br/>
-                <br/>
-                <TextField 
-                    id="provider" 
-                    label="Fornecedor" 
-                    variant="outlined" 
-                    onChange={(e)=>setProvider(e.target.value)}
-                    size="small"
-                />
-                <br/>
-                <br/>
-                <TextField 
-                    id="year" 
-                    label="Ano" 
-                    variant="outlined" 
-                    onChange={(e)=>setTime(e.target.value)}
-                    size="small"
-                />
-                <br/>
-                <br/>
-                <TextField 
-                    id="link" 
-                    label="URL" 
-                    variant="outlined" 
-                    onChange={(e)=>setLink(e.target.value)}
-                    size="small"
-                />
-                <br/>
-                <br/>
-                <TextField 
-                    id="descrption"
-                    label="Descrição" 
-                    variant="outlined" 
-                    multiline
-                    fullWidth
-                    onChange={(e)=>setDesc(e.target.value)}
-                    size="small"
-                />
-            </form>
-        </Container>
-    );
     const [editableFG, setEditableFG] = React.useState(null);
     const [list, setList]=React.useState([]);
     const [selectedHierarchy, setSelectedHierarchy]=React.useState("");
@@ -175,6 +116,7 @@ export default function DefaultFunction() {
     const [open, setOpen] = React.useState(false);
     const [open2, setOpen2] = React.useState(false);
     const [open3, setOpen3] = React.useState(false);
+    const [open4, setOpen4] = React.useState(false);
     const [fileType, setFileType] = React.useState("vector");
     const [selectedFile, setSelectedFile]=React.useState("");
     const [spaceName, setSpaceName]=React.useState();
@@ -200,6 +142,7 @@ export default function DefaultFunction() {
     const [allReportsTheme, setAllReportsTheme]=React.useState([]);
     const [allReportsContext, setAllReportsContext]=React.useState([]);
     const [allSensorsVariable, setAllSensorsVariable]=React.useState([]);
+    const [wkt, setWKT]=React.useState("[]");
 
     React.useEffect(() => {
         let ignore = false;
@@ -227,7 +170,6 @@ export default function DefaultFunction() {
             getAllReportsTheme()
             getAllSensorsVariable()
         }
-            
         return () => { ignore = true; }
     },[]);
 
@@ -244,16 +186,16 @@ export default function DefaultFunction() {
         let parse = require('wellknown');
         switch(e.layerType) {
             case "circle":
-                wkt = circle(e)
+                setWKT(circle(e))
                 break;
             case "rectangle":
-                wkt = parse(polygon(e))
+                setWKT(parse(polygon(e)))
                 break;
             case "marker":
-                wkt = parse(point(e))
+                setWKT(parse(point(e)))
                 break;
             case "polygon":
-                wkt = parse(polygon(e))
+                setWKT(parse(polygon(e)))
                 break;
             default:
                 break;
@@ -624,6 +566,7 @@ export default function DefaultFunction() {
 
     async function addDocument() {
         let form = allFormAppend()
+        setOpen4(true)
         
         let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
@@ -659,9 +602,9 @@ export default function DefaultFunction() {
                 break;
             default:
                 console.log(wkt)
-                wkt = JSON.stringify(wkt);
+                let wkttemp = JSON.stringify(wkt);
                 sform.append("name", spaceName)
-                sform.append("space", wkt)
+                sform.append("space", wkttemp)
                 fetch("http://localhost:8080/space/add_Geo", {
                     method: "POST",
                     headers: window.localStorage,
@@ -670,22 +613,21 @@ export default function DefaultFunction() {
                 break;
         }
 
-        for (let i = 0; i<list.length; i++) {
+        for (let j = 0; j<list.length; j++) {
             let fform = new FormData();
-            fform.append("file", list[i])
+            fform.append("file", list[j])
             fform.append("document", docId)
 
-            fetch("http://localhost:8080/file/add", {
+            let fileres = await fetch("http://localhost:8080/file/add", {
                 method: "POST",
                 headers: window.localStorage,
                 body: fform
             })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
-            })
+
+            fileres = await fileres.json()
+            console.log(fileres)
         }
-        console.log("terminou tudo bem")
+        //window.location.reload(false);
     }
 
     const returnSpaces =()=> {
@@ -714,6 +656,8 @@ export default function DefaultFunction() {
 
             let parse = require('wellknown');
             console.log(parse(result[0][1]))
+            setWKT(result[0][0])
+            console.log(wkt)
                 
             setSpatialList(result.map(doc => (
                 <GeoJSON key={doc[0]} data={parse(doc[1])}>
@@ -741,7 +685,7 @@ export default function DefaultFunction() {
                                             onClick={()=>setSpatialList(<></>)}> Apagar </Button>
                                     </Popup>
                                 </GeoJSON>)
-                                wkt=doc[0]
+                                setWKT(doc[0])
                                 console.log(wkt)
                             }}> Confirmar localização </Button>
                         <br/>
@@ -755,8 +699,10 @@ export default function DefaultFunction() {
         })
     }
 
-    function getGeometria() {
+    async function getGeometria() {
         const drawnItems = editableFG._layers;
+        setOpen(false)
+        setOpen4(true)
         if (Object.keys(drawnItems).length > 0) {
             Object.keys(drawnItems).forEach((layerid, index) => {
                 if (index > 0) return;
@@ -768,69 +714,50 @@ export default function DefaultFunction() {
         form.append("file", selectedFile)
         
         for (const temp of list) {
-            if (selectedFile!=temp)
+            if (selectedFile!==temp)
                 form.append('aux', temp);
         }
 
         if (fileType==="raster") {
-            fetch("http://localhost:5050/transform/raster", {
+            let resultRaster = await fetch("http://localhost:5050/transform/raster", {
                 method: "POST",
                 body: form
             })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
+            
+            resultRaster = await resultRaster.json();
 
-                let parse = require('wellknown');
-                wkt = parse(polygonAux(result.origin, result.limit))
-                console.log(typeof wkt)
-                setSpatialList(<></>)
-                setSpatialList(
-                    <GeoJSON data={wkt}>
-                        <Popup>
-                            
-                            <ListItem>
-                                <ListItemAvatar>
-                                    
-                                </ListItemAvatar>
-                                <ListItemText primary={1} />
-                            </ListItem>
-                            <Button variant="contained" 
-                                style={{backgroundColor: "black"}}
-                                onClick={()=>setSpatialList(<></>)}> Apagar </Button>
-                        </Popup>
-                    </GeoJSON>
-                )
-            })
+            let parse = require('wellknown');
+            setWKT(parse(polygonAux(resultRaster.origin, resultRaster.limit)))
+
+            setSpatialList(
+                <GeoJSON data={parse(polygonAux(resultRaster.origin, resultRaster.limit))}>
+                </GeoJSON>
+            )
         } else {
-            fetch("http://localhost:5050/mbox", {
+            let resultBox = await fetch("http://localhost:5050/mbox", {
                 method: "POST",
                 body: form
             })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
 
-                let parse = require('wellknown');
-                wkt = parse(polygonAux(result.origin, result.limit))
-                console.log(wkt)
-                setSpatialList(
-                    <GeoJSON data={wkt}>
-                        <Popup>
-                            
-                            <ListItem>
-                                <ListItemAvatar>
-                                    
-                                </ListItemAvatar>
-                                <ListItemText primary={1} />
-                            </ListItem>
-                            <Button variant="contained" 
-                                style={{backgroundColor: "black"}}
-                                onClick={()=>setSpatialList(<></>)}> Apagar </Button>
-                        </Popup>
-                    </GeoJSON>
-                )
-                    
+            resultBox = await resultBox.json();
+            console.log(resultBox)
+
+            let parse = require('wellknown');
+            setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
+                
+            let resultVector = await fetch("http://localhost:5050/transform/vector", {
+                method: "POST",
+                body: form
+            })
+
+            resultVector = await resultVector.json();
+
+            setSpatialList(
+                <GeoJSON data={resultVector}>
+                </GeoJSON>
+            )
+                
+            
                 /*setSpatialList(result.features.map((doc, index) => (
                     <GeoJSON key={index} data={doc}>
                         <Popup>
@@ -846,8 +773,9 @@ export default function DefaultFunction() {
                         </Popup>
                     </GeoJSON>
                 )))*/
-            })
+            
         }
+        setOpen4(false)
     }
 
     return (
@@ -890,9 +818,8 @@ export default function DefaultFunction() {
                         <br/>
                         <br/>
                         <Button variant="contained" 
-                            style={{backgroundColor: "black"}}
                             onClick={()=>{getGeometria()}}>
-                                Utilizar como espaço
+                                Utilizar como contexto espacial
                         </Button>
                         <br/>
                         <br/>
@@ -938,7 +865,7 @@ export default function DefaultFunction() {
                         textAlign: "center"
                     }}>
                     <br/>
-                    <Typography variant="h6" component="h2">
+                    <Typography variant="h5" component="h2">
                         Formulário do documento
                     </Typography>
                     <hr/>
@@ -958,10 +885,8 @@ export default function DefaultFunction() {
                                 setDocType(e.target.value)
                                 setURL(e.target.value)
                                 console.log(docType)
-                                console.log(docForm)
                             }}>
                             <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
-                            <MenuItem key="generic" value="generic">Documento</MenuItem>
                             <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
                             <MenuItem key="photography" value="photography">Fotografia</MenuItem>
                             <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
@@ -970,6 +895,7 @@ export default function DefaultFunction() {
                             <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
                             <MenuItem key="thematic_map" value="thematic_map">Mapa Temático</MenuItem>
                             <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
+                            <MenuItem key="generic" value="generic">Outro documento</MenuItem>
                             <MenuItem key="reports" value="reports">Relatório</MenuItem>
                             <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
                         </Select>
@@ -983,13 +909,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                             }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1205,13 +1141,23 @@ export default function DefaultFunction() {
                                 <br/>
                                 <br/>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1311,13 +1257,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                             }}> 
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1414,13 +1370,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}> 
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1540,13 +1506,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1666,13 +1642,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}> 
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1780,13 +1766,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -1904,13 +1900,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -2011,13 +2017,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -2097,13 +2113,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -2221,13 +2247,23 @@ export default function DefaultFunction() {
                                 textAlign: "center"
                                 }}>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -2349,13 +2385,23 @@ export default function DefaultFunction() {
                                 <br/>
                                 <br/>
                                 <br/>
-                                <TextField 
-                                    style={{width: "60%", float:"left"}}
-                                    required
-                                    label="Nome" 
-                                    variant="outlined" 
-                                    onChange={(e)=>setName(e.target.value)}
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
                                     size="small"
+                                    sx={{ width: 300 }}
+                                    renderInput={(params) => <TextField 
+                                        style={{width: "80%", float:"left"}}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>setName(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        setName(values)
+                                    }}
                                 />
                                 <br/>
                                 <br/>
@@ -2517,15 +2563,38 @@ export default function DefaultFunction() {
                                 /> 
                             </Container>
                         }
+                        {docType==="none" && 
+                            <Container>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <Typography variant="h6" component="h2">
+                                    Selecione um tipo de documento
+                                </Typography>
+                                <br/>
+                            </Container>
+                        }
                     </>
                     <br/>
                     <Button variant="contained" 
-                        style={{backgroundColor: "black"}}
+                        disabled={(docType==="none" && (name==='' || name===null) && (time==='' || time===null))}
                         onClick={()=>{addDocument()}}>
                             Confirmar
                     </Button>
                     <br/>
                     <br/>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={open4}>
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}>
+                    <CircularProgress/>
                 </div>
             </Modal>
             <div style={{   
@@ -2553,10 +2622,10 @@ export default function DefaultFunction() {
                     </IconButton>
 
                     <Button variant="contained" component="label" style={{
-                        backgroundColor: "black",
                         paddingTop: "1vh"}}
+                        disabled={list.length < 1}
                         onClick={()=>setOpen3(true)}>
-                        Confirmar
+                        Concluir
                     </Button>
             </div>
             <>
@@ -2575,7 +2644,7 @@ export default function DefaultFunction() {
                     width: "25%",
                     left: "0%"}}>   
                     <Typography variant="h6" component="h2">
-                        Procurar espaços
+                        Procurar contexto espacial
                     </Typography>
                     <hr/>
                     <br/>
@@ -2668,7 +2737,8 @@ export default function DefaultFunction() {
                     borderRadius: "20px",
                     position: "fixed",
                     paddingTop: "10px",
-                    border: "5px solid black",}}>
+                    border: "5px solid black",
+                    left:"0%"}}>
                     <Container>
                         <br/>
                         <Button
@@ -2692,7 +2762,7 @@ export default function DefaultFunction() {
                             padding: "30px"}}>
                             <List 
                                 style={{
-                                    maxHeight: "28vh",
+                                    height: "28vh",
                                     overflow: 'auto'
                                 }}>
                                 {list?.length>0 && list.map((doc, index)=> 
@@ -2707,6 +2777,7 @@ export default function DefaultFunction() {
                                         </IconButton>
                                         }> 
                                         <ListItemButton role={undefined} onClick={()=>{
+                                            setSpatialList()
                                             setSelectedFile(doc)
                                             setOpen(true)
                                         }} 
@@ -2733,7 +2804,7 @@ export default function DefaultFunction() {
                 <MapContainer 
                     style={{
                         width: "100%",
-                        height: "72vh"
+                        height: "75vh"
                     }} 
                     center={position} 
                     zoom={6} 
@@ -2747,12 +2818,14 @@ export default function DefaultFunction() {
                     <FeatureGroup ref={featureGroupRef => {
                         onFeatureGroupReady(featureGroupRef);
                     }}>
-                        <EditControl position="topright"
+                        <EditControl 
+                            position="topleft"
                             onCreated={_created}
                             draw= {{
                                 circlemarker: false,
                                 polyline: false
-                            }}/>
+                            }}
+                            edit={{edit:false}}/>
                     </FeatureGroup>       
                     {spatialList}
                 </MapContainer>   

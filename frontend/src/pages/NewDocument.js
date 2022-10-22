@@ -22,10 +22,10 @@ export default function AddDrawings() {
                     paddingTop:"10px",
                     margin: "auto",
                     width: "100%",
-                    height: "83vh",
+                    height: "85vh",
                     border: "1px solid black",
                     background: "rgba(256, 256, 256, 0.92)",
-                    borderRadius: "20px",
+                    borderRadius: "10px",
                     position: "fixed"
                 }}
                 >
