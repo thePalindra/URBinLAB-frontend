@@ -11,7 +11,7 @@ export default function AddDrawings() {
                     paddingTop:"20px"
                 }}
                 >
-                    <Typography variant="h5" component="h2">
+                    <Typography variant="h4" component="h2">
                         Adicionar documento
                     </Typography>
                 </div>

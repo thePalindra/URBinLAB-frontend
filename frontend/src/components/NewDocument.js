@@ -2617,7 +2617,7 @@ export default function DefaultFunction() {
                     position: "fixed",
                     width: "25%",
                     left: "0%"}}>   
-                    <Typography variant="h6" component="h2">
+                    <Typography variant="h5" component="h2">
                         Procurar contexto espacial
                     </Typography>
                     <br/>
