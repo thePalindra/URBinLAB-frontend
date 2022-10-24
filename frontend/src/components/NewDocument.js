@@ -110,6 +110,8 @@ export default function DefaultFunction() {
     const [selectedHierarchy, setSelectedHierarchy]=React.useState("");
     const [selectedLevel, setSelectedLevel]=React.useState("");
     const [spatialHierarchy, setSH]=React.useState([]);
+    const [spatialHierarchyType, setSHT]=React.useState([]);
+    const [selectedSpatialHierarchyType, setSSHT]=React.useState([]);
     const [spatialLevel, setSL]=React.useState([]);
     const [spatialQuery, setSQ] =React.useState("");
     const [spatialList, setSpatialList]=React.useState(<></>);
@@ -148,7 +150,6 @@ export default function DefaultFunction() {
         let ignore = false;
 
         if (!ignore) {
-            getSH()
             getAllProviders()
             getAllURLS()
             getAllDrawingsContext()
@@ -169,6 +170,7 @@ export default function DefaultFunction() {
             getAllReportsContext()
             getAllReportsTheme()
             getAllSensorsVariable()
+            getSpatialHierarchyType()
         }
         return () => { ignore = true; }
     },[]);
@@ -219,11 +221,13 @@ export default function DefaultFunction() {
         console.log(arr)
     }
 
-    function getSH() {
+    function getSH(value) {
+        let form = new FormData()
+        form.append("type", value)
         fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
             headers: window.localStorage,
-            body: []
+            body: form
         })
         .then(res=>res.json())
         .then(result=>{
@@ -447,6 +451,18 @@ export default function DefaultFunction() {
         })
     }
 
+    function getSpatialHierarchyType() {
+        fetch("http://localhost:8080/space/get_hierarchy_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setSHT(result)
+        })
+    }
+
     function getSL(hier) {
         let form = new FormData();
         form.append("hierarchy", hier)
@@ -627,7 +643,7 @@ export default function DefaultFunction() {
             fileres = await fileres.json()
             console.log(fileres)
         }
-        //window.location.reload(false);
+        window.location.reload(false);
     }
 
     const returnSpaces =()=> {
@@ -1021,6 +1037,7 @@ export default function DefaultFunction() {
                                     options={allMapImageResolution}
                                     size="small"
                                     sx={{ width: 300 }}
+                                    disabled={!raster}
                                     renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
                                         style={{
@@ -1030,30 +1047,8 @@ export default function DefaultFunction() {
                                         {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                        disabled={!raster}
                                     />}
                                     onChange={(e, values)=>setRes(values)}
-                                />   
-                                <br/>
-                                <br/>
-                                <br/>   
-                                <Autocomplete
-                                    freeSolo
-                                    options={allMapGeometryType}
-                                    size="small"
-                                    sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField  
-                                        label="Tipo de Geometria" 
-                                        style={{
-                                            width: "80%", 
-                                            float:"left"}}
-                                        variant="outlined" 
-                                        {...params}
-                                        onChange={(e)=>setType(e.target.value)}
-                                        size="small"
-                                        disabled={raster}
-                                    />}
-                                    onChange={(e, values)=>setType(values)}
                                 />   
                                 <br/>
                                 <br/>
@@ -2512,6 +2507,7 @@ export default function DefaultFunction() {
                                     freeSolo
                                     options={allMapImageResolution}
                                     size="small"
+                                    disabled={!raster}
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField  
                                         label="Resolução da Imagem" 
@@ -2522,31 +2518,9 @@ export default function DefaultFunction() {
                                         {...params}
                                         onChange={(e)=>setRes(e.target.value)}
                                         size="small"
-                                        disabled={!raster}
                                     />}
                                     onChange={(e, values)=>setRes(values)}
-                                />   
-                                <br/>
-                                <br/>
-                                <br/>   
-                                <Autocomplete
-                                    freeSolo
-                                    options={allMapGeometryType}
-                                    size="small"
-                                    sx={{ width: 300 }}
-                                    renderInput={(params) => <TextField  
-                                        label="Tipo de Geometria" 
-                                        style={{
-                                            width: "80%", 
-                                            float:"left"}}
-                                        variant="outlined" 
-                                        {...params}
-                                        onChange={(e)=>setType(e.target.value)}
-                                        size="small"
-                                        disabled={raster}
-                                    />}
-                                    onChange={(e, values)=>setType(values)}
-                                />
+                                />    
                                 <br/>
                                 <br/>
                                 <br/>  
@@ -2646,7 +2620,23 @@ export default function DefaultFunction() {
                     <Typography variant="h6" component="h2">
                         Procurar contexto espacial
                     </Typography>
-                    <hr/>
+                    <br/>
+                    <FormControl sx={{ minWidth: 200 }}>
+                        <Autocomplete
+                            disablePortal
+                            options={spatialHierarchyType}
+                            size="small"
+                            renderInput={(params) => <TextField 
+                                style={{
+                                    float:"left"}} 
+                                {...params} 
+                                label="Tipo de contexto"/>}
+                            onChange={(e, values)=>{
+                                setSSHT(values)
+                                getSH(values)}}
+                            />
+                    </FormControl>
+                    <br/>
                     <br/>
                     <FormControl sx={{ minWidth: 200 }}>
                         <Autocomplete
@@ -2657,7 +2647,7 @@ export default function DefaultFunction() {
                                 style={{
                                     float:"left"}} 
                                 {...params} 
-                                label="Hierarquia"/>}
+                                label="Nome"/>}
                             onChange={(e, values)=>{
                                 setSelectedHierarchy(values)
                                 getSL(values)}}
@@ -2674,7 +2664,7 @@ export default function DefaultFunction() {
                                 style={{
                                     float:"left"}} 
                                 {...params} 
-                                label="Escopo" 
+                                label="Nível" 
                                 />}
                             onChange={(e, values)=>{
                                 setSelectedLevel(values)
@@ -2702,7 +2692,6 @@ export default function DefaultFunction() {
                                 setSQ(values)
                             }}
                         />
-                    <br/>
                     </FormControl>
                     <br/>
                     <br/>
@@ -2713,6 +2702,8 @@ export default function DefaultFunction() {
                     <br/>
                 </div>
                 <>
+                    <br/>
+                    <br/>
                     <br/>
                     <br/>
                     <br/>
@@ -2755,14 +2746,15 @@ export default function DefaultFunction() {
                             }}
                         />
                         </Button>
+                        <br/>
+                        <br/>
                         <div style={{   
                             margin: "auto",
                             width: "90%",
-                            borderRadius: "20px",
-                            padding: "30px"}}>
+                            borderRadius: "20px"}}>
                             <List 
                                 style={{
-                                    height: "28vh",
+                                    height: "25vh",
                                     overflow: 'auto'
                                 }}>
                                 {list?.length>0 && list.map((doc, index)=> 
@@ -2789,6 +2781,8 @@ export default function DefaultFunction() {
                                     </ListItem>
                                 )}
                             </List>
+                            <br/>
+                            <br/>
                         </div>      
                     </Container>
                 </div>
