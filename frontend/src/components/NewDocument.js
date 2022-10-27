@@ -591,6 +591,17 @@ export default function DefaultFunction() {
         })
         docId = await docId.json();
 
+        form.append("id", docId)
+        form.append("spatialName", spatialQuery)
+
+        let esres = await fetch("http://localhost:5050/es/put", {
+            method: "POST",
+            body: form
+        })
+
+        esres = await esres.json();
+        console.log(esres)
+
         let sform = new FormData();
         sform.append("document", docId);
 
