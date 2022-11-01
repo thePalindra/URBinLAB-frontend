@@ -1,5 +1,4 @@
 import React from 'react'
-import Header from "../components/Header"
 import Document from "../components/NewDocument"
 import Typography from '@mui/material/Typography';
 

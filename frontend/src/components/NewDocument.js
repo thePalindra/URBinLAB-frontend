@@ -72,7 +72,8 @@ function polygonAux(origin, limit) {
     res = [res+origin[0],origin[1]+","].join(" ")
     res = [res+origin[0],limit[1]+","].join(" ")
     res = [res+limit[0],limit[1]+","].join(" ")
-    res = [res+limit[0],origin[1]+"))"].join(" ")
+    res = [res+limit[0],origin[1]+","].join(" ")
+    res = [res+origin[0],origin[1]+"))"].join(" ")
     return res;
 }
 
@@ -486,6 +487,7 @@ export default function DefaultFunction() {
         })
         .then(res=>res.json())
         .then(result=>{
+            console.log(result)
             setAllProviders(result)
         })
         

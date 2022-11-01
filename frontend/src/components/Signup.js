@@ -34,55 +34,55 @@ export default function Signup() {
             });
         }
         console.log("wrong confirmation")
-  };
+    };
 
-  return (
-      <Container>
-            <form>
-                <TextField id="username" label="Nome" variant="outlined" 
-                style={{width: "60%"}}
-                value = {name}
-                onChange={(e)=>setName(e.target.value)}/>
-                <br/>
-                <br/>
-                <TextField id="email" label="Email" variant="outlined" 
-                style={{width: "60%"}}
-                value = {email}
-                onChange={(e)=>setEmail(e.target.value)}/>
-                <br/>
-                <br/>
-                <TextField id="password" type = "password" label="Password" variant="outlined" 
-                style={{width: "60%"}}
-                value = {password}
-                onChange={(e)=>setPassword(e.target.value)}/>
-                <br/>
-                <br/>
-                <TextField id="confirmation" type = "password" label="Confirmação" variant="outlined" 
-                style={{width: "60%"}}
-                value = {confirm}
-                onChange={(e)=>setConfirm(e.target.value)}/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <Button variant="contained" 
-                style={{width: "40%", backgroundColor: "black"}}
-                onClick={signup}>Sign Up</Button>
-                <br/>
-                <br/>
-                <br/>
-            </form>
+    return (
+        <Container>
+                <form>
+                    <TextField id="username" label="Nome" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {name}
+                    onChange={(e)=>setName(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <TextField id="email" label="Email" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {email}
+                    onChange={(e)=>setEmail(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <TextField id="password" type = "password" label="Password" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {password}
+                    onChange={(e)=>setPassword(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <TextField id="confirmation" type = "password" label="Confirmação" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {confirm}
+                    onChange={(e)=>setConfirm(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <Button variant="contained" 
+                    style={{width: "40%", backgroundColor: "black"}}
+                    onClick={signup}>Sign Up</Button>
+                    <br/>
+                    <br/>
+                    <br/>
+                </form>
 
-            <div>
-                <Link href="#" underline="hover">
-                {'Fazer Login!'}
-                </Link>
+                <div>
+                    <Link href="#" underline="hover">
+                    {'Fazer Login!'}
+                    </Link>
 
-                <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
-                {'Recuperar conta!'}
-                </Link>
-            </div>
-      </Container>
+                    <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
+                    {'Recuperar conta!'}
+                    </Link>
+                </div>
+        </Container>
 
-  );
+    );
 }

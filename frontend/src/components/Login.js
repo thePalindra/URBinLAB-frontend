@@ -31,47 +31,47 @@ export default function BasicTextFields() {
             navigate(`/`)
         });
         
-  };
+    };
 
-  const register=(e)=> {
-    navigate2(`/signup`)
-  }
+    const register=(e)=> {
+        navigate2(`/signup`)
+    }
 
-  return (
-      <Container>
-            <form>
-                <TextField id="username" label="Nome" variant="outlined" 
-                style={{width: "60%"}}
-                value = {name}
-                onChange={(e)=>setName(e.target.value)}/>
-                <br/>
-                <br/>
-                <TextField id="password" type = "password" label="Password" variant="outlined" 
-                style={{width: "60%"}}
-                value = {password}
-                onChange={(e)=>setPassword(e.target.value)}/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <Button variant="contained" 
-                style={{width: "40%", backgroundColor: "black"}}
-                onClick={login}>Login</Button>
-                <br/>
-                <br/>
-                <br/>
-            </form>
+    return (
+        <Container>
+                <form>
+                    <TextField id="username" label="Nome" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {name}
+                    onChange={(e)=>setName(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <TextField id="password" type = "password" label="Password" variant="outlined" 
+                    style={{width: "60%"}}
+                    value = {password}
+                    onChange={(e)=>setPassword(e.target.value)}/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <Button variant="contained" 
+                    style={{width: "40%", backgroundColor: "black"}}
+                    onClick={login}>Login</Button>
+                    <br/>
+                    <br/>
+                    <br/>
+                </form>
 
-            <div>
-            <Link underline="hover" onClick={register}>
-            {'Registar-me!'}
-            </Link>
+                <div>
+                <Link underline="hover" onClick={register}>
+                {'Registar-me!'}
+                </Link>
 
-            <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
-            {'Recuperar conta!'}
-            </Link>
-            </div>
-      </Container>
+                <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
+                {'Recuperar conta!'}
+                </Link>
+                </div>
+        </Container>
 
-  );
+    );
 }
