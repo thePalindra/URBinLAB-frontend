@@ -88,17 +88,28 @@ export default function Signup() {
         setEditableFG(reactFGref);
     };
 
-    function get_search_result() {
+    async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        fetch("http://localhost:5050/es/search", {
+        const response = await fetch("http://localhost:5050/es/search", {
             method: "POST",
+            body: form
+        })
+
+        const ar = await response.json();
+
+        form = new FormData()
+        form.append("list", ar)
+        fetch("http://localhost:8080/generic/from_list", {
+            method: "POST",
+            headers: window.localStorage,
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
             console.log(result)
-        })
+            window.localStorage.setItem('results', result);
+        });
     }
 
     function get_document_by_space_geometry() {
