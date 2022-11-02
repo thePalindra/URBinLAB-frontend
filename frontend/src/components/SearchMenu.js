@@ -109,6 +109,7 @@ export default function Signup() {
         .then(result=>{
             console.log(result)
             window.localStorage.setItem('results', result);
+            navigate(`/results`)
         });
     }
 
@@ -129,6 +130,8 @@ export default function Signup() {
             .then(res=>res.json())
             .then(result=>{
                 console.log(result)
+                window.localStorage.setItem('results', result);
+                navigate(`/results`)
             });
         } else {
             form.append("space", space);
@@ -141,6 +144,8 @@ export default function Signup() {
             .then(res=>res.json())
             .then(result=>{
                 console.log(result)
+                window.localStorage.setItem('results', result);
+                navigate(`/results`)
             });
         }
     }
