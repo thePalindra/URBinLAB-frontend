@@ -2709,7 +2709,6 @@ export default function DefaultFunction() {
                     <br/>
                     <br/>
                     <Button variant="contained" 
-                      style={{backgroundColor: "black"}}
                       onClick={returnSpaces}>Pesquisar</Button>
                     <br/>
                     <br/>

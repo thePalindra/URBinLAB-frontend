@@ -9,6 +9,8 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
@@ -42,6 +44,12 @@ function polygon(e) {
     console.log(result)
     return result;
 }
+
+const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+    },
+});
 
 export default function Signup() {
     let navigate = useNavigate()
@@ -152,107 +160,110 @@ export default function Signup() {
 
     return (
         <>
-            <Modal 
-                keepMounted
-                open={open}
-                onClose={()=>{setOpen(false)}}>
-                    <div style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: "25%",
-                        background: "rgba(256, 256, 256, 0.92)",
-                        border: '5px solid #000',
-                        boxShadow: 24,
-                        borderRadius: "20px",
-                        textAlign: "center"
+            <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <Modal 
+                    keepMounted
+                    open={open}
+                    onClose={()=>{setOpen(false)}}>
+                        <div style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: "25%",
+                            background: "rgba(256, 256, 256, 0.92)",
+                            border: '5px solid #000',
+                            boxShadow: 24,
+                            borderRadius: "20px",
+                            textAlign: "center"
+                        }}>
+                        <br/>
+                        <Typography variant="h6" component="h2">
+                                Ajuda
+                        </Typography>
+                        <br/>
+                    </div>
+                </Modal>
+                <div style={{ 
+                    border: "1px solid black",
+                    background: "rgba(0, 0, 0, 0.6)",
+                    borderRadius: "10px",
+                    height: "6vh",
+                    width: "90%",
+                    margin: "auto"}}>
+                    <IconButton style={{ position: "fixed", left: "5%"
+                    }}
+                        onClick={()=>{
+                            navigateCancel(`/`)
                     }}>
-                    <br/>
-                    <Typography variant="h6" component="h2">
-                            Ajuda
-                    </Typography>
-                    <br/>
-                </div>
-            </Modal>
-            <div style={{ 
-                border: "1px solid black",
-                background: "rgba(256, 256, 256, 0.92)",
-                borderRadius: "10px",
-                height: "6vh",
-                width: "90%",
-                margin: "auto"}}>
-                <IconButton style={{ position: "fixed", left: "5%"
-                }}
-                    onClick={()=>{
-                        navigateCancel(`/`)
-                }}>
-                    <ArrowBackIcon sx={{ fontSize: 40 }}/>
-                </IconButton>
-                <IconButton 
-                    style={{
-                        position: "fixed", 
-                        right: "6%", 
-                        paddingTop: "26px"}}
-                    onClick={()=>setOpen(true)}>
-                    <QuestionMarkIcon sx={{fontSize: 40,position: "fixed"}}/>
-                </IconButton>
-                <Autocomplete
-                    freeSolo
-                    options={[]}
-                    size="small"
-                    sx={{ paddingTop: "10px" }}
-                    renderInput={(params) => <TextField 
-                        style={{width: "20%"}}
-                        {...params} 
-                        label="" 
-                        variant="outlined"
-                        onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                    get_search_result()
-                                    ev.preventDefault();
+                        <ArrowBackIcon sx={{ fontSize: 40 }}/>
+                    </IconButton>
+                    <IconButton 
+                        style={{
+                            position: "fixed", 
+                            right: "6%", 
+                            paddingTop: "26px"}}
+                        onClick={()=>setOpen(true)}>
+                        <QuestionMarkIcon sx={{fontSize: 40,position: "fixed"}}/>
+                    </IconButton>
+                    <Autocomplete
+                        freeSolo
+                        options={[]}
+                        size="small"
+                        sx={{ paddingTop: "10px" }}
+                        renderInput={(params) => <TextField 
+                            style={{width: "20%"}}
+                            {...params} 
+                            label="" 
+                            variant="outlined"
+                            onKeyPress={(ev) => {
+                                    if (ev.key === 'Enter') {
+                                        get_search_result()
+                                        ev.preventDefault();
+                                    }
                                 }
                             }
-                        }
-                        onChange={(e)=>{
-                            setSearch(e.target.value)
-                        }}
-                        size="small"
-                    />}
-                    onChange={(e, values)=>{
-                        setSearch(values)
-                    }}/> 
-            </div>
-            <div>
-                <MapContainer 
-                    style={{
-                        width: "92%",
-                        height: "80vh",
-                        margin: "auto"
-                    }} 
-                    center={position} 
-                    zoom={6} 
-                    scrollWheelZoom={true} 
-                    minZoom={4}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <FeatureGroup ref={featureGroupRef => {
-                        onFeatureGroupReady(featureGroupRef);
-                    }}>
-                        <EditControl 
-                            position="topleft"
-                            onCreated={_created}
-                            draw= {{
-                                circlemarker: false,
-                                polyline: false
+                            onChange={(e)=>{
+                                setSearch(e.target.value)
                             }}
-                            edit={{edit:false}}/>
-                    </FeatureGroup>       
-                    {spatialList}
-                </MapContainer>  
-            </div>
+                            size="small"
+                        />}
+                        onChange={(e, values)=>{
+                            setSearch(values)
+                        }}/> 
+                </div>
+                <div>
+                    <MapContainer 
+                        style={{
+                            width: "92%",
+                            height: "80vh",
+                            margin: "auto"
+                        }} 
+                        center={position} 
+                        zoom={6} 
+                        scrollWheelZoom={true} 
+                        minZoom={4}>
+                        <TileLayer
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <FeatureGroup ref={featureGroupRef => {
+                            onFeatureGroupReady(featureGroupRef);
+                        }}>
+                            <EditControl 
+                                position="topleft"
+                                onCreated={_created}
+                                draw= {{
+                                    circlemarker: false,
+                                    polyline: false
+                                }}
+                                edit={{edit:false}}/>
+                        </FeatureGroup>       
+                        {spatialList}
+                    </MapContainer>  
+                </div>
+            </ThemeProvider>
         </>
 
     );

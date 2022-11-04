@@ -15,7 +15,6 @@ export default function AddDrawings() {
                     </Typography>
                 </div>
                 <br/>
-                <br/>
                 <Result/>
             </div>
         </>
