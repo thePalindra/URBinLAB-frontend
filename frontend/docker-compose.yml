@@ -1,0 +1,44 @@
+version: "3.8"
+services:
+  postgres:
+    image: kartoza/postgis
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=urbinlab
+    ports:
+      - "5432:5432"
+    volumes: 
+      - database-data:/var/lib/postgresql/data/
+
+  main-backend: 
+    build: C:\Users\ASUS\Desktop\FCT UNL\5º Ano\Tese\Segunda fase\Projetos\URBinLAB-backend\backend
+    container_name: main_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/urbinlab
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+
+  frontend:
+    build: C:\Users\ASUS\Desktop\FCT UNL\5º Ano\Tese\Segunda fase\Projetos\URBinLAB-frontend\frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment: 
+        - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+        - PGADMIN_DEFAULT_PASSWORD=admin1234
+    ports:
+        - '80:80'
+    volumes: 
+        - pgadmin:/root/.pgadmin
+volumes:
+    database-data:
+    pgadmin:
