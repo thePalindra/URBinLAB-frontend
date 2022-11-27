@@ -7,16 +7,12 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=urbinlab
-    ports:
-      - "5432:5432"
     volumes: 
       - database-data:/var/lib/postgresql/data/
 
   main-backend: 
-    build: C:\Users\ASUS\Desktop\FCT UNL\5º Ano\Tese\Segunda fase\Projetos\URBinLAB-backend\backend
+    build: C:\Users\Palindra\Desktop\FCT-UNL\5º Ano\Tese\2º Semestre\Projeto\backend\URBinLAB-backend\backend
     container_name: main_backend
-    ports:
-      - "8080:8080"
     depends_on:
       - postgres
     environment:
@@ -25,7 +21,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=password
 
   frontend:
-    build: C:\Users\ASUS\Desktop\FCT UNL\5º Ano\Tese\Segunda fase\Projetos\URBinLAB-frontend\frontend
+    build: C:\Users\Palindra\Desktop\FCT-UNL\5º Ano\Tese\2º Semestre\Projeto\frontend\URBinLAB-frontend\frontend
     container_name: frontend
     ports:
       - "3000:3000"

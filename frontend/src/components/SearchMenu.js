@@ -60,6 +60,14 @@ export default function Signup() {
     const [open, setOpen]=React.useState(false);
     const [editableFG, setEditableFG] = React.useState(null);
     const [spatialList, setSpatialList]=React.useState(<></>);
+    const [dictionary, set_dictionary]=React.useState([])
+
+    React.useEffect(() => {
+        let ignore = false;
+        if (!ignore) {
+        }
+        return () => { ignore = true; }
+    },[]);
 
     const _created=e=> {
         setSpatialList(<></>)
@@ -105,20 +113,9 @@ export default function Signup() {
         })
 
         const ar = await response.json();
-
-        form = new FormData()
-        form.append("list", ar)
-        fetch("http://localhost:8080/generic/from_list", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result)
-            window.localStorage.setItem('results', result);
-            navigate(`/results`)
-        });
+        console.log(ar)
+        window.localStorage.setItem('results', JSON.stringify(ar));
+        navigate(`/results`)
     }
 
     function get_document_by_space_geometry() {
@@ -138,7 +135,7 @@ export default function Signup() {
             .then(res=>res.json())
             .then(result=>{
                 console.log(result)
-                window.localStorage.setItem('results', result);
+                window.localStorage.setItem('results', JSON.stringify(result));
                 navigate(`/results`)
             });
         } else {
@@ -152,10 +149,21 @@ export default function Signup() {
             .then(res=>res.json())
             .then(result=>{
                 console.log(result)
-                window.localStorage.setItem('results', result);
+                window.localStorage.setItem('results', JSON.stringify(result));
                 navigate(`/results`)
             });
         }
+    }
+
+    function get_dictionary() {
+        fetch("http://localhost:5050/dictionary", {
+                method: "GET"
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                console.log(result)
+                set_dictionary(result)
+            });
     }
 
     return (
@@ -190,9 +198,9 @@ export default function Signup() {
                     background: "rgba(0, 0, 0, 0.6)",
                     borderRadius: "10px",
                     height: "6vh",
-                    width: "90%",
+                    width: "96%",
                     margin: "auto"}}>
-                    <IconButton style={{ position: "fixed", left: "5%"
+                    <IconButton style={{ position: "fixed", left: "2%"
                     }}
                         onClick={()=>{
                             navigateCancel(`/`)
@@ -202,20 +210,20 @@ export default function Signup() {
                     <IconButton 
                         style={{
                             position: "fixed", 
-                            right: "6%", 
+                            right: "3%", 
                             paddingTop: "26px"}}
                         onClick={()=>setOpen(true)}>
                         <QuestionMarkIcon sx={{fontSize: 40,position: "fixed"}}/>
                     </IconButton>
                     <Autocomplete
                         freeSolo
-                        options={[]}
+                        options={dictionary}
                         size="small"
                         sx={{ paddingTop: "10px" }}
                         renderInput={(params) => <TextField 
                             style={{width: "20%"}}
                             {...params} 
-                            label="" 
+                            label="Pesquisa" 
                             variant="outlined"
                             onKeyPress={(ev) => {
                                     if (ev.key === 'Enter') {
@@ -226,17 +234,25 @@ export default function Signup() {
                             }
                             onChange={(e)=>{
                                 setSearch(e.target.value)
+                                if (e.target.value.length == 2)
+                                    get_dictionary()
+                                else
+                                    set_dictionary([])
                             }}
                             size="small"
                         />}
                         onChange={(e, values)=>{
                             setSearch(values)
+                            if (values.length == 2)
+                                get_dictionary()
+                            else
+                                set_dictionary([])
                         }}/> 
                 </div>
                 <div>
                     <MapContainer 
                         style={{
-                            width: "92%",
+                            width: "98%",
                             height: "80vh",
                             margin: "auto"
                         }} 
@@ -256,7 +272,8 @@ export default function Signup() {
                                 onCreated={_created}
                                 draw= {{
                                     circlemarker: false,
-                                    polyline: false
+                                    polyline: false,
+                                    polygon: false
                                 }}
                                 edit={{edit:false}}/>
                         </FeatureGroup>       
