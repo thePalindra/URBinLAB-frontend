@@ -96,7 +96,8 @@ export default function Signup() {
             default:
                 break;
         }
-        get_document_by_space_geometry()
+        console.log(e.layerType)
+        get_document_by_space_geometry(e.layerType)
     }
 
     const onFeatureGroupReady = reactFGref => {
@@ -118,40 +119,57 @@ export default function Signup() {
         navigate(`/results`)
     }
 
-    function get_document_by_space_geometry() {
+    function get_document_by_space_geometry(layer_type) {
         let form = new FormData();
         form.append("page", 0);
 
-        if (space === "c") {
-            form.append("lng", lng)
-            form.append("lat", lat)
-            form.append("size", size)
+        switch(layer_type) {
+            case "circle":
+                form.append("lng", lng)
+                form.append("lat", lat)
+                form.append("size", size)
 
-            fetch("http://localhost:8080/generic/get_document_by_space_circle", {
-                method: "POST",
-                headers: window.localStorage,
-                body: form
-            })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
-                window.localStorage.setItem('results', JSON.stringify(result));
-                navigate(`/results`)
-            });
-        } else {
-            form.append("space", space);
+                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    console.log(result)
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    navigate(`/results`)
+                });
+                break;
+            case "marker":
+                form.append("space", space);
                 
-            fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
-                method: "POST",
-                headers: window.localStorage,
-                body: form
-            })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
-                window.localStorage.setItem('results', JSON.stringify(result));
-                navigate(`/results`)
-            });
+                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    navigate(`/results`)
+                });
+                break;
+            default:
+                form.append("space", space);
+                
+                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    console.log(result)
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    navigate(`/results`)
+                });
+                break;
         }
     }
 
@@ -193,13 +211,14 @@ export default function Signup() {
                         <br/>
                     </div>
                 </Modal>
-                <div style={{ 
-                    border: "1px solid black",
-                    background: "rgba(0, 0, 0, 0.6)",
-                    borderRadius: "10px",
-                    height: "6vh",
-                    width: "96%",
-                    margin: "auto"}}>
+                <div 
+                    style={{ 
+                        border: "1px solid black",
+                        background: "rgba(0, 0, 0, 0.6)",
+                        borderRadius: "10px",
+                        height: "6vh",
+                        width: "96%",
+                        margin: "auto"}}>
                     <IconButton style={{ position: "fixed", left: "2%"
                     }}
                         onClick={()=>{
