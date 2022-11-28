@@ -3,10 +3,10 @@ import urbinlab from "../images/urbinlab.png"
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Autocomplete from '@mui/material/Autocomplete';
-import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SearchIcon from '@mui/icons-material/Search';
 import Tooltip from '@mui/material/Tooltip';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -55,7 +55,7 @@ export default function Default() {
     return (
         <div 
             style={{ 
-                background: "rgba(256, 256, 256, 0.6)",
+                background: "rgba(256, 256, 256, 0.98)",
                 height: "8vh",
                 margin: "auto"}}>
             <ThemeProvider theme={darkTheme}>
@@ -80,53 +80,50 @@ export default function Default() {
                     style={{ 
                         position: "relative",
                         top: 10,
-                        background: "rgba(0, 0, 0, 0.2)",
+                        background: "rgba(0, 0, 0, 0.4)",
                         height: "5vh",
                         width: "25%",
                         margin: "auto",
                         borderRadius: "5px",
                         right: "1%"}}>
-                    <Tooltip 
-                        title="Pesquisar">
-                        <Autocomplete
-                            freeSolo
-                            options={dictionary}
-                            size="small"
-                            style={{
-                                paddingTop:"1vh",
+                    <Autocomplete
+                        freeSolo
+                        options={dictionary}
+                        size="small"
+                        style={{
+                            paddingTop:"1vh",
+                        }}
+                        renderInput={(params) => <TextField 
+                            style={{width: "100%"}}
+                            {...params} 
+                            label="Pesquisa" 
+                            variant="outlined"
+                            onKeyPress={(ev) => {
+                                    /*if (ev.key === 'Enter') {
+                                        get_search_result()
+                                        ev.preventDefault();
+                                    }
+                                }*/
                             }}
-                            renderInput={(params) => <TextField 
-                                style={{width: "100%"}}
-                                {...params} 
-                                label="Pesquisa" 
-                                variant="outlined"
-                                onKeyPress={(ev) => {
-                                        /*if (ev.key === 'Enter') {
-                                            get_search_result()
-                                            ev.preventDefault();
-                                        }
-                                    }*/
-                                }}
-                                onChange={(e)=>{
-                                    /*setSearch(e.target.value)
-                                    if (e.target.value.length == 2)
-                                        get_dictionary()
-                                    else
-                                        set_dictionary([])*/
-                                }}
-                                size="small"
-                            />}
-                            onChange={(e, values)=>{
-                                /*setSearch(values)
-                                if (values.length == 2)
+                            onChange={(e)=>{
+                                /*setSearch(e.target.value)
+                                if (e.target.value.length == 2)
                                     get_dictionary()
                                 else
                                     set_dictionary([])*/
-                            }}/>  
-                    </Tooltip>
+                            }}
+                            size="small"
+                        />}
+                        onChange={(e, values)=>{
+                            /*setSearch(values)
+                            if (values.length == 2)
+                                get_dictionary()
+                            else
+                                set_dictionary([])*/
+                        }}/>  
                 </div>  
                 <Tooltip 
-                    title="Pesquisa geográfica"> 
+                    title="Pesquisar"> 
                     <IconButton 
                         style={{ 
                             position: "relative",
@@ -134,9 +131,9 @@ export default function Default() {
                             height: "5vh",
                             margin: "auto",
                             borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.2)",
+                            background: "rgba(0, 0, 0, 0.4)",
                             right: "0%"}}>
-                        <TravelExploreIcon/>
+                        <SearchIcon/>
                     </IconButton>  
                 </Tooltip>
                 <Tooltip
@@ -148,7 +145,7 @@ export default function Default() {
                             float:"right",
                             height: "5vh",
                             borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.2)",
+                            background: "rgba(0, 0, 0, 0.4)",
                             right: "2%"
                         }}>
                         <AccountCircleIcon/>

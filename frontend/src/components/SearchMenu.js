@@ -253,7 +253,7 @@ export default function Signup() {
                             }
                             onChange={(e)=>{
                                 setSearch(e.target.value)
-                                if (e.target.value.length == 2)
+                                if (e.target.value.length >= 1)
                                     get_dictionary()
                                 else
                                     set_dictionary([])
@@ -262,7 +262,7 @@ export default function Signup() {
                         />}
                         onChange={(e, values)=>{
                             setSearch(values)
-                            if (values.length == 2)
+                            if (values.length >= 1)
                                 get_dictionary()
                             else
                                 set_dictionary([])

@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import "leaflet-draw/dist/leaflet.draw.css"
-
+import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -57,6 +57,25 @@ export default function Default() {
     const [spatialList, setSpatialList]=React.useState(<></>);
     const [editableFG, setEditableFG] = React.useState(null);
 
+    React.useEffect(() => {
+        let ignore = false;
+        if (!ignore) {
+            get_all_documents()
+        }
+        return () => { ignore = true; }
+    },[]);
+
+    function get_all_documents() {
+        fetch("http://localhost:8080/generic/all", {
+            method: "POST",
+            headers: window.localStorage
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+        });
+    }
+
     const onFeatureGroupReady = reactFGref => {
         // store the featureGroup ref for future access to content
         setEditableFG(reactFGref);
@@ -99,41 +118,50 @@ export default function Default() {
                     margin: "auto",
                     position: "relative",
                     border: "1px solid grey",
-                    background: "rgba(256, 256, 256, 0.6)",
+                    background: "rgba(256, 256, 256, 0.9)",
                     height: "8vh",
+                    left: "-10%",
                     width:"120%"}}>
-                
                 <Box
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
-
                     style={{
                         position: "relative",
-                        left:"1%",
+                        left:"10%",
                         top: "22%"
                     }}>                
-                
-                    <IconButton size="small" onClick={
-                     () => {document.getElementById("overflowing").scrollBy(-300,0)}
-                    }>
-                        <NavigateBeforeIcon fontSize="large"/>
+                    <IconButton 
+                        size="small" 
+                        onClick={() => {
+                            document.getElementById("overflowing").scrollBy(-300,0)
+                        }}>
+                        <NavigateBeforeIcon 
+                            fontSize="large"/>
                     </IconButton>
-                    
-
                     <Box
                         id="overflowing"
                         display="flex"
-
                         style={{
+                            background: "rgba(0, 0, 0, 0.4)",
+                            borderRadius: "17px",
                             position:"relative",
                             left:"1%",
                             maxWidth: "70%",
                             overflowY: "hidden",
                             overflowX: "hidden"
                         }}>
-
-                        <FormControlLabel control={<Checkbox />} label="Label1" />
+                        <FormControlLabel 
+                            control={<Checkbox />} 
+                            label={
+                                <Typography 
+                                    variant="h6" 
+                                    style={{ 
+                                        color: "rgba(256, 256, 256, 0.9)" 
+                                    }}>
+                                        Work
+                                </Typography>
+                            }/>
                         <FormControlLabel control={<Checkbox />} label="Label2" />
                         <FormControlLabel control={<Checkbox />} label="Label3" />
                         <FormControlLabel control={<Checkbox />} label="Label4" />
@@ -158,48 +186,56 @@ export default function Default() {
                         <FormControlLabel control={<Checkbox />} label="Label23" />
                         <FormControlLabel control={<Checkbox />} label="Label24" />
                     </Box>
-
-                    <IconButton size="small" style={{left:"2%"}} onClick={
-                        () => {document.getElementById("overflowing").scrollBy(300,0)}
-                        }>
-                        <NavigateNextIcon fontSize="large"/>
+                    <IconButton 
+                        size="small" 
+                        style={{left:"2%"}} 
+                        onClick={ () => {
+                            document.getElementById("overflowing").scrollBy(300,0)
+                        }}>
+                        <NavigateNextIcon 
+                            fontSize="large"/>
                     </IconButton>
-
-                    <Button variant="filled" style={{left:"2%", background: "rgba(0, 0, 0, 0.2)",}} startIcon={<FilterListIcon />}>
+                    <Button 
+                        variant="filled" 
+                        style={{
+                            left:"2%", 
+                            background: "rgba(0, 0, 0, 0.4)",
+                        }} 
+                        startIcon={<FilterListIcon />}>
                         Filtros
                     </Button>
-
                 </Box>
-
             </div>
             <div 
                 style={{ 
                     margin: "auto",
                     position: "relative",
-                    background: "rgba(256, 256, 256, 0.6)",
+                    background: "rgba(256, 256, 256, 0.90)",
                     height: "90vh",
                     width:"100%"}}>
-
-                <div style={{
-                    position:"relative",
-                    float:"left",
-                    width:"40%"
-                    
+                <div 
+                    style={{
+                        position:"relative",
+                        float:"left",
+                        width:"40%"                  
                     }}>
                     <List>
-                        <ListItem disablePadding>
+                        <ListItem 
+                            disablePadding>
                             <ListItemButton>
-                                <ListItemText primary="Trash"/>
+                                <ListItemText 
+                                    primary="Trash"/>
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
+                        <ListItem 
+                            disablePadding>
                             <ListItemButton>
-                                <ListItemText primary="Trash"/>
+                                <ListItemText 
+                                    primary="Trash"/>
                             </ListItemButton>
                         </ListItem>
                     </List>
                 </div>
-
                 <MapContainer 
                     style={{
                         position: 'absolute',
