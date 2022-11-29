@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Box from '@mui/material/Box';
 
 
 const darkTheme = createTheme({
@@ -92,26 +93,41 @@ export default function Default() {
                                 width:"50%"}}/>
                     </IconButton> 
                 </Tooltip>  
+
+                <Box
+                    display="flex"
+                    alignItems="center"
+                    style={{
+                        position: "relative",
+                        top: "18%",
+                    }}>
                 
+                <div style={{position:"relative", width:"17%"}}/>
+
+
                 <Autocomplete
                     freeSolo
                     options={dictionary}
                     size="small"
                     sx={{
-                        bgcolor: 'rgba(0, 0, 0, 0.4)',
-                            
+                        bgcolor: 'rgba(0, 0, 0, 0.26)',
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "darkslategrey"
+                        },
+                        "&.Mui-focused .MuiInputLabel-outlined": {
+                            color: "darkslategrey"
+                        }
                     }}
                     style={{
-                        position: "relative",
-                        top: "18%",
                         width: "25%",
-                        margin: "auto",
                         borderRadius: "5px",
-                        right: "1%",
-
                     }}
                     renderInput={(params) => <TextField 
-
+                        sx={{
+                            label: {
+                                color: 'darkslategrey ',
+                            },
+                        }}
                         {...params} 
                         label="Pesquisa" 
         
@@ -127,14 +143,10 @@ export default function Default() {
                 <Tooltip 
                     title="Pesquisar"> 
                     <IconButton 
-                        style={{ 
+                        style={{
                             position: "relative",
-                            bottom: 39,
-                            height: "5vh",
-                            margin: "auto",
                             borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.4)",
-                            right: "0%"}}>
+                            background: "rgba(0, 0, 0, 0.26)"}}>
                         <SearchIcon/>
                     </IconButton>  
                 </Tooltip>
@@ -147,18 +159,16 @@ export default function Default() {
                         aria-expanded={open ? 'true' : undefined}
                         onClick={handleClick}
                         style={{
-                            position: "relative",
-                            bottom: 39,
-                            float:"right",
-                            height: "5vh",
+                            position: "absolute",
+                            right: "1%",
                             borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.4)",
-                            right: "2%"
+                            background: "rgba(0, 0, 0, 0.26)",
                         }}>
                         <AccountCircleIcon/>
                     </IconButton> 
                       
                 </Tooltip>
+                </Box>
 
                 <Menu dense
                         id="pbasic-menu"
