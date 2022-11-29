@@ -80,7 +80,7 @@ export default function Default() {
                     title="Página principal">
                     <IconButton
                         style={{
-                            float:"left",
+                            float: "left",
                             left: "-5%"
                         }}
                         onClick={() => {
@@ -111,11 +111,6 @@ export default function Default() {
 
                     }}
                     renderInput={(params) => <TextField 
-                        sx={{
-                              label: {
-                                color: 'black',
-                              }
-                        }}
 
                         {...params} 
                         label="Pesquisa" 
