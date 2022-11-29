@@ -8,6 +8,7 @@ import { EditControl } from "react-leaflet-draw"
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
@@ -24,7 +25,6 @@ import ListItemText from '@mui/material/ListItemText';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import GradeIcon from '@mui/icons-material/Grade';
 import FormGroup from '@mui/material/FormGroup';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -95,14 +95,6 @@ export default function Default() {
         }
         return () => { ignore = true; }
     },[]);
-
-    function update_names(js) {
-        let temp = []
-        for (let i = 0; i<js.length; i++) {
-            temp.push(js[i][4])
-        }
-        set_all_name([...new Set(temp)])
-    }
     
     const _created=e=> {
         set_spatial_list(<></>)
@@ -134,11 +126,11 @@ export default function Default() {
         console.log(e.layerType)
     }
 
-    function get_all_names() {
+    function get_all_names(js) {
         let temp = []
-        for (let i = 0; i<documents.length; i++) {
-            //temp.push(documents[])
-        }
+        for (let i = 0; i<js.length; i++) 
+            temp.push(js[i][4])
+        set_all_name(Array.from(new Set(temp)).sort())
     }
 
     function get_color() {
@@ -156,8 +148,8 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
             set_documents(result)
+            get_all_names(result)
         });
     }
 
@@ -230,9 +222,8 @@ export default function Default() {
 
     function get_document_by_name() {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         form.append("name", search)
-        fetch("http://localhost:8080/generic/get_by_name", {
+        fetch("http://localhost:8080/generic/name", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -240,7 +231,7 @@ export default function Default() {
         .then(res=>res.json())
         .then(result=>{
             set_documents(result)
-            update_names(result)
+            get_all_names(result)
         });
     }
 
@@ -316,7 +307,7 @@ export default function Default() {
         .then(result=>{
             console.log(result);
             set_documents(result)
-            update_names(result)
+            get_all_names(result)
         });
     }
 
@@ -523,7 +514,6 @@ export default function Default() {
             <div 
                 style={{ 
                     margin: "auto",
-                    position: "relative",
                     border: "1px solid grey",
                     background: "rgba(256, 256, 256, 0.9)",
                     height: "8vh",
@@ -534,9 +524,9 @@ export default function Default() {
                     justifyContent="center"
                     alignItems="center"
                     style={{
-                        position: "relative",
-                        left:"10%",
-                        top: "22%"
+                        position: "absolute",
+                        left:"45%",
+                        top: "9.5%",
                     }}>                
                     <IconButton 
                         size="small" 
@@ -633,7 +623,6 @@ export default function Default() {
                                 }}>
                                 {documents.length} Resultados
                             </Typography>
-                            
                         </div>
                         <Autocomplete
                             freeSolo
@@ -672,16 +661,27 @@ export default function Default() {
                                             margin: "auto",
                                             height: "12vh", 
                                             border: "1px solid grey",}}>
+                                        <Typography
+                                            variant="h6" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.9)"
+                                            style={{
+                                                float:"left",
+                                                margin: "15px",
+                                                marginLeft: "25px"
+                                            }}>
+                                            {doc[4]}
+                                        </Typography>
                                         <div
                                             style={{ 
-                                                marginLeft: "80%",
-                                                marginTop: "5px"
+                                                marginLeft: "75%",
+                                                marginTop: "10px"
                                             }}>
                                             <IconButton
                                                 style={{ 
                                                     background: color_list[3],
                                                 }}>
-                                                <GradeIcon
+                                                <AddIcon
                                                     style={{
                                                         color:"rgba(254,254,255,255)"
                                                     }}/>
@@ -689,7 +689,7 @@ export default function Default() {
                                             <IconButton 
                                                 style={{ 
                                                     background: color_list[0],
-                                                    left:"5%"
+                                                    left:"7%"
                                                 }}
                                                 onClick={()=>{
                                                     get_space_from_document(doc[0])

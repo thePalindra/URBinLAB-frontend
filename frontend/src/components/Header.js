@@ -130,14 +130,26 @@ export default function Default() {
                         }}
                         {...params} 
                         label="Pesquisa" 
-        
+                        onKeyPress={(ev) => {
+                            if (ev.key === 'Enter') {
+                                get_search_result()
+                                ev.preventDefault();
+                            }
+                        }}
+                        onChange={(e)=>{
+                            setSearch(e.target.value)
+                            if (e.target.value.length > 0)
+                                get_dictionary()
+                            else
+                                set_dictionary([])
+                        }}
                     />}
                     onChange={(e, values)=>{
-                        /*setSearch(values)
-                        if (values.length == 2)
+                        setSearch(values)
+                        if (values.length > 0)
                             get_dictionary()
                         else
-                            set_dictionary([])*/
+                            set_dictionary([])
                     }}/>  
  
                 <Tooltip 
@@ -146,7 +158,10 @@ export default function Default() {
                         style={{
                             position: "relative",
                             borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.26)"}}>
+                            background: "rgba(0, 0, 0, 0.26)"}}
+                        onClick={()=>{
+                            get_search_result()
+                        }}>
                         <SearchIcon/>
                     </IconButton>  
                 </Tooltip>

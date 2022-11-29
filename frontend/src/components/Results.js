@@ -622,7 +622,7 @@ export default function Default() {
                                                 sx={{
                                                     position: 'relative',
                                                     p: 4,
-                                                    pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,}}>
+                                                    pb: (theme) => `calc(${theme.spacing(1)} + 6px)`}}>
                                                 {doc[4]}
                                                 <ImageMarked className="MuiImageMarked-root" />
                                             </Typography>
@@ -634,7 +634,9 @@ export default function Default() {
                                     </IconButton>
                                     <IconButton 
                                         style={{ left: "12%" }}
-                                        onClick={()=>{get_space_from_document(doc[0])}}>
+                                        onClick={()=>{
+                                            get_space_from_document(doc[0])
+                                        }}>
                                         <VisibilityIcon/>
                                     </IconButton>
                                 </div>)
