@@ -9,6 +9,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import Tooltip from '@mui/material/Tooltip';
 import CssBaseline from '@mui/material/CssBaseline';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
 
 
 const darkTheme = createTheme({
@@ -52,6 +56,18 @@ export default function Default() {
             });
     }
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    
+
+
+
     return (
         <div 
             style={{ 
@@ -75,53 +91,44 @@ export default function Default() {
                             style={{ 
                                 width:"50%"}}/>
                     </IconButton> 
-                </Tooltip>
-                <div 
-                    style={{ 
+                </Tooltip>  
+                
+                <Autocomplete
+                    freeSolo
+                    options={dictionary}
+                    size="small"
+                    sx={{
+                        bgcolor: 'rgba(0, 0, 0, 0.4)',
+                            
+                    }}
+                    style={{
                         position: "relative",
-                        top: 10,
-                        background: "rgba(0, 0, 0, 0.4)",
-                        height: "5vh",
+                        top: "18%",
                         width: "25%",
                         margin: "auto",
                         borderRadius: "5px",
-                        right: "1%"}}>
-                    <Autocomplete
-                        freeSolo
-                        options={dictionary}
-                        size="small"
-                        style={{
-                            paddingTop:"1vh",
+                        right: "1%",
+
+                    }}
+                    renderInput={(params) => <TextField 
+                        sx={{
+                              label: {
+                                color: 'black',
+                              }
                         }}
-                        renderInput={(params) => <TextField 
-                            style={{width: "100%"}}
-                            {...params} 
-                            label="Pesquisa" 
-                            variant="outlined"
-                            onKeyPress={(ev) => {
-                                    /*if (ev.key === 'Enter') {
-                                        get_search_result()
-                                        ev.preventDefault();
-                                    }
-                                }*/
-                            }}
-                            onChange={(e)=>{
-                                /*setSearch(e.target.value)
-                                if (e.target.value.length == 2)
-                                    get_dictionary()
-                                else
-                                    set_dictionary([])*/
-                            }}
-                            size="small"
-                        />}
-                        onChange={(e, values)=>{
-                            /*setSearch(values)
-                            if (values.length == 2)
-                                get_dictionary()
-                            else
-                                set_dictionary([])*/
-                        }}/>  
-                </div>  
+
+                        {...params} 
+                        label="Pesquisa" 
+        
+                    />}
+                    onChange={(e, values)=>{
+                        /*setSearch(values)
+                        if (values.length == 2)
+                            get_dictionary()
+                        else
+                            set_dictionary([])*/
+                    }}/>  
+ 
                 <Tooltip 
                     title="Pesquisar"> 
                     <IconButton 
@@ -139,6 +146,11 @@ export default function Default() {
                 <Tooltip
                     title="Perfil">
                     <IconButton
+                        id="pbasic-button"
+                        aria-controls={open ? 'pbasic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
                         style={{
                             position: "relative",
                             bottom: 39,
@@ -149,8 +161,34 @@ export default function Default() {
                             right: "2%"
                         }}>
                         <AccountCircleIcon/>
-                    </IconButton>   
-                </Tooltip>      
+                    </IconButton> 
+                      
+                </Tooltip>
+
+                <Menu dense
+                        id="pbasic-menu"
+                        anchorEl={anchorEl}
+                        PaperProps={{  
+                            style: {  
+                              width: 170,  
+                              background: "rgba(60, 60, 60, 1)"
+                            }
+                        }}
+                        open={open}
+                        onClose={handleClose}
+                        MenuListProps={{'aria-labelledby': 'pbasic-button'}}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}>
+                        <MenuItem divider onClick={() => {navigate(`/login`)}}>Entrar</MenuItem>
+                        <MenuItem onClick={() => {navigate(`/signup`)}}>Registar</MenuItem>
+                </Menu> 
+
             </ThemeProvider>  
         </div>
 
