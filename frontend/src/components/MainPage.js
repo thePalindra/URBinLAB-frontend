@@ -8,6 +8,7 @@ import { EditControl } from "react-leaflet-draw"
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -17,6 +18,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import "leaflet-draw/dist/leaflet.draw.css"
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
+import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -26,8 +28,11 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import FormGroup from '@mui/material/FormGroup';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 let lat = 0
@@ -62,6 +67,7 @@ function polygon(e) {
 
 export default function Default() {
     let space = ""
+    let navigate = useNavigate()
     const position = [38, -17.7];
     const color_list = ["rgba(228,38,76,255)", "rgba(121,183,46,255)", "rgba(247,166,20,255)", "rgba(3,137,173,255)"]
     const [spatial_list, set_spatial_list]=React.useState(<></>);
@@ -80,6 +86,7 @@ export default function Default() {
     const [providers, set_providers]=React.useState("")
     const [modal1, set_modal1]=React.useState(false);
     const [color, set_color]=React.useState("")
+    const [order, set_order]=React.useState("")
 
 
     React.useEffect(() => {
@@ -123,8 +130,13 @@ export default function Default() {
             default:
                 break;
         }
-        console.log(e.layerType)
+        get_document_by_space_geometry(e.layerType)
     }
+
+    const onFeatureGroupReady = reactFGref => {
+        // store the featureGroup ref for future access to content
+        set_editable_fg(reactFGref);
+    };
 
     function get_all_names(js) {
         let temp = []
@@ -142,9 +154,12 @@ export default function Default() {
     }
 
     function get_all_documents() {
+        let form = new FormData()
+        form.append("limit", 1*100)
         fetch("http://localhost:8080/generic/all", {
             method: "POST",
-            headers: window.localStorage
+            headers: window.localStorage,
+            body: form
         })
         .then(res=>res.json())
         .then(result=>{
@@ -235,6 +250,25 @@ export default function Default() {
         });
     }
 
+    function get_order(url) {
+        let temp = []
+        for (let i = 0; i<documents.length; i++)
+            temp.push(documents[i][0])
+
+        let form = new FormData()
+        form.append("list", temp)
+        fetch("http://localhost:8080/generic/" + url, {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_documents(result)
+            console.log(result)
+        });
+    }
+
     function get_space_from_document(id) {
         set_spatial_list(<></>)
         let form = new FormData();
@@ -250,17 +284,68 @@ export default function Default() {
             let parse = require('wellknown');
             set_spatial_list(
                 <>
-                    <GeoJSON key={1} data={parse(result[0])}>
+                    <GeoJSON key={1} data={parse(result[0][0])}>
                     </GeoJSON>
                 </>
             )
         })
     }
 
-    const onFeatureGroupReady = reactFGref => {
-        // store the featureGroup ref for future access to content
-        set_editable_fg(reactFGref);
-    };
+    function get_document_by_space_geometry(layer_type) {
+        let form = new FormData();
+        form.append("page", 0);
+
+        switch(layer_type) {
+            case "circle":
+                form.append("lng", lng)
+                form.append("lat", lat)
+                form.append("size", size)
+
+                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    navigate(`/results`)
+                });
+                break;
+            case "marker":
+                form.append("space", space);
+                
+                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    let temp = []
+                    for (let i = 0; i<result.length; i++)
+                        temp.push(result[i][0])
+                    window.localStorage.setItem('results', JSON.stringify(temp));
+                    navigate(`/results`)
+                });
+                break;
+            default:
+                form.append("space", space);
+                
+                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    console.log(result)
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    navigate(`/results`)
+                });
+                break;
+        }
+    }
     
     function filter(years_temp, providers_temp, archivers_temp, types_temp) {
         let form = new FormData()
@@ -297,7 +382,6 @@ export default function Default() {
         form.append("providers", providers_temp)
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/filter", {
             method: "POST",
             headers: window.localStorage,
@@ -514,19 +598,21 @@ export default function Default() {
             <div 
                 style={{ 
                     margin: "auto",
+                    position: "relative",
                     border: "1px solid grey",
                     background: "rgba(256, 256, 256, 0.9)",
                     height: "8vh",
-                    left: "-10%",
-                    width:"120%"}}>
+                    width:"120%",
+                    left: "-10%",}}>
                 <Box
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
                     style={{
-                        position: "absolute",
-                        left:"45%",
-                        top: "9.5%",
+                        position: "relative",
+                        width: "150%",
+                        left:"-25%",
+                        top: "20%",
                     }}>                
                     <IconButton 
                         size="small" 
@@ -544,7 +630,7 @@ export default function Default() {
                             borderRadius: "17px",
                             position:"relative",
                             left:"1%",
-                            maxWidth: "70%",
+                            width: "35%",
                             overflowY: "hidden",
                             overflowX: "hidden"
                         }}>
@@ -569,7 +655,6 @@ export default function Default() {
                                 )
                             }) 
                         }
-                        
                     </Box>
                     <IconButton 
                         size="small" 
@@ -580,18 +665,21 @@ export default function Default() {
                         <NavigateNextIcon 
                             fontSize="large"/>
                     </IconButton>
-                    <Button 
-                        variant="filled" 
-                        style={{
-                            left:"2%", 
-                            background: color,
-                        }} 
-                        onClick={()=> {
-                            set_modal1(true)
-                        }}
-                        startIcon={<FilterListIcon />}>
-                        Filtros
-                    </Button>
+                    <Tooltip 
+                        title="Filtrar resultados">
+                        <Button 
+                            variant="filled" 
+                            style={{
+                                left:"2%", 
+                                background: color,
+                            }} 
+                            onClick={()=> {
+                                set_modal1(true)
+                            }}
+                            startIcon={<FilterListIcon />}>
+                            Filtros
+                        </Button>
+                    </Tooltip>
                 </Box>
             </div>
             <div 
@@ -621,36 +709,92 @@ export default function Default() {
                                     margin: "15px",
                                     marginLeft: "25px"
                                 }}>
-                                {documents.length} Resultados
+                                {documents.length - 1}+ Resultados
                             </Typography>
+                            <FormControl 
+                                style={{
+                                    left: "18%",
+                                    top: "2vh",
+                                    width:"30%"
+                                }}
+                                fullWidth>
+                                <InputLabel>Ordenar</InputLabel>
+                                <Select
+                                    value={order}
+                                    size="small"
+                                    label="Ordenar"
+                                    onChange={(event: SelectChangeEvent)=>{
+                                        set_order(event.target.value)
+                                        get_order(event.target.value)
+                                    }}>
+                                    <MenuItem value={"year_asc"}>Ano (crescente)</MenuItem>
+                                    <MenuItem value={"year_desc"}>Ano (decrescente)</MenuItem>
+                                    <MenuItem value={"name_asc"}>Alfabética (crescente)</MenuItem>
+                                    <MenuItem value={"name_desc"}>Alfabética (decrescente)</MenuItem>
+                                </Select>
+                            </FormControl>
                         </div>
-                        <Autocomplete
-                            freeSolo
-                            options={all_name}
-                            size="small"
-                            renderInput={(params) => 
-                            <TextField 
-                                style={{width: "70%"}}
-                                {...params} 
-                                label="Nome" 
-                                variant="outlined" 
-                                size="small"
-                                onKeyPress={(ev) => {
-                                    if (ev.key === 'Enter') {
-                                        get_document_by_name()
-                                        ev.preventDefault();
-                                    }
-                                }}
-                                onChange={(e)=>{
-                                    set_search(e.target.value)
-                                }}
-                            />}
-                            onChange={(e, values)=>{
-                                set_search(values)
-                            }}/>
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            style={{
+                                margin: "auto",
+                                position: "relative",
+                                width: "100%"
+                            }}>
+                            <Tooltip 
+                                title="Procurar por nome">
+                                <Autocomplete
+                                    freeSolo
+                                    fullWidth
+                                    options={all_name}
+                                    size="small"
+                                    renderInput={(params) => 
+                                    <TextField 
+                                        style={{
+                                            width: "65%",
+                                        }}
+                                        {...params} 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        size="small"
+                                        onKeyPress={(ev) => {
+                                            if (ev.key === 'Enter') {
+                                                get_document_by_name()
+                                                ev.preventDefault();
+                                            }
+                                        }}
+                                        onChange={(e)=>{
+                                            set_search(e.target.value)
+                                        }}
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_search(values)
+                                    }}/>
+                            </Tooltip>
+                            <Tooltip 
+                                title="Limpar procura">
+                                    <IconButton 
+                                        style={{ 
+                                            position: "relative",
+                                            borderRadius: "5px",
+                                            background: 'rgba(0, 0, 0, 0.26)',
+                                            left: "-16%"
+                                        }}
+                                        onClick={()=> {
+                                            window.location.reload(false);
+                                        }}>
+                                        <DeleteIcon 
+                                            style={{
+                                                color:"rgba(254,254,255,255)"
+                                            }}/>
+                                    </IconButton>
+                            </Tooltip>
+                        </Box>
                         <List
                             style={{
-                                height: "72vh",
+                                marginTop: "1vh",
+                                height: "71vh",
                                 overflow: "auto"
                             }}>
                             {documents?.length>0 && documents.map((doc, index) => {
@@ -661,44 +805,55 @@ export default function Default() {
                                             margin: "auto",
                                             height: "12vh", 
                                             border: "1px solid grey",}}>
-                                        <Typography
-                                            variant="h6" 
-                                            component="h2" 
-                                            color="rgba(0, 0, 0, 0.9)"
+                                        <IconButton
                                             style={{
                                                 float:"left",
                                                 margin: "15px",
                                                 marginLeft: "25px"
+                                            }}
+                                            onClick={()=> {
+                                                navigate(`/document/${doc[0]}`)
                                             }}>
-                                            {doc[4]}
-                                        </Typography>
+                                            <Typography
+                                                variant="h6" 
+                                                component="h2" 
+                                                color="rgba(0, 0, 0, 0.9)">
+                                                {doc[4]}
+                                            </Typography>
+                                        </IconButton>
                                         <div
                                             style={{ 
                                                 marginLeft: "75%",
                                                 marginTop: "10px"
                                             }}>
-                                            <IconButton
-                                                style={{ 
-                                                    background: color_list[3],
-                                                }}>
-                                                <AddIcon
-                                                    style={{
-                                                        color:"rgba(254,254,255,255)"
-                                                    }}/>
-                                            </IconButton>
-                                            <IconButton 
-                                                style={{ 
-                                                    background: color_list[0],
-                                                    left:"7%"
-                                                }}
-                                                onClick={()=>{
-                                                    get_space_from_document(doc[0])
-                                                }}>
-                                                <VisibilityIcon 
-                                                    style={{
-                                                        color:"rgba(254,254,255,255)"
-                                                    }}/>
-                                            </IconButton>
+                                            <Tooltip 
+                                                title="Adicionar a uma lista">
+                                                <IconButton
+                                                    style={{ 
+                                                        background: color_list[3],
+                                                    }}>
+                                                    <AddIcon
+                                                        style={{
+                                                            color:"rgba(254,254,255,255)"
+                                                        }}/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                title="Visualizar contexto espacial">
+                                                <IconButton 
+                                                    style={{ 
+                                                        background: color_list[0],
+                                                        left:"7%"
+                                                    }}
+                                                    onClick={()=>{
+                                                        get_space_from_document(doc[0])
+                                                    }}>
+                                                    <VisibilityIcon 
+                                                        style={{
+                                                            color:"rgba(254,254,255,255)"
+                                                        }}/>
+                                                </IconButton>
+                                            </Tooltip>
                                         </div>
                                     </div>
                                 )

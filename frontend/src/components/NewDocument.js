@@ -225,7 +225,6 @@ export default function DefaultFunction() {
             if (!arr.find(file=> file.name===current.name))
                 arr.push(e.target.files[i])
         }
-
         setList(arr)
         console.log(arr)
     }
@@ -651,6 +650,8 @@ export default function DefaultFunction() {
                 break;
         }
 
+        console.log(docId)
+
         for (let j = 0; j<list.length; j++) {
             let fform = new FormData();
             fform.append("file", list[j])
@@ -665,7 +666,6 @@ export default function DefaultFunction() {
             fileres = await fileres.json()
             console.log(fileres)
         }
-        window.location.reload(false);
     }
 
     const returnSpaces =()=> {
@@ -826,18 +826,19 @@ export default function DefaultFunction() {
                     keepMounted
                     open={open}
                     onClose={()=>{setOpen(false)}}>
-                        <div style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            width: "25%",
-                            background: "rgba(0, 0, 0, 0.6)",
-                            border: '5px solid #000',
-                            boxShadow: 24,
-                            borderRadius: "20px",
-                            textAlign: "center"
-                        }}>
+                        <div 
+                            style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: "25%",
+                                background: "rgba(0, 0, 0, 0.6)",
+                                border: '5px solid #000',
+                                boxShadow: 24,
+                                borderRadius: "20px",
+                                textAlign: "center"
+                            }}>
                             <br/>
                             <Typography variant="h6" component="h2">
                                     {selectedFile.name}

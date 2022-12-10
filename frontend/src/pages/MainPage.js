@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from "../components/Header"
-import Test from "../components/Test"
+import MainPage from "../components/MainPage"
 import Footer from "../components/Footer"
 import "../style/background.css"
 
@@ -9,7 +9,7 @@ export default function Default() {
     <>
         <div className="bg">
             <Header/>
-            <Test/>
+            <MainPage/>
         </div>
     </>
   )

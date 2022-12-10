@@ -3,27 +3,36 @@ import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Container, Link } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import Autocomplete from '@mui/material/Autocomplete';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import List from '@mui/material/List';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import GradeIcon from '@mui/icons-material/Grade';
-import { styled } from '@mui/material/styles';
-import ButtonBase from '@mui/material/ButtonBase';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
+import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import IconButton from '@mui/material/IconButton';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import "leaflet-draw/dist/leaflet.draw.css"
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import Tooltip from '@mui/material/Tooltip';
+import Modal from '@mui/material/Modal';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import FormGroup from '@mui/material/FormGroup';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 let lat = 0
@@ -56,38 +65,34 @@ function polygon(e) {
     return result;
 }
 
-const darkTheme = createTheme({
-    palette: {
-      mode: 'dark',
-    },
-});
-
 export default function Default() {
-    let navigate = useNavigate()
-    let navigateCancel = useNavigate()
     let space = ""
+    let navigate = useNavigate()
     const position = [38, -17.7];
-    const [results, set_results]=React.useState([])
-    const [open, setOpen]=React.useState(false);
-    const [editableFG, setEditableFG] = React.useState(null);
-    const [spatialList, setSpatialList]=React.useState(<></>);
-    const [all_name, set_all_name]=React.useState([]);
+    const color_list = ["rgba(228,38,76,255)", "rgba(121,183,46,255)", "rgba(247,166,20,255)", "rgba(3,137,173,255)"]
     const [spatial_list, set_spatial_list]=React.useState(<></>);
-    const [search, set_search]=React.useState("")
-    const [providers, set_providers]=React.useState("")
+    const [editable_fg, set_editable_fg]=React.useState(null);
+    const [tags, set_tags]=React.useState([]);
+    const [documents, set_documents]=React.useState([]);
     const [years, set_years]=React.useState("")
     const [types, set_types]=React.useState("")
+    const [all_name, set_all_name]=React.useState([]);
+    const [search, set_search]=React.useState("")
     const [archivists, set_archivists]=React.useState([])
     const [selected_years, set_selected_years]=React.useState([])
     const [selected_providers, set_selected_providers]=React.useState([])
     const [selected_archivers, set_selected_archivers]=React.useState([])
     const [selected_types, set_selected_types]=React.useState([])
-
+    const [providers, set_providers]=React.useState("")
+    const [modal1, set_modal1]=React.useState(false);
+    const [color, set_color]=React.useState("")
+    const [order, set_order]=React.useState("")
 
     React.useEffect(() => {
         let ignore = false;
         if (!ignore) {
-            get_all()
+            get_all_documents()
+            get_color()
             group_providers()
             group_years()
             group_types()
@@ -95,15 +100,15 @@ export default function Default() {
         }
         return () => { ignore = true; }
     },[]);
-
+    
     const _created=e=> {
-        setSpatialList(<></>)
-        const drawnItems = editableFG._layers;
+        set_spatial_list(<></>)
+        const drawnItems = editable_fg._layers;
         if (Object.keys(drawnItems).length > 1) {
             Object.keys(drawnItems).forEach((layerid, index) => {
                 if (index > 0) return;
                 const layer = drawnItems[layerid];
-                editableFG.removeLayer(layer);
+                editable_fg.removeLayer(layer);
             });
         }
         let parse = require('wellknown');
@@ -123,83 +128,30 @@ export default function Default() {
             default:
                 break;
         }
+        get_document_by_space_geometry(e.layerType)
     }
 
     const onFeatureGroupReady = reactFGref => {
         // store the featureGroup ref for future access to content
-        setEditableFG(reactFGref);
+        set_editable_fg(reactFGref);
     };
 
-    const ImageButton = styled(ButtonBase)(({ theme }) => ({
-        float: 'left',
-        width: '50% !important',
-        height: "8vh",
-        [theme.breakpoints.down('sm')]: {
-            width: '50% !important', // Overrides inline-style
-            height: "2vh",
-        },
-        '&:hover, &.Mui-focusVisible': {
-            zIndex: 1,
-          '& .MuiImageBackdrop-root': {
-                opacity: 0.15,
-          },
-          '& .MuiImageMarked-root': {
-                opacity: 0,
-          },
-        },
-    }));
-
-    const Image = styled('span')(({ theme }) => ({
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: theme.palette.common.white,
-    }));
-
-    const ImageBackdrop = styled('span')(({ theme }) => ({
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: theme.palette.common.black,
-        opacity: 0.4,
-        transition: theme.transitions.create('opacity'),
-    }));
-
-    const ImageMarked = styled('span')(({ theme }) => ({
-        height: 3,
-        width: 18,
-        position: 'absolute',
-        bottom: -2,
-        left: 'calc(50% - 9px)',
-        transition: theme.transitions.create('opacity'),
-    }));
-
-    const ImageSrc = styled('span')({
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center 40%',
-    });
-
-    function update_names(js) {
+    function get_all_names(js) {
         let temp = []
-        for (let i = 0; i<js.length; i++) {
+        for (let i = 0; i<js.length; i++) 
             temp.push(js[i][4])
-        }
-        set_all_name([...new Set(temp)])
+        set_all_name(Array.from(new Set(temp)).sort())
     }
 
-    async function get_all() {
+    function get_color() {
+        let res = Math.floor(Math.random() * color_list.length)
+        if (color_list[res] === color)
+            get_color()
+        else
+            set_color(color_list[res])
+    }
+
+    async function get_all_documents() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         const response = await fetch("http://localhost:8080/generic/from_list", {
@@ -210,9 +162,115 @@ export default function Default() {
         const js = await response.json();
 
         console.log(js)
-        set_results(js)
-        update_names(js)
+        set_documents(js)
+        get_all_names(js)
         set_selected_years([])
+    }
+
+    /*
+        Atualizado para as tags refletirem sobre os resultados
+    */
+    function get_all_tags() {
+        fetch("http://localhost:8080/keyword/group", {
+            method: "POST",
+            headers: window.localStorage
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+        });
+    }
+
+    function group_providers() {
+        let form = new FormData()
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        fetch("http://localhost:8080/generic/group_provider_list", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_providers(result)
+        });
+    }
+
+    function group_years() {
+        let form = new FormData()
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        fetch("http://localhost:8080/generic/group_year_list", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_years(result)
+        });
+    }
+
+    function group_types() {
+        let form = new FormData()
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        fetch("http://localhost:8080/generic/group_type_list", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_types(result)
+        });
+    }
+
+    function group_archivists() {
+        let form = new FormData()
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        fetch("http://localhost:8080/generic/group_archivist_list", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_archivists(result)
+        });
+    }
+
+    function get_document_by_name() {
+        let form = new FormData()
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        form.append("name", search)
+        fetch("http://localhost:8080/generic/get_by_name_in_list", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result);
+            set_documents(result)
+            get_all_names(result)
+        });
+    }
+
+    function get_order(url) {
+        let temp = []
+        for (let i = 0; i<documents.length; i++)
+            temp.push(documents[i][0])
+
+        let form = new FormData()
+        form.append("list", temp)
+        fetch("http://localhost:8080/generic/" + url, {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_documents(result)
+            console.log(result)
+        });
     }
 
     function get_space_from_document(id) {
@@ -230,86 +288,69 @@ export default function Default() {
             let parse = require('wellknown');
             set_spatial_list(
                 <>
-                    <GeoJSON key={1} data={parse(result[0])}>
+                    <GeoJSON key={1} data={parse(result[0][0])}>
                     </GeoJSON>
                 </>
             )
         })
     }
 
-    function get_document_by_name() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        form.append("name", search)
-        fetch("http://localhost:8080/generic/get_by_name", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result);
-            set_results(result)
-            update_names(result)
-        });
-    }
+    function get_document_by_space_geometry(layer_type) {
+        let form = new FormData();
+        form.append("page", 0);
 
-    function group_providers() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_provider", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_providers(result)
-        });
-    }
+        switch(layer_type) {
+            case "circle":
+                form.append("lng", lng)
+                form.append("lat", lat)
+                form.append("size", size)
 
-    function group_years() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_year", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_years(result)
-        });
+                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    window.location.reload(false);
+                });
+                break;
+            case "marker":
+                form.append("space", space);
+                
+                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    let temp = []
+                    for (let i = 0; i<result.length; i++)
+                        temp.push(result[i][0])
+                    window.localStorage.setItem('results', JSON.stringify(temp));
+                    window.location.reload(false);
+                });
+                break;
+            default:
+                form.append("space", space);
+                
+                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
+                })
+                .then(res=>res.json())
+                .then(result=>{
+                    console.log(result)
+                    window.localStorage.setItem('results', JSON.stringify(result));
+                    window.location.reload(false);
+                });
+                break;
+        }
     }
-
-    function group_types() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_type", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_types(result)
-        });
-    }
-
-    function group_archivists() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_archivist", {
-            method: "POST",
-            headers: window.localStorage,
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_archivists(result)
-        });
-    }
-
+    
     function filter(years_temp, providers_temp, archivers_temp, types_temp) {
         let form = new FormData()
 
@@ -346,7 +387,7 @@ export default function Default() {
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/filter", {
+        fetch("http://localhost:8080/generic/filter_list", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -354,330 +395,511 @@ export default function Default() {
         .then(res=>res.json())
         .then(result=>{
             console.log(result);
-            set_results(result)
-            update_names(result)
+            set_documents(result)
+            get_all_names(result)
         });
     }
-    
+
     return (
         <>
-            <ThemeProvider theme={darkTheme}>
-                <CssBaseline />
-                <div style={{ 
-                    border: "1px solid black",
-                    background: "rgba(0, 0, 0, 0.6)",
-                    borderRadius: "10px",
-                    height: "6vh",
-                    width: "96%",
-                    margin: "auto"}}>
-                    <IconButton 
-                        style={{ position: "fixed", left: "2%"
-                    }}
-                        onClick={()=>{
-                            window.location.reload(false);
-                    }}>
-                        <ArrowBackIcon sx={{ fontSize: 40, color: "#FFFFFF" }}/>
-                    </IconButton>
-                    <IconButton 
-                        style={{
-                            position: "fixed", 
-                            right: "3%", 
-                            paddingTop: "26px"}}
-                        onClick={()=>setOpen(true)}>
-                        <QuestionMarkIcon sx={{fontSize: 40, position: "fixed", color: "#FFFFFF"}}/>
-                    </IconButton>
-                    <div style={{ paddingTop: "10px" }}>
-                        <Button variant="contained"  onClick={()=>{
-                            navigateCancel(`/`)
-                            }}>
-                            Nova pesquisa
-                        </Button>
-                    </div>
-                </div>
-                <div>
-                    <div style={{ 
-                        border: "1px solid black",
-                        background: "rgba(0, 0, 0, 0.6)",
+            <Modal
+                keepMounted
+                open={modal1}
+                onClose={()=>{
+                    set_modal1(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "20%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
                         borderRadius: "10px",
-                        height: "80vh",
-                        left:"1%",
-                        width: "12%",
-                        margin: "auto",
-                        marginTop: "10px",
-                        position: "fixed"}}>
+                        textAlign: "left",
+                        maxHeight: "60vh",
+                        overflow: "auto"
+                    }}>
                         <br/>
-                        <Typography variant="h5" component="h2" color="#FFFFFF">
-                            Filtros
-                        </Typography>
-                        <br/>
-                        <div 
+                        <FormControl 
                             style={{
-                                float:"left",
-                                marginLeft: "10px",
-                                height: "70vh",
-                                overflow: 'auto'
+                                marginLeft:"20px"
+                            }}
+                            component="fieldset" 
+                            variant="standard">
+                            <FormLabel 
+                                style={{
+                                    color: "black"
+                                }}
+                                component="legend">
+                                Ano:</FormLabel>
+                            <FormGroup 
+                                style={{
+                                    float:"left",
+                                    marginLeft:"20px",
+                                    color: "grey"
+                                }}>                                
+                                {years?.length>0 && years.map((doc, index)=> {
+                                    return (
+                                        <div
+                                            key={index}>
+                                            <FormControlLabel
+                                                control={
+                                                <Checkbox 
+                                                    onChange={(e)=> {
+                                                        let temp=[...selected_years]
+                                                        if (temp.includes(doc[0])) 
+                                                            temp.splice(selected_years.indexOf(doc[0]), 1);
+                                                        else 
+                                                            temp.push(doc[0])
+
+                                                        filter(temp, selected_providers, selected_archivers, selected_types)
+                                                }}/>
+                                                }
+                                                label={doc[0] + " (" + doc[1] + ")"}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </FormGroup>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                        <FormControl 
+                            style={{
+                                marginLeft:"20px"
+                            }}
+                            component="fieldset" 
+                            variant="standard">
+                            <FormLabel 
+                                component="legend"
+                                style={{
+                                    color: "black"
+                                }}>
+                                Fornecedor:</FormLabel>
+                            <FormGroup 
+                                style={{
+                                    float:"left",
+                                    marginLeft:"20px",
+                                    color: "grey"
+                                }}>                                 
+                                {providers?.length>0 && providers.map((doc, index)=> {
+                                    return (
+                                        <div
+                                            key={index}>
+                                            <FormControlLabel
+                                                control={
+                                                <Checkbox 
+                                                    onChange={(e)=> {
+                                                        let temp=[...selected_providers]
+                                                        if (temp.includes(doc[0])) 
+                                                            temp.splice(selected_providers.indexOf(doc[0]), 1);
+                                                        else 
+                                                            temp.push(doc[0])
+
+                                                        filter(selected_years, temp, selected_archivers, selected_types)
+                                                }}/>
+                                                }
+                                                label={doc[0] + " (" + doc[1] + ")"}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </FormGroup>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                        <FormControl 
+                            style={{
+                                marginLeft:"20px"
+                            }}
+                            component="fieldset" 
+                            variant="standard">
+                            <FormLabel 
+                                component="legend"
+                                style={{
+                                    color: "black"
+                                }}>
+                                Arquivista:</FormLabel>
+                            <FormGroup 
+                                style={{
+                                    float:"left",
+                                    marginLeft:"20px",
+                                    color: "grey"
+                                }}>                                
+                                {archivists?.length>0 && archivists.map((doc, index)=> {
+                                    return (
+                                        <div
+                                            key={index}>
+                                            <FormControlLabel
+                                                control={
+                                                <Checkbox 
+                                                    onChange={(e)=> {
+                                                        let temp=[...selected_archivers]
+                                                        if (temp.includes(doc[1])) 
+                                                            temp.splice(selected_archivers.indexOf(doc[1]), 1);
+                                                        else 
+                                                            temp.push(doc[1])
+
+                                                        filter(selected_years, selected_providers, temp, selected_types)
+                                                }}/>
+                                                }
+                                                label={doc[0] + " (" + doc[2] + ")"}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </FormGroup>
+                        </FormControl>
+                        <br/>
+                        <br/>
+                        <FormControl 
+                            style={{
+                                marginLeft:"20px"
+                            }}
+                            component="fieldset" 
+                            variant="standard">
+                            <FormLabel 
+                                component="legend"
+                                style={{
+                                    color: "black"
+                                }}>
+                                Tipos de Documento:</FormLabel>
+                            <FormGroup 
+                                style={{
+                                    float:"left",
+                                    marginLeft:"20px",
+                                    color: "grey"
+                                }}>                                 
+                                {types?.length>0 && types.map((doc, index)=> {
+                                    return (
+                                        <div
+                                            key={index}>
+                                            <FormControlLabel
+                                                control={
+                                                <Checkbox 
+                                                    onChange={(e)=> {
+                                                        let temp=[...selected_types]
+                                                        if (temp.includes(doc[0])) 
+                                                            temp.splice(selected_types.indexOf(doc[0]), 1);
+                                                        else 
+                                                            temp.push(doc[0])
+
+                                                        filter(selected_years, selected_providers, selected_archivers, temp)
+                                                }}/>
+                                                }
+                                                label={doc[0] + " (" + doc[1] + ")"}
+                                            />
+                                        </div>
+                                    )
+                                })}
+                            </FormGroup>
+                        </FormControl>
+                </div>
+            </Modal>
+            <div 
+                style={{ 
+                    margin: "auto",
+                    position: "relative",
+                    border: "1px solid grey",
+                    background: "rgba(256, 256, 256, 0.9)",
+                    height: "8vh",
+                    width:"120%",
+                    left: "-10%",}}>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    style={{
+                        position: "relative",
+                        width: "150%",
+                        left:"-25%",
+                        top: "20%",
+                    }}>                
+                    <IconButton 
+                        size="small" 
+                        onClick={() => {
+                            document.getElementById("overflowing").scrollBy(-300,0)
+                        }}>
+                        <NavigateBeforeIcon 
+                            fontSize="large"/>
+                    </IconButton>
+                    <Box
+                        id="overflowing"
+                        display="flex"
+                        style={{
+                            background: "rgba(0, 0, 0, 0.4)",
+                            borderRadius: "17px",
+                            position:"relative",
+                            left:"1%",
+                            width: "35%",
+                            overflowY: "hidden",
+                            overflowX: "hidden"
+                        }}>
+                        {tags?.length>0 && tags.map((doc, index)=>{
+                            return(
+                                <FormControlLabel 
+                                    control={
+                                        <Checkbox 
+                                            style={{
+                                                marginLeft: "50px"
+                                            }}/>
+                                    } 
+                                    label={
+                                        <Typography 
+                                            variant="h6" 
+                                            style={{ 
+                                                color: "rgba(256, 256, 256, 0.9)",
+                                            }}>
+                                                {doc[0]} ({doc[1]})
+                                        </Typography>
+                                    }/>
+                                )
+                            }) 
+                        }
+                        
+                    </Box>
+                    <IconButton 
+                        size="small" 
+                        style={{left:"2%"}} 
+                        onClick={ () => {
+                            document.getElementById("overflowing").scrollBy(300,0)
+                        }}>
+                        <NavigateNextIcon 
+                            fontSize="large"/>
+                    </IconButton>
+                    <Tooltip 
+                        title="Filtrar resultados">
+                        <Button 
+                            variant="filled" 
+                            style={{
+                                left:"2%", 
+                                background: color,
+                            }} 
+                            onClick={()=> {
+                                set_modal1(true)
+                            }}
+                            startIcon={<FilterListIcon />}>
+                            Filtros
+                        </Button>
+                    </Tooltip>
+                </Box>
+            </div>
+            <div 
+                style={{ 
+                    margin: "auto",
+                    position: "relative",
+                    background: "rgba(256, 256, 256, 0.90)",
+                    height: "90vh",
+                    width:"100%"}}>
+                <div 
+                    style={{
+                        position:"relative",
+                        float:"left",
+                        width:"40%"                  
+                    }}>
+                        <div
+                            style={{
+                                width:"100%",
+                                height:"8vh"
                             }}>
+                            <Typography
+                                variant="h7" 
+                                component="h2" 
+                                color="rgba(0, 0, 0, 0.5)"
+                                style={{
+                                    float:"left",
+                                    margin: "15px",
+                                    marginLeft: "25px"
+                                }}>
+                                {documents.length} Resultados
+                            </Typography>
                             <FormControl 
-                                component="fieldset" 
-                                variant="standard">
-                                <FormLabel 
-                                    component="legend">
-                                    Ano:</FormLabel>
-                                <FormGroup 
-                                    style={{float:"left"}}>                                
-                                    {years?.length>0 && years.map((doc, index)=> {
-                                        return (
-                                            <div
-                                                key={index}>
-                                                <FormControlLabel
-                                                    control={
-                                                    <Checkbox 
-                                                        onChange={(e)=> {
-                                                            let temp=[...selected_years]
-                                                            if (temp.includes(doc[0])) 
-                                                                temp.splice(selected_years.indexOf(doc[0]), 1);
-                                                            else 
-                                                                temp.push(doc[0])
-
-                                                            filter(temp, selected_providers, selected_archivers, selected_types)
-                                                    }}/>
-                                                    }
-                                                    label={doc[0] + " (" + doc[1] + ")"}
-                                                />
-                                            </div>
-                                        )
-                                    })}
-                                </FormGroup>
-                            </FormControl>
-                            <br/>
-                            <br/>
-                            <FormControl 
-                                component="fieldset" 
-                                variant="standard">
-                                <FormLabel 
-                                    component="legend">
-                                    Fornecedor:</FormLabel>
-                                <FormGroup 
-                                    style={{float:"left"}}>                                
-                                    {providers?.length>0 && providers.map((doc, index)=> {
-                                        return (
-                                            <div
-                                                key={index}>
-                                                <FormControlLabel
-                                                    control={
-                                                    <Checkbox 
-                                                        onChange={(e)=> {
-                                                            let temp=[...selected_providers]
-                                                            if (temp.includes(doc[0])) 
-                                                                temp.splice(selected_providers.indexOf(doc[0]), 1);
-                                                            else 
-                                                                temp.push(doc[0])
-
-                                                            filter(selected_years, temp, selected_archivers, selected_types)
-                                                    }}/>
-                                                    }
-                                                    label={doc[0] + " (" + doc[1] + ")"}
-                                                />
-                                            </div>
-                                        )
-                                    })}
-                                </FormGroup>
-                            </FormControl>
-                            <br/>
-                            <br/>
-                            <FormControl 
-                                component="fieldset" 
-                                variant="standard">
-                                <FormLabel 
-                                    component="legend">
-                                    Arquivista:</FormLabel>
-                                <FormGroup 
-                                    style={{float:"left"}}>                                
-                                    {archivists?.length>0 && archivists.map((doc, index)=> {
-                                        return (
-                                            <div
-                                                key={index}>
-                                                <FormControlLabel
-                                                    control={
-                                                    <Checkbox 
-                                                        onChange={(e)=> {
-                                                            let temp=[...selected_archivers]
-                                                            if (temp.includes(doc[1])) 
-                                                                temp.splice(selected_archivers.indexOf(doc[1]), 1);
-                                                            else 
-                                                                temp.push(doc[1])
-
-                                                            filter(selected_years, selected_providers, temp, selected_types)
-                                                    }}/>
-                                                    }
-                                                    label={doc[0] + " (" + doc[2] + ")"}
-                                                />
-                                            </div>
-                                        )
-                                    })}
-                                </FormGroup>
-                            </FormControl>
-                            <br/>
-                            <br/>
-                            <FormControl 
-                                component="fieldset" 
-                                variant="standard">
-                                <FormLabel 
-                                    component="legend">
-                                    Tipos de documento:</FormLabel>
-                                <FormGroup 
-                                    style={{float:"left"}}>                                
-                                    {types?.length>0 && types.map((doc, index)=> {
-                                        return (
-                                            <div
-                                                key={index}>
-                                                <FormControlLabel
-                                                    control={
-                                                    <Checkbox 
-                                                        onChange={(e)=> {
-                                                            let temp=[...selected_types]
-                                                            if (temp.includes(doc[0])) 
-                                                                temp.splice(selected_types.indexOf(doc[0]), 1);
-                                                            else 
-                                                                temp.push(doc[0])
-
-                                                            filter(selected_years, selected_providers, selected_archivers, temp)
-                                                    }}/>
-                                                    }
-                                                    label={doc[0] + " (" + doc[1] + ")"}
-                                                />
-                                            </div>
-                                        )
-                                    })}
-                                </FormGroup>
+                                style={{
+                                    left: "18%",
+                                    top: "2vh",
+                                    width:"30%"
+                                }}
+                                fullWidth>
+                                <InputLabel>Ordenar</InputLabel>
+                                <Select
+                                    value={order}
+                                    size="small"
+                                    label="Ordenar"
+                                    onChange={(event: SelectChangeEvent)=>{
+                                        set_order(event.target.value)
+                                        get_order(event.target.value)
+                                    }}>
+                                    <MenuItem value={"year_asc"}>Ano (crescente)</MenuItem>
+                                    <MenuItem value={"year_desc"}>Ano (decrescente)</MenuItem>
+                                    <MenuItem value={"name_asc"}>Alfabética (crescente)</MenuItem>
+                                    <MenuItem value={"name_desc"}>Alfabética (decrescente)</MenuItem>
+                                </Select>
                             </FormControl>
                         </div>
-                    </div>
-                    <div style={{ 
-                        border: "1px solid black",
-                        background: "rgba(0, 0, 0, 0.6)",
-                        borderRadius: "10px",
-                        height: "80vh",
-                        left: "14%",
-                        width: "25%",
-                        margin: "auto",
-                        marginTop: "10px",
-                        position: "fixed"}}>
-                        <br/>
-                        <Typography variant="h5" component="h2" color="#FFFFFF">
-                            Lista de Resultados
-                        </Typography>
-                        <br/>
-                        <Autocomplete
-                            freeSolo
-                            options={all_name}
-                            key={results}
-                            size="small"
-                            renderInput={(params) => 
-                            <TextField 
-                                style={{width: "70%"}}
-                                {...params} 
-                                label="Nome" 
-                                variant="outlined" 
-                                size="small"
-                                onKeyPress={(ev) => {
-                                    if (ev.key === 'Enter') {
-                                        get_document_by_name()
-                                        ev.preventDefault();
-                                    }
-                                }}
-                                onChange={(e)=>{
-                                    set_search(e.target.value)
-                                }}
-                            />}
-                            onChange={(e, values)=>{
-                                set_search(values)
-                            }}/>
-                        <br/>
-                        <List style={{ 
-                            height: "65vh",
-                            overflow: 'auto' }}>
-                            {results?.length>0 && results.map((doc, index)=> {
-                                return(
-                                <div 
-                                    key={index} 
-                                    style={{
-                                        margin: "auto",
-                                        height: "9vh", 
-                                        border: "1px solid white",}}>
-                                    <ImageButton
-                                        focusRipple
-                                        key={doc[0]}
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            style={{
+                                margin: "auto",
+                                position: "relative",
+                                width: "100%"
+                            }}>
+                            <Tooltip 
+                                title="Procurar por nome">
+                                <Autocomplete
+                                    freeSolo
+                                    fullWidth
+                                    options={all_name}
+                                    size="small"
+                                    renderInput={(params) => 
+                                    <TextField 
                                         style={{
-                                            width: "10%",
+                                            width: "65%",
                                         }}
-                                        >
-                                        <ImageSrc style={{ backgroundImage: "url(/test.jpg)"}} />
-                                        <ImageBackdrop className="MuiImageBackdrop-root" />
-                                        <Image>
-                                            <Typography
-                                                component="span"
-                                                variant="subtitle1"
-                                                color="inherit"
-                                                sx={{
-                                                    position: 'relative',
-                                                    p: 4,
-                                                    pb: (theme) => `calc(${theme.spacing(1)} + 6px)`}}>
-                                                {doc[4]}
-                                                <ImageMarked className="MuiImageMarked-root" />
-                                            </Typography>
-                                        </Image>
-                                    </ImageButton>
+                                        {...params} 
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        size="small"
+                                        onKeyPress={(ev) => {
+                                            if (ev.key === 'Enter') {
+                                                get_document_by_name()
+                                                ev.preventDefault();
+                                            }
+                                        }}
+                                        onChange={(e)=>{
+                                            set_search(e.target.value)
+                                        }}
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_search(values)
+                                    }}/>
+                            </Tooltip>
+                            <Tooltip 
+                                title="Limpar procura">
                                     <IconButton 
-                                        style={{ left: "12%" }}>
-                                        <GradeIcon/>
-                                    </IconButton>
-                                    <IconButton 
-                                        style={{ left: "12%" }}
-                                        onClick={()=>{
-                                            get_space_from_document(doc[0])
+                                        style={{ 
+                                            position: "relative",
+                                            borderRadius: "5px",
+                                            background: 'rgba(0, 0, 0, 0.26)',
+                                            left: "-16%"
+                                        }}
+                                        onClick={()=> {
+                                            window.location.reload(false);
                                         }}>
-                                        <VisibilityIcon/>
+                                        <DeleteIcon 
+                                            style={{
+                                                color:"rgba(254,254,255,255)"
+                                            }}/>
                                     </IconButton>
-                                </div>)
+                            </Tooltip>
+                        </Box>
+                        <List
+                            style={{
+                                marginTop: "1vh",
+                                height: "71vh",
+                                overflow: "auto"
+                            }}>
+                            {documents?.length>0 && documents.map((doc, index) => {
+                                return(
+                                    <div 
+                                        key={index} 
+                                        style={{
+                                            margin: "auto",
+                                            height: "12vh", 
+                                            border: "1px solid grey",}}>
+                                        <IconButton
+                                            style={{
+                                                float:"left",
+                                                margin: "15px",
+                                                marginLeft: "25px"
+                                            }}
+                                            onClick={()=> {
+                                                navigate(`/document/${doc[0]}`)
+                                            }}>
+                                            <Typography
+                                                variant="h6" 
+                                                component="h2" 
+                                                color="rgba(0, 0, 0, 0.9)">
+                                                {doc[4]}
+                                            </Typography>
+                                        </IconButton>
+                                        <div
+                                            style={{ 
+                                                marginLeft: "75%",
+                                                marginTop: "10px"
+                                            }}>
+                                            <Tooltip 
+                                                title="Adicionar a uma lista">
+                                                <IconButton
+                                                    style={{ 
+                                                        background: color_list[3],
+                                                    }}>
+                                                    <AddIcon
+                                                        style={{
+                                                            color:"rgba(254,254,255,255)"
+                                                        }}/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                title="Visualizar contexto espacial">
+                                                <IconButton 
+                                                    style={{ 
+                                                        background: color_list[0],
+                                                        left:"7%"
+                                                    }}
+                                                    onClick={()=>{
+                                                        get_space_from_document(doc[0])
+                                                    }}>
+                                                    <VisibilityIcon 
+                                                        style={{
+                                                            color:"rgba(254,254,255,255)"
+                                                        }}/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                )
                             })}
-                            
                         </List>
-                    </div>
-                    <MapContainer 
-                        style={{   
-                            margin: "auto",
-                            width: "59%",
-                            padding: "1px",
-                            position: "fixed",
-                            left: "40%",
-                            height: "81vh",
-                        }} 
-                        center={position} 
-                        zoom={6} 
-                        scrollWheelZoom={true} 
-                        minZoom={4}>
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <FeatureGroup ref={featureGroupRef => {
-                            onFeatureGroupReady(featureGroupRef);
-                        }}>
-                            {/*<EditControl 
-                                position="topleft"
-                                onCreated={_created}
-                                draw= {{
-                                    circlemarker: false,
-                                    polyline: false,
-                                    polygon: false
-                                }}
-                            edit={{edit:false}}/>*/}
-                        </FeatureGroup>       
-                        {spatial_list}
-                    </MapContainer> 
-                </div>   
-            </ThemeProvider>
+                </div>
+                <MapContainer 
+                    style={{
+                        position: 'absolute',
+                        top: '46.7%',
+                        left: '70%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "60%",
+                        boxShadow: 24,
+                        height: "84vh",
+                    }} 
+                    center={position} 
+                    zoom={6} 
+                    scrollWheelZoom={true} 
+                    minZoom={4}>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <FeatureGroup ref={featureGroupRef => {
+                        onFeatureGroupReady(featureGroupRef);
+                    }}>
+                        <EditControl 
+                            position="topleft"
+                            onCreated={_created}
+                            draw= {{
+                                circlemarker: false,
+                                polyline: false,
+                                polygon: false
+                            }}
+                            edit={{edit:false}}/>
+                    </FeatureGroup>       
+                    {spatial_list}
+                </MapContainer> 
+            </div>
         </>
-    )
+    );
 }

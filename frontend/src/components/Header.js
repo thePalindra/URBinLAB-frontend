@@ -26,7 +26,9 @@ export default function Default() {
     const [search, setSearch]=React.useState('');
     const [dictionary, set_dictionary]=React.useState([])
     let navigate = useNavigate()
-
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    
     const clickHandler =(e)=>{
         navigate(`/`)
     }
@@ -42,9 +44,11 @@ export default function Default() {
         const ar = await response.json();
         console.log(ar)
         window.localStorage.setItem('results', JSON.stringify(ar));
-        navigate(`/results`)
+        if(window.location.pathname=="/results")
+            window.location.reload(false);
+        else 
+            navigate(`/results`)
     }
-
 
     function get_dictionary() {
         fetch("http://localhost:5050/dictionary", {
@@ -57,18 +61,14 @@ export default function Default() {
             });
     }
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
       setAnchorEl(null);
     };
     
-
-
-
     return (
         <div 
             style={{ 
@@ -93,7 +93,6 @@ export default function Default() {
                                 width:"50%"}}/>
                     </IconButton> 
                 </Tooltip>  
-
                 <Box
                     display="flex"
                     alignItems="center"
@@ -101,90 +100,86 @@ export default function Default() {
                         position: "relative",
                         top: "18%",
                     }}>
-                
-                <div style={{position:"relative", width:"17%"}}/>
-
-
-                <Autocomplete
-                    freeSolo
-                    options={dictionary}
-                    size="small"
-                    sx={{
-                        bgcolor: 'rgba(0, 0, 0, 0.26)',
-                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "darkslategrey"
-                        },
-                        "&.Mui-focused .MuiInputLabel-outlined": {
-                            color: "darkslategrey"
-                        }
-                    }}
-                    style={{
-                        width: "25%",
-                        borderRadius: "5px",
-                    }}
-                    renderInput={(params) => <TextField 
+                    <div style={{position:"relative", width:"17%"}}/>
+                    <Autocomplete
+                        freeSolo
+                        options={dictionary}
+                        size="small"
                         sx={{
-                            label: {
-                                color: 'darkslategrey ',
+                            bgcolor: 'rgba(0, 0, 0, 0.26)',
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                borderColor: "darkslategrey"
                             },
-                        }}
-                        {...params} 
-                        label="Pesquisa" 
-                        onKeyPress={(ev) => {
-                            if (ev.key === 'Enter') {
-                                get_search_result()
-                                ev.preventDefault();
+                            "&.Mui-focused .MuiInputLabel-outlined": {
+                                color: "darkslategrey"
                             }
                         }}
-                        onChange={(e)=>{
-                            setSearch(e.target.value)
-                            if (e.target.value.length > 0)
+                        style={{
+                            width: "25%",
+                            borderRadius: "5px",
+                        }}
+                        renderInput={(params) => <TextField 
+                            sx={{
+                                label: {
+                                    color: 'darkslategrey ',
+                                },
+                            }}
+                            {...params} 
+                            label="Pesquisa" 
+                            onKeyPress={(ev) => {
+                                if (ev.key === 'Enter') {
+                                    get_search_result()
+                                    ev.preventDefault();
+                                }
+                            }}
+                            onChange={(e)=>{
+                                setSearch(e.target.value)
+                                if (e.target.value.length > 0)
+                                    get_dictionary()
+                                else
+                                    set_dictionary([])
+                            }}
+                        />}
+                        onChange={(e, values)=>{
+                            setSearch(values)
+                            if (values.length > 0)
                                 get_dictionary()
                             else
                                 set_dictionary([])
-                        }}
-                    />}
-                    onChange={(e, values)=>{
-                        setSearch(values)
-                        if (values.length > 0)
-                            get_dictionary()
-                        else
-                            set_dictionary([])
-                    }}/>  
- 
-                <Tooltip 
-                    title="Pesquisar"> 
-                    <IconButton 
-                        style={{
-                            position: "relative",
-                            borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.26)"}}
-                        onClick={()=>{
-                            get_search_result()
-                        }}>
-                        <SearchIcon/>
-                    </IconButton>  
-                </Tooltip>
-                <Tooltip
-                    title="Perfil">
-                    <IconButton
-                        id="pbasic-button"
-                        aria-controls={open ? 'pbasic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleClick}
-                        style={{
-                            position: "absolute",
-                            right: "1%",
-                            borderRadius: "5px",
-                            background: "rgba(0, 0, 0, 0.26)",
-                        }}>
-                        <AccountCircleIcon/>
-                    </IconButton> 
-                      
-                </Tooltip>
+                        }}/>  
+    
+                    <Tooltip 
+                        title="Pesquisar"> 
+                        <IconButton 
+                            style={{
+                                position: "relative",
+                                borderRadius: "5px",
+                                background: "rgba(0, 0, 0, 0.26)"}}
+                            onClick={()=>{
+                                get_search_result()
+                            }}>
+                            <SearchIcon/>
+                        </IconButton>  
+                    </Tooltip>
+                    <Tooltip
+                        title="Perfil">
+                        <IconButton
+                            id="pbasic-button"
+                            aria-controls={open ? 'pbasic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                            style={{
+                                position: "absolute",
+                                right: "1%",
+                                borderRadius: "5px",
+                                background: "rgba(0, 0, 0, 0.26)",
+                            }}>
+                            <AccountCircleIcon/>
+                        </IconButton> 
+                        
+                    </Tooltip>
                 </Box>
-
                 <Menu dense
                         id="pbasic-menu"
                         anchorEl={anchorEl}
@@ -208,7 +203,6 @@ export default function Default() {
                         <MenuItem divider onClick={() => {navigate(`/login`)}}>Entrar</MenuItem>
                         <MenuItem onClick={() => {navigate(`/signup`)}}>Registar</MenuItem>
                 </Menu> 
-
             </ThemeProvider>  
         </div>
 
