@@ -180,12 +180,9 @@ export default function Default() {
     }
 
     function group_providers() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_provider", {
             method: "POST",
-            headers: window.localStorage,
-            body: form
+            headers: window.localStorage
         })
         .then(res=>res.json())
         .then(result=>{
@@ -194,12 +191,9 @@ export default function Default() {
     }
 
     function group_years() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_year", {
             method: "POST",
             headers: window.localStorage,
-            body: form
         })
         .then(res=>res.json())
         .then(result=>{
@@ -208,12 +202,9 @@ export default function Default() {
     }
 
     function group_types() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_type", {
             method: "POST",
             headers: window.localStorage,
-            body: form
         })
         .then(res=>res.json())
         .then(result=>{
@@ -222,12 +213,9 @@ export default function Default() {
     }
 
     function group_archivists() {
-        let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_archivist", {
             method: "POST",
             headers: window.localStorage,
-            body: form
         })
         .then(res=>res.json())
         .then(result=>{

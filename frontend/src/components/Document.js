@@ -21,9 +21,12 @@ export default function Default() {
     const [space, set_space]=React.useState(<></>)
     const [tags, set_tags]=React.useState([]);
     const [document, set_document]=React.useState([])
+    const [collection, set_collection]=React.useState([])
+    const [archiver, set_archiver]=React.useState([])
+    const [type_translation, set_type_translation]=React.useState([])
+    const [specifics, set_specifics]=React.useState(<></>)
     const [files, set_files]=React.useState([])
     const [modal1, set_modal1]=React.useState(false);
-    const [specifics, set_specifics]=React.useState([])
 
     React.useEffect(() => {
         let ignore = false;
@@ -63,6 +66,8 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            if (result.length == 0)
+                return
             set_position(result[0][1].replace('POINT(', '').replace(')', '').split(" "))
             let parse = require('wellknown');
             set_space(
@@ -85,9 +90,851 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
+            console.log(result[0])
             set_document(result[0])
+            if (!result[0][1])
+                set_collection("")
+            
+            get_archiver(result[0][2])
+            get_type(result[0][6])
         })
+    }
+
+    function get_archiver(archiver_id) {
+        let form = new FormData();
+        form.append("id", archiver_id)
+
+        fetch("http://localhost:8080/user/archiver_name", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_archiver(result)
+        })
+    }
+
+    function get_base_map() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/geographic_map/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Escala:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Natureza:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "8vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução de imagem:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[2]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "12vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tipo de geometria:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[3]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_statistics() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/thematic_statistics/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tema:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_aerial_photography() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/aerial_photography/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução de imagem:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Escala aproximada:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_lidar() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/lidar/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_orto() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/ortos/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Escala:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_satellite() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/satellite_image/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Satelite:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_thematic_map() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/thematic_map/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Escala:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Natureza:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "8vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução de imagem:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[2]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "12vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tipo de geometria:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[3]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "16vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tema:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[4]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "20vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tipo de mapa temático:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[5]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_drawings() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/drawings/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Contexto:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_photography() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/photography/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Resolução de imagem:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_reports() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/reports/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Contexto:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[0]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "4vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Tema:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result[1]}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_sensors() {
+        let form = new FormData();
+        form.append("id", id)
+
+        fetch("http://localhost:8080/sensors/get_by_id", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_specifics(
+                <>
+                    <div 
+                        style={{
+                            marginTop: "0vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Variável medida:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {result}
+                        </Typography>
+                    </div>
+                </>
+            )
+        })
+    }
+
+    function get_type(type) {
+        switch(type) {
+            case "AERIAL PHOTOGRAPHY":
+                set_type_translation("Fotografia aérea")
+                get_aerial_photography()
+                break
+            case "LiDAR":
+                set_type_translation("LiDAR")
+                get_lidar()
+                break
+            case "ORTOS":
+                set_type_translation("Ortofotomapa")
+                get_orto()
+                break
+            case "SATELLITE IMAGE":
+                set_type_translation("Imagem satélite")
+                get_satellite()
+                break
+            case "CHOROGRAPHIC MAP":
+                set_type_translation("Carta corográfica")
+                get_base_map()
+                break
+            case "TOPOGRAPHIC MAP":
+                set_type_translation("Carta topográfica")
+                get_base_map()
+                break
+            case "GEOGRAPHIC MAP":
+                set_type_translation("Carta geográfica")
+                get_base_map()
+                break
+            case "TOPOGRAPHIC PLAN":
+                set_type_translation("Plano topográfico")
+                get_base_map()
+                break
+            case "THEMATIC MAP":
+                set_type_translation("Carta temática")
+                get_thematic_map()
+                break
+            case "DRAWINGS":
+                set_type_translation("Desenhos")
+                get_drawings()
+                break
+            case "PHOTOGRAPHY":
+                set_type_translation("Fotografia")
+                get_photography()
+                break
+            case "REPORTS":
+                set_type_translation("Relatório")
+                get_reports()
+                break
+            case "SENSORS":
+                set_type_translation("Dados de sensores")
+                get_sensors()
+                break
+            case "CENSUS":
+                set_type_translation("Censos")
+                get_statistics()
+                break
+            case "SURVEYS":
+                set_type_translation("Estatística de formulário")
+                get_statistics()
+                break
+            case "THEMATIC STATISTICS":
+                set_type_translation("Estatística temática")
+                get_statistics()
+                break
+            default:
+                set_type_translation("Documento não especificado")
+                break
+        }
     }
     
     return (
@@ -220,6 +1067,54 @@ export default function Default() {
                                 marginTop: "0.5vh",
                                 float: "left"
                             }}>
+                                Coleção:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {collection}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "8vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Arquivista:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {archiver}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "12vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
                                 Tipo de documento:
                         </Typography>
                         <Typography 
@@ -229,12 +1124,12 @@ export default function Default() {
                                 float: "left",
                                 marginLeft: "1%"
                             }}>
-                                {document[6]}
+                                {type_translation}
                         </Typography>
                     </div>
                     <div 
                         style={{
-                            marginTop: "8vh"
+                            marginTop: "16vh"
                         }}>
                         <Typography 
                             variant="b3" 
@@ -256,6 +1151,83 @@ export default function Default() {
                                 {document[7]}
                         </Typography>
                     </div>
+                    <div 
+                        style={{
+                            marginTop: "20vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Ano:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {document[8].split(" ")[2]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "24vh"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Adicinado a:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%"
+                            }}>
+                                {document[9]}
+                        </Typography>
+                    </div>
+                    <div 
+                        style={{
+                            marginTop: "28vh",
+                            height: "20%",
+                            border: "1px solid grey",
+                            borderRadius: "5px",
+                            overflow: "auto"
+                        }}>
+                        <Typography 
+                            variant="b3" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.7)",
+                                marginLeft: "2%",
+                                marginTop: "0.5vh",
+                                float: "left"
+                            }}>
+                                Descrição:
+                        </Typography>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                float: "left",
+                                marginLeft: "1%",
+                            }}>
+                                {document[5]} 
+                        </Typography>
+                    </div>
+                    {specifics}
                 </div>
                 <div
                     style={{ 
