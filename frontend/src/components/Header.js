@@ -28,10 +28,6 @@ export default function Default() {
     let navigate = useNavigate()
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-    
-    const clickHandler =(e)=>{
-        navigate(`/`)
-    }
 
     async function get_search_result() {
         let form = new FormData()
