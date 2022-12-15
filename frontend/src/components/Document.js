@@ -6,7 +6,11 @@ import Typography from '@mui/material/Typography';
 import AddIcon from '@mui/icons-material/Add';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
+import MenuItem from '@mui/material/MenuItem';
 import Modal from '@mui/material/Modal';
 import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,7 +23,12 @@ import ClearIcon from '@mui/icons-material/Clear';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import CheckIcon from '@mui/icons-material/Check';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
+import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
+import Radio from '@mui/material/Radio';
+import { Container } from '@mui/material';
+import Switch from '@mui/material/Switch';
+import RadioGroup from '@mui/material/RadioGroup';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useNavigate, useParams } from "react-router-dom";
 import { EditControl } from "react-leaflet-draw"
@@ -56,6 +65,22 @@ function polygon(e) {
     return result;
 }
 
+function range(min, max, step) {
+    var len = max - min + 1;
+    var arr = new Array(len);
+    for (var i=0; i<len; i+=step) {
+      arr[i] = (min + i).toString();
+    }
+    return arr;
+}
+
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: 200
+        },
+    },
+};
 
 export default function Default() {
     let navigate = useNavigate()
@@ -85,6 +110,45 @@ export default function Default() {
     const [spatial_query, set_spatial_query] =React.useState("");
     const [all_spatial_names, set_all_spatial_names]=React.useState([]);
 
+    const [new_type, set_new_type]=React.useState("none");
+    const [URLs, setURL]=React.useState('geographic_map');
+    const [new_name, set_new_name]=React.useState('');
+    const [new_provider, set_new_provider]=React.useState('');
+    const [new_time, set_new_time]=React.useState('');
+    const [new_link, set_new_link]=React.useState('');
+    const [new_raster, set_new_raster]=React.useState(true);
+    const [new_res, set_new_res]=React.useState('');
+    const [new_scale, set_new_scale]=React.useState('');
+    const [new_theme, set_new_theme]=React.useState('');
+    const [new_map_type, set_new_map_type]=React.useState('');
+    const [new_desc, set_new_desc]=React.useState('');
+    const [new_variable, set_new_variable]=React.useState('');
+    const [new_satellite, set_new_satellite]=React.useState('');
+    const [new_context, set_new_context]=React.useState('');
+    const [new_color, set_new_color]=React.useState(true);
+
+
+    const [allProviders, setAllProviders]=React.useState([]);
+    const [allURLs, setAllURLs]=React.useState([]);
+    const [allSpatialNames, setAllSpatialNames]=React.useState([]);
+    const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
+    const [allStatisticsThemes, setAllStatisticsThemes]=React.useState([]);
+    const [allPhotoImageResolution, setAllPhotoImageResolution]=React.useState([]);
+    const [allAerialPhotoImageResolution, setAllAerialPhotoImageResolution]=React.useState([]);
+    const [allAerialPhotoScale, setAllAerialPhotoScale]=React.useState([]);
+    const [allSatellite, setAllSatellite]=React.useState([]);
+    const [allSatelliteResolution, setAllSatelliteResolution]=React.useState([]);
+    const [allLiDARResolution, setAllLiDARResolution]=React.useState([]);
+    const [allMapImageResolution, setAllMapImageResolution]=React.useState([]);
+    const [allMapScale, setAllMapScale]=React.useState([]);
+    const [allMapGeometryType, setAllMapGeometryType]=React.useState([]);
+    const [allMapTheme, setAllMapTheme]=React.useState([]);
+    const [allMapType, setAllMapType]=React.useState([]);
+    const [allOrtosScale, setAllOrtosScale]=React.useState([]);
+    const [allOrtosResolution, setAllOrtosResolution]=React.useState([]);
+    const [allReportsTheme, setAllReportsTheme]=React.useState([]);
+    const [allReportsContext, setAllReportsContext]=React.useState([]);
+    const [allSensorsVariable, setAllSensorsVariable]=React.useState([]);
 
 
     React.useEffect(() => {
@@ -196,8 +260,11 @@ export default function Default() {
         .then(result=>{
             if (result.length == 0)
                 return
+
             set_position(result[0][1].replace('POINT(', '').replace(')', '').split(" "))
             let parse = require('wellknown');
+            
+            setWKT(result[0][2])
             set_space(
                 <>
                     <GeoJSON key={1} data={parse(result[0][0])}>
@@ -240,6 +307,248 @@ export default function Default() {
         .then(res=>res.json())
         .then(result=>{
             set_archiver(result)
+        })
+    }
+
+    function getAllPhotoImageResolution () {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoImageResolution () {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllAerialPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoScale () {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllAerialPhotoScale(result)
+        })
+    }
+
+    function getAllDrawingsContext() {
+        fetch("http://localhost:8080/drawings/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllDrawingsContext(result)
+        })
+    }
+
+    function getAllStatisticsThemes() {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllStatisticsThemes(result)
+        })
+    }
+
+    function getAllSatelliteResolution() {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatelliteResolution(result)
+        })
+    }
+
+    function getAllSatellite() {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatellite(result)
+        })
+    }
+
+    function getAllLiDARResolution() {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllLiDARResolution(result)
+        })
+    }
+
+    function getAllMapImageResolution() {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapImageResolution(result)
+        })
+    }
+
+    function getAllMapScale() {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapScale(result)
+        })
+    }
+
+    function getAllMapGeometryType() {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapGeometryType(result)
+        })
+    }
+
+    function getAllMapType() {
+        fetch("http://localhost:8080/thematic_map/get_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapType(result)
+        })
+    }
+
+    function getAllMapTheme() {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapTheme(result)
+        })
+    }
+
+    function getAllOrtosScale() {
+        fetch("http://localhost:8080/ortos/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosScale(result)
+        })
+    }
+
+    function getAllOrtosResolution() {
+        fetch("http://localhost:8080/ortos/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosResolution(result)
+        })
+    }
+
+    function getAllReportsContext() {
+        fetch("http://localhost:8080/reports/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsContext(result)
+        })
+    }
+
+    function getAllReportsTheme() {
+        fetch("http://localhost:8080/reports/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsTheme(result)
+        })
+    }
+
+    function getAllSensorsVariable() {
+        fetch("http://localhost:8080/sensors/get_variable", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSensorsVariable(result)
+        })
+    }
+
+    function getAllProviders() {
+        fetch("http://localhost:8080/generic/get_all_providers", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            setAllProviders(result)
+        })
+        
+    }
+    
+    function getAllURLS() {
+        fetch("http://localhost:8080/generic/get_all_urls", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllURLs(result)
         })
     }
 
@@ -1244,6 +1553,110 @@ export default function Default() {
                 break;
         }
     }
+
+    function allFormAppend() {
+        let form = new FormData()
+        form.append("name", new_name);
+        form.append("description", new_desc);
+        form.append("provider", new_provider);
+        form.append("timeScope", new_time+"/01/01");
+        form.append("link", new_link);
+
+        switch(new_type) {
+            case "aerial_photography": 
+                form.append("resolution", new_res)
+                form.append("scale", new_scale)
+                break;
+            case "geographic_map":
+                form.append("scale", new_scale)
+                form.append("resolution", new_res)
+                form.append("type", new_type)
+                form.append("raster", new_raster)
+                break;
+            case "drawings":
+                form.append("context", new_context);
+                break;
+            case "LiDAR":
+                form.append("resolution", new_res)
+                break;
+            case "ortos":
+                form.append("resolution", new_res)
+                form.append("scale", new_scale)
+                break;
+            case "photography":
+                form.append("color", new_color);
+                form.append("resolution", new_res)
+                break;
+            case "reports":
+                form.append("context", new_context);
+                form.append("theme", new_theme)
+                break;
+            case "satellite_image":
+                form.append("resolution", new_res)
+                form.append("satellite", new_satellite)
+                break;
+            case "sensors":
+                form.append("variable", new_variable);
+                break;
+            case "thematic_statistics":
+                form.append("theme", new_theme)
+                break;
+            case "thematic_map":
+                form.append("scale", new_scale)
+                form.append("resolution", new_res)
+                form.append("type", new_type)
+                form.append("raster", new_raster)
+                form.append("theme", new_theme)
+                form.append("mapType", new_map_type)
+                break;
+            default:
+                break;
+        }
+        return form;
+    }
+
+    async function update_document() {
+        let form = allFormAppend()
+        
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        docId = await docId.json();
+
+        let sform = new FormData();
+        sform.append("document", docId);
+        sform.append("id", wkt);
+        fetch("http://localhost:8080/space/attach", {
+            method: "POST",
+            headers: window.localStorage,
+            body: sform
+        })
+
+        for (let i = 0; i<files.length; i++){
+            let fform = new FormData();
+            fform.append("document", docId);
+            fform.append("id", files[i][0]);
+            await fetch("http://localhost:8080/file/update", {
+                method: "POST",
+                headers: window.localStorage,
+                body: fform
+            })
+        }
+
+        form = new FormData();
+        form.append("id", id)
+
+        await fetch("http://localhost:8080/generic/delete", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        navigate(`/document/${docId}`)        
+        window.location.reload(false);       
+    }
     
     return (
         <>
@@ -1289,24 +1702,1950 @@ export default function Default() {
                     </Box>
                     <Box
                         display="flex"
-                        justifyContent="center"
-                        alignItems="center"
                         style={{
                             position: "relative",
                             width: "100%",
-                            top: "60vh",
+                            marginTop: "6vh",
                         }}>
-                        <Button
-                            variant="contained"
-                            style={{
-                                background: "rgba(228,38,76,255)"
-                            }}
-                            onClick={()=>{
-                                delete_document()
+                        <Tooltip
+                            title="Apagar documento">
+                            <IconButton
+                                style={{
+                                    background: "rgba(228,38,76,255)",
+                                    float:"left",
+                                    marginLeft: "5%"
+                                }}
+                                onClick={()=>{
+                                    delete_document()
+                                }}>
+                                <DeleteIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 0.9)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                        <FormControl 
+                            sx={{ 
+                                width: "60%",
+                                left: '10%',
                             }}>
-                            Apagar documento
-                        </Button>
+                            <InputLabel>Tipo de documento</InputLabel>
+                            <Select
+                                size="small"
+                                value={new_type}
+                                label="Tipo de documento"
+                                MenuProps={MenuProps}
+                                onChange={(e)=>{
+                                    set_new_type(e.target.value)
+                                    setURL(e.target.value)
+                                }}>
+                                <MenuItem key="drawings" value="drawings">Desenho</MenuItem>
+                                <MenuItem key="thematic_statistics" value="thematic_statistics">Estatísticas</MenuItem>
+                                <MenuItem key="photography" value="photography">Fotografia</MenuItem>
+                                <MenuItem key="aerial_photography" value="aerial_photography">Fotografia aérea</MenuItem>
+                                <MenuItem key="satellite_image" value="satellite_image">Imagem satélite</MenuItem>
+                                <MenuItem key="LiDAR" value="LiDAR">LiDAR</MenuItem>
+                                <MenuItem key="geographic_map" value="geographic_map">Mapa de Base</MenuItem>
+                                <MenuItem key="thematic_map" value="thematic_map">Mapa Temático</MenuItem>
+                                <MenuItem key="ortos" value="ortos">Ortofotomapa</MenuItem>
+                                <MenuItem key="generic" value="generic">Outro documento</MenuItem>
+                                <MenuItem key="reports" value="reports">Relatório</MenuItem>
+                                <MenuItem key="sensors" value="sensors">Sensores</MenuItem>
+                            </Select>
+                        </FormControl>
                     </Box>
+                    <>
+                        {new_type==="thematic_map" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapScale}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala" 
+                                        onChange={(e)=>set_new_scale(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_scale(values)}
+                                />
+                                <FormControl
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}>
+                                    <FormLabel 
+                                        id="l"/>
+                                    <RadioGroup
+                                        style={{
+                                            width: "40%",
+                                            minWidth: "250px",
+                                            background: "rgb(0,0,0, 0.4)",
+                                            height: "40px",
+                                            margin: "auto",
+                                            textAlign: "center",
+                                            display:"block",
+                                            borderRadius: "5px"
+                                        }}
+                                        row
+                                        aria-labelledby="l"
+                                        defaultValue="1"
+                                        name="radio-buttons-group">
+                                        <FormControlLabel 
+                                            value="1"
+                                            control={<Radio />} 
+                                            label="Raster" 
+                                            onClick={(e)=>set_new_raster(true)}/>
+                                        <FormControlLabel 
+                                            value="2" 
+                                            control={<Radio />} 
+                                            label="Vetorial" 
+                                            onClick={(e)=>set_new_raster(false)}/>
+                                    </RadioGroup>
+                                </FormControl> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapImageResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    disabled={!new_raster}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "40%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}
+                                /> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapTheme}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tema" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_theme(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_theme(values)}/>   
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapType}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tipo de Mapa" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_map_type(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_map_type(values)}/>   
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="thematic_statistics" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <FormControl 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}>
+                                    <InputLabel>Tipo de estatística</InputLabel>
+                                    <Select
+                                        size="small"
+                                        value={URLs}
+                                        label="Tipo de documento"
+                                        MenuProps={MenuProps}
+                                        style={{
+                                            width: "50%",
+                                        }}
+                                        onChange={(e)=>{
+                                            setURL(e.target.value)
+                                            console.log(e.target.value)
+                                        }}
+                                    >
+                                        <MenuItem value="thematic_statistics">Estatística Temática</MenuItem>
+                                        <MenuItem value="census">Censos</MenuItem>
+                                        <MenuItem value="surveys">Inquérito</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allStatisticsThemes}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tema" 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_theme(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_theme(values)}/>    
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="sensors" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allSensorsVariable}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Variável medida" 
+                                        onChange={(e)=>set_new_variable(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_variable(values)}/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="satellite_image" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allSatelliteResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "40%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}
+                                /> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={allSatellite}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Nome do Satélite" 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_satellite(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_satellite(values)}
+                                /> 
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="reports" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allReportsContext}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Contexto" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_context(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_context(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allReportsTheme}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Tema" 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_theme(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_theme(values)}/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="photography" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <br/>
+                                <FormControlLabel 
+                                    style={{
+                                        width: "40%",
+                                        minWidth: "250px",
+                                        background: "rgb(0,0,0, 0.4)",
+                                        height: "40px",
+                                        margin: "auto",
+                                        textAlign: "center",
+                                        display:"block",
+                                        borderRadius: "5px"
+                                    }}
+                                    control={<Switch
+                                        checked={new_color}
+                                        onChange={() => set_new_color(!new_color)}
+                                        label="A cores"
+                                        color="primary"
+                                    />} label="Fotografia a cores" />
+                                <Autocomplete
+                                    freeSolo
+                                    options={allPhotoImageResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "40%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}
+                                />
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="ortos" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allOrtosScale}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala" 
+                                        onChange={(e)=>set_new_scale(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_scale(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allOrtosResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução" 
+                                        style={{
+                                            width: "40%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                        disabled={!new_raster}
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}/>
+                                <TextField 
+                                    id="descrption"
+                                label="Descrição" 
+                                variant="outlined" 
+                                style={{
+                                    width: "100%",
+                                    height: "40px",
+                                    top: "1vh"
+                                }}
+                                multiline
+                                fullWidth
+                                rows={4}
+                                onChange={(e)=>set_new_desc(e.target.value)}
+                                size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="LiDAR" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allLiDARResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                        disabled={!new_raster}
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}
+                                /> 
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="generic" && 
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="aerial_photography" && 
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allAerialPhotoImageResolution}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "40%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                        disabled={!new_raster}
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}/>   
+                                <Autocomplete
+                                    freeSolo
+                                    options={allAerialPhotoScale}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala aproximada" 
+                                        onChange={(e)=>set_new_scale(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_scale(values)}/>
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="geographic_map" && 
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <FormControl 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}>
+                                    <InputLabel>Tipo de mapa de base</InputLabel>
+                                    <Select
+                                        size="small"
+                                        value={URLs}
+                                        label="Tipo de mapa de base"
+                                        MenuProps={MenuProps}
+                                        style={{
+                                            width: "50%",
+                                        }}
+                                        onChange={(e)=>{
+                                            setURL(e.target.value)
+                                        }}>
+                                        <MenuItem value="geographic_map">Mapa Geográfico</MenuItem>
+                                        <MenuItem value="chorographic_map">Mapa Corográfico</MenuItem>
+                                        <MenuItem value="topographic_map">Mapa Topográfico</MenuItem>
+                                        <MenuItem value="topographic_plan">Planta Topográfica</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapScale}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left"}} 
+                                        {...params} 
+                                        label="Escala aproximada" 
+                                        onChange={(e)=>set_new_scale(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_scale(values)}
+                                />
+                                <FormControl
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}>
+                                    <FormLabel 
+                                        id="l"/>
+                                    <RadioGroup
+                                        style={{
+                                            width: "40%",
+                                            minWidth: "250px",
+                                            background: "rgb(0,0,0, 0.4)",
+                                            height: "40px",
+                                            margin: "auto",
+                                            textAlign: "center",
+                                            display:"block",
+                                            borderRadius: "5px"
+                                        }}
+                                        row
+                                        aria-labelledby="l"
+                                        defaultValue="1"
+                                        name="radio-buttons-group">
+                                        <FormControlLabel 
+                                            value="1"
+                                            control={<Radio />} 
+                                            label="Raster" 
+                                            onClick={(e)=>set_new_raster(true)}/>
+                                        <FormControlLabel 
+                                            value="2" 
+                                            control={<Radio />} 
+                                            label="Vetorial" 
+                                            onClick={(e)=>set_new_raster(false)}/>
+                                    </RadioGroup>
+                                </FormControl> 
+                                <Autocomplete
+                                    freeSolo
+                                    options={allMapImageResolution}
+                                    size="small"
+                                    disabled={!new_raster}
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Resolução da Imagem" 
+                                        style={{
+                                            width: "80%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_res(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_res(values)}
+                                />     
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="drawings" &&
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto"
+                                }}>
+                                <Autocomplete
+                                    freeSolo
+                                    options={[]}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "2vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "60%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        required
+                                        label="Nome" 
+                                        variant="outlined" 
+                                        onChange={(e)=>set_new_name(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>{
+                                        set_new_name(values)
+                                    }}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allProviders}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Fornecedor" 
+                                        onChange={(e)=>{
+                                            set_new_provider(e.target.value)
+                                        }}/>}
+                                    onChange={(e, values)=>{
+                                        set_new_provider(values)
+                                    }}/>
+                                <Autocomplete
+                                    disablePortal
+                                    options={range(1700, new Date().getFullYear(), 1).reverse()}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "30%", 
+                                            float:"left",
+                                        }} 
+                                        {...params} 
+                                        label="Ano" 
+                                        required/>}
+                                    onChange={(e, values)=>set_new_time(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allURLs}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left",
+                                        }}
+                                        {...params} 
+                                        label="URL" 
+                                        onChange={(e)=>set_new_link(e.target.value)}/>}
+                                    onChange={(e, values)=>set_new_link(values)}/>
+                                <Autocomplete
+                                    freeSolo
+                                    options={allDrawingsContext}
+                                    size="small"
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        marginTop: "1vh"
+                                    }}
+                                    renderInput={(params) => <TextField  
+                                        label="Contexto" 
+                                        style={{
+                                            width: "50%", 
+                                            float:"left"}}
+                                        variant="outlined" 
+                                        {...params}
+                                        onChange={(e)=>set_new_context(e.target.value)}
+                                        size="small"
+                                    />}
+                                    onChange={(e, values)=>set_new_context(values)}
+                                />
+                                <TextField 
+                                    id="descrption"
+                                    label="Descrição" 
+                                    variant="outlined" 
+                                    style={{
+                                        width: "100%",
+                                        height: "40px",
+                                        top: "1vh"
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={4}
+                                    onChange={(e)=>set_new_desc(e.target.value)}
+                                    size="small"/>
+                            </Box>
+                        }
+
+                        {new_type==="none" && 
+                            <Box
+                                style={{
+                                    position: "relative",
+                                    width: "90%",
+                                    top: "2vh",
+                                    height: "52vh",
+                                    margin: "auto",
+                                    overflow: "auto",
+                                    display: "block",
+                                    textAlign: "center",
+                                }}>
+                                <Typography 
+                                    variant="h4" 
+                                    component="h2"
+                                    color="black"
+                                    style={{
+                                        marginTop: "20vh"
+                                    }}>
+                                    Selecione um tipo de documento
+                                </Typography>
+                                <br/>
+                            </Box>
+                        }
+                    </>
+                    <div
+                        style={{ 
+                            position: "fixed",  
+                            margin: "auto",
+                            width: "100%",
+                            top: "90%",
+                            zIndex: 400
+                        }}>
+                        <Tooltip
+                            title="Cancelar">
+                            <IconButton
+                                style={{
+                                    background: "rgba(228,38,76,255)",
+                                    marginLeft: "38%",
+                                    height: "6vh",
+                                    width: "6vh"
+                                }} 
+                                onClick={()=> {
+                                    set_modal1(false)
+                                }}>
+                                <ClearIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 0.9)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip
+                            title="Confirmar nova meta informção">
+                            <IconButton
+                                style={{
+                                    background: "rgba(121,183,46,255)",
+                                    left: "10%",
+                                    height: "6vh",
+                                    width: "6vh"
+                                }} 
+                                onClick={()=> {
+                                    update_document()
+                                }}>
+                                <CheckIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 1)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </div>
             </Modal>
             <Modal
@@ -1824,6 +4163,26 @@ export default function Default() {
                                 }}
                                 onClick={()=> {
                                     set_modal1(true)
+                                    getAllProviders()
+                                    getAllURLS()
+                                    getAllDrawingsContext()
+                                    getAllStatisticsThemes()
+                                    getAllPhotoImageResolution()
+                                    getAllAerialPhotoImageResolution()
+                                    getAllAerialPhotoScale()
+                                    getAllSatellite()
+                                    getAllSatelliteResolution()
+                                    getAllLiDARResolution()
+                                    getAllMapGeometryType()
+                                    getAllMapImageResolution()
+                                    getAllMapScale()
+                                    getAllMapTheme()
+                                    getAllMapType()
+                                    getAllOrtosScale()
+                                    getAllOrtosResolution()
+                                    getAllReportsContext()
+                                    getAllReportsTheme()
+                                    getAllSensorsVariable()
                                 }}>
                                 <EditIcon
                                     style={{
