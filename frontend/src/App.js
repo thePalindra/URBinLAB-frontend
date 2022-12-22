@@ -3,7 +3,7 @@ import * as React from "react";
 import LogIn from "./pages/Login"
 import SignUp from "./pages/SignUp";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
-import NewDocument from "./pages/NewDocument"
+import AddDocument from "./pages/AddDocument"
 import SearchMenu from "./pages/SearchMenu"
 import MainPage from "./pages/MainPage"
 import Results from "./pages/Results"
@@ -23,7 +23,7 @@ function App() {
             <Route path="/" element={<MainPage/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/login" element={<LogIn/>}/>
-            <Route path="/new_document" element={<NewDocument/>}/>
+            <Route path="/new_document" element={<AddDocument/>}/>
             <Route path="/search_menu" element={<SearchMenu/>}/>
             <Route path="/results" element={<Results/>}/>
             <Route path="/document/:id" element={<Document/>}/>

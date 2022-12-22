@@ -130,7 +130,6 @@ export default function Default() {
 
     const [allProviders, setAllProviders]=React.useState([]);
     const [allURLs, setAllURLs]=React.useState([]);
-    const [allSpatialNames, setAllSpatialNames]=React.useState([]);
     const [allDrawingsContext, setAllDrawingsContext]=React.useState([]);
     const [allStatisticsThemes, setAllStatisticsThemes]=React.useState([]);
     const [allPhotoImageResolution, setAllPhotoImageResolution]=React.useState([]);

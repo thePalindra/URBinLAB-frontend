@@ -70,6 +70,7 @@ export default function Default() {
             style={{ 
                 background: "rgba(256, 256, 256, 0.98)",
                 height: "8vh",
+                minHeight: "65px",
                 margin: "auto"}}>
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
