@@ -31,8 +31,8 @@ import Switch from '@mui/material/Switch';
 import RadioGroup from '@mui/material/RadioGroup';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useNavigate, useParams } from "react-router-dom";
-import { EditControl } from "react-leaflet-draw"
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 
 let lat = 0
