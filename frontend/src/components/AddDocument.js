@@ -8,7 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import Tooltip from '@mui/material/Tooltip';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import CircularProgress from '@mui/material/CircularProgress';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
@@ -105,6 +105,10 @@ export default function Default() {
     const [modal3, set_modal3]=React.useState(false);
     const [modal4, set_modal4]=React.useState(false);
     const [modal5, set_modal5]=React.useState(false);
+    const [modal6, set_modal6]=React.useState(false);
+    const [modal7, set_modal7]=React.useState(false);
+    const [modal8, set_modal8]=React.useState(false);
+    const [modal9, set_modal9]=React.useState(false);
 
     const [new_type, set_new_type]=React.useState("none");
     const [URLs, setURL]=React.useState('geographic_map');
@@ -168,6 +172,26 @@ export default function Default() {
             get_color()
             get_tags()
             get_collections()
+            getAllAerialPhotoImageResolution()
+            getAllAerialPhotoScale()
+            getAllPhotoImageResolution()
+            getAllDrawingsContext()
+            getAllStatisticsThemes() 
+            getAllSatelliteResolution()
+            getAllSatellite()
+            getAllLiDARResolution()
+            getAllMapImageResolution()
+            getAllMapScale()
+            getAllMapGeometryType()
+            getAllMapType()
+            getAllMapTheme()
+            getAllOrtosScale()
+            getAllOrtosResolution()
+            getAllReportsContext()
+            getAllReportsTheme()
+            getAllSensorsVariable()
+            getAllProviders()
+            getAllURLS()
         }
         return () => { ignore = true; }
     },[]);
@@ -271,6 +295,247 @@ export default function Default() {
         })
     }
 
+    function getAllPhotoImageResolution () {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoImageResolution () {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllAerialPhotoImageResolution(result)
+        })
+    }
+
+    function getAllAerialPhotoScale () {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllAerialPhotoScale(result)
+        })
+    }
+
+    function getAllDrawingsContext() {
+        fetch("http://localhost:8080/drawings/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllDrawingsContext(result)
+        })
+    }
+
+    function getAllStatisticsThemes() {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllStatisticsThemes(result)
+        })
+    }
+
+    function getAllSatelliteResolution() {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatelliteResolution(result)
+        })
+    }
+
+    function getAllSatellite() {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSatellite(result)
+        })
+    }
+
+    function getAllLiDARResolution() {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllLiDARResolution(result)
+        })
+    }
+
+    function getAllMapImageResolution() {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapImageResolution(result)
+        })
+    }
+
+    function getAllMapScale() {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapScale(result)
+        })
+    }
+
+    function getAllMapGeometryType() {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapGeometryType(result)
+        })
+    }
+
+    function getAllMapType() {
+        fetch("http://localhost:8080/thematic_map/get_type", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapType(result)
+        })
+    }
+
+    function getAllMapTheme() {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllMapTheme(result)
+        })
+    }
+
+    function getAllOrtosScale() {
+        fetch("http://localhost:8080/ortos/get_scale", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosScale(result)
+        })
+    }
+
+    function getAllOrtosResolution() {
+        fetch("http://localhost:8080/ortos/get_resolution", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllOrtosResolution(result)
+        })
+    }
+
+    function getAllReportsContext() {
+        fetch("http://localhost:8080/reports/get_context", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsContext(result)
+        })
+    }
+
+    function getAllReportsTheme() {
+        fetch("http://localhost:8080/reports/get_theme", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllReportsTheme(result)
+        })
+    }
+
+    function getAllSensorsVariable() {
+        fetch("http://localhost:8080/sensors/get_variable", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllSensorsVariable(result)
+        })
+    }
+
+    function getAllProviders() {
+        fetch("http://localhost:8080/generic/get_all_providers", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllProviders(result)
+        })
+        
+    }
+    
+    function getAllURLS() {
+        fetch("http://localhost:8080/generic/get_all_urls", {
+            method: "POST",
+            headers: window.localStorage,
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            setAllURLs(result)
+        })
+    }
+
     function get_spatial_hierarchy_type() {
         fetch("http://localhost:8080/space/get_hierarchy_type", {
             method: "POST",
@@ -328,6 +593,67 @@ export default function Default() {
         })
     }
 
+    function all_form_append() {
+        let form = new FormData()
+        form.append("name", new_name);
+        form.append("description", new_desc);
+        form.append("provider", new_provider);
+        form.append("timeScope", new_time+"/01/01");
+        form.append("link", new_link);
+
+        switch(new_type) {
+            case "aerial_photography": 
+                form.append("resolution", new_res)
+                form.append("scale", new_scale)
+                break;
+            case "geographic_map":
+                form.append("scale", new_scale)
+                form.append("resolution", new_res)
+                form.append("type", new_type)
+                form.append("raster", new_raster)
+                break;
+            case "drawings":
+                form.append("context", new_context);
+                break;
+            case "LiDAR":
+                form.append("resolution", new_res)
+                break;
+            case "ortos":
+                form.append("resolution", new_res)
+                form.append("scale", new_scale)
+                break;
+            case "photography":
+                form.append("color", new_color);
+                form.append("resolution", new_res)
+                break;
+            case "reports":
+                form.append("context", new_context);
+                form.append("theme", new_theme)
+                break;
+            case "satellite_image":
+                form.append("resolution", new_res)
+                form.append("satellite", new_satellite)
+                break;
+            case "sensors":
+                form.append("variable", new_variable);
+                break;
+            case "thematic_statistics":
+                form.append("theme", new_theme)
+                break;
+            case "thematic_map":
+                form.append("scale", new_scale)
+                form.append("resolution", new_res)
+                form.append("type", new_type)
+                form.append("raster", new_raster)
+                form.append("theme", new_theme)
+                form.append("mapType",new_map_type)
+                break;
+            default:
+                break;
+        }
+        return form;
+    }
+
     function add_tag() {
         let form = new FormData()
 
@@ -362,10 +688,6 @@ export default function Default() {
         })
     }
 
-    function create_document() {
-        
-    }
-
     async function auto_space(selected_file, file_type, files) {
         const drawnItems = editable_FG._layers;
         if (Object.keys(drawnItems).length > 0) {
@@ -381,7 +703,6 @@ export default function Default() {
         for (const temp of files) {
             if (selected_file!==temp)
                 form.append('aux', temp);
-            console.log(temp)
         }
 
         if (file_type==="raster") {
@@ -408,7 +729,6 @@ export default function Default() {
             })
 
             resultBox = await resultBox.json();
-            console.log(resultBox)
 
             let parse = require('wellknown');
             setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
@@ -425,6 +745,172 @@ export default function Default() {
                 </GeoJSON>
             )
             
+        }
+    }
+
+    async function auto_space2(selected_file, file_type, files, auto) {
+        set_modal7(true)
+        const drawnItems = editable_FG._layers;
+        if (Object.keys(drawnItems).length > 0) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editable_FG.removeLayer(layer);
+            });
+        }
+        let form = new FormData();
+        form.append("file", selected_file)
+        
+        for (const temp of files) {
+            if (selected_file!==temp)
+                form.append('aux', temp);
+        }
+
+        if (file_type==="raster") {
+            let resultRaster = await fetch("http://localhost:5050/transform/raster", {
+                method: "POST",
+                body: form
+            })
+            if (resultRaster.ok) {
+                resultRaster = await resultRaster.json();
+
+                let parse = require('wellknown');
+                setWKT(parse(polygonAux(resultRaster.origin, resultRaster.limit)))
+
+                set_new_space(
+                    <GeoJSON data={parse(polygonAux(resultRaster.origin, resultRaster.limit))}>
+                    </GeoJSON>
+                )
+                set_modal6(false)
+            } else 
+                set_modal8(true)
+        } else {
+            let resultBox = await fetch("http://localhost:5050/mbox", {
+                method: "POST",
+                body: form
+            })
+            if (resultBox.ok) {
+                resultBox = await resultBox.json();
+
+                let parse = require('wellknown');
+                setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
+                    
+                let resultVector = await fetch("http://localhost:5050/transform/vector", {
+                    method: "POST",
+                    body: form
+                })
+
+                resultVector = await resultVector.json();
+
+                set_new_space(
+                    <GeoJSON data={resultVector}>
+                    </GeoJSON>
+                )
+                set_modal6(false)
+            } set_modal8(true)
+        }
+        set_modal7(false)
+    }
+
+    async function create_document() {
+        let form = all_form_append()
+        set_modal7(true)
+        
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        if (docId.ok) {
+            docId = await docId.json();
+
+            form.append("id", docId)
+            form.append("spatialName", spatial_query)
+            form.append("timeScope", new_time)
+
+            fetch("http://localhost:5050/es/put", {
+                method: "POST",
+                body: form
+            })
+
+            let sform = new FormData();
+            sform.append("document", docId);
+
+            switch(typeof wkt) {
+                case typeof 1:
+                    console.log(wkt)
+                    sform.append("id", wkt);
+                    fetch("http://localhost:8080/space/attach", {
+                        method: "POST",
+                        headers: window.localStorage,
+                        body: sform
+                    })
+                    break;
+                case typeof "c":
+                    console.log("default")
+                    sform.append("lng", lng)
+                    sform.append("lat", lat)
+                    sform.append("size", size)
+                    sform.append("name", spatial_query)
+                    fetch("http://localhost:8080/space/add_circle", {
+                        method: "POST",
+                        headers: window.localStorage,
+                        body: sform
+                    })
+                    break;
+                default:
+                    console.log(wkt)
+                    let wkttemp = JSON.stringify(wkt);
+                    sform.append("name", spatial_query)
+                    sform.append("space", wkttemp)
+                    fetch("http://localhost:8080/space/add_Geo", {
+                        method: "POST",
+                        headers: window.localStorage,
+                        body: sform
+                    })
+                    break;
+            }
+
+            if (new_collection) {
+                let form_collection = new FormData()
+                form_collection.append("id", docId)
+                form_collection.append("col", new_collection)
+
+                fetch("http://localhost:8080/generic/add_collection", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form_collection
+                })
+
+                
+            }
+
+            if (new_tags.length>0) {
+                let form_tags = new FormData();
+                form_tags.append("keywords", new_tags)
+                form_tags.append("document", docId)
+
+                fetch("http://localhost:8080/keyword/document", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form_tags
+                })
+            }
+
+            for (let j = 0; j<files.length; j++) {
+                let fform = new FormData();
+                fform.append("file", files[j])
+                fform.append("document", docId)
+
+                let fileres = await fetch("http://localhost:8080/file/add", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: fform
+                })
+
+                fileres = await fileres.json()
+            }
+            //navigate(`/document/${docId}`)
         }
     }
     
@@ -559,6 +1045,9 @@ export default function Default() {
                                     <IconButton
                                         style={{
                                             background: "rgba(3,137,173,255)",
+                                        }}
+                                        onClick={()=>{
+                                            set_modal6(true)
                                         }}>
                                         <FindInPageIcon 
                                             style={{
@@ -937,6 +1426,212 @@ export default function Default() {
                     </div>
                 </div>
             </Modal>
+            <Modal
+                keepMounted
+                open={modal6}
+                onClose={()=>{
+                    set_modal6(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "40%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "center",
+                        height: "40vh",
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "70%",
+                                marginTop: "3vh"
+                            }}>
+                            Selecione o ficheiro com o contexto espacial
+                        </Typography>
+                    </Box>
+                    <Box 
+                        style={{
+                            marginTop: "25px"
+                        }}>
+                        <Autocomplete
+                            disablePortal
+                            options={files}
+                            getOptionLabel={(option) => option.name}
+                            size="small"
+                            style={{
+                                width: "100%",
+                                height: "40px",
+                                marginTop: "1vh"
+                            }}
+                            renderInput={(params) => <TextField 
+                                style={{
+                                    width: "70%"
+                                }}
+                                {...params} 
+                                label="Ficheiros"/>}
+                            onChange={(e, values)=>{
+                                let temp = values.name.split(".")[values.name.split(".").length-1]
+                                let file_type = ""
+                                
+                                if (temp==="jpg" || temp==="jpeg" || temp==="tif" || temp==="png") 
+                                    file_type = "raster"
+                                else
+                                    file_type = "vector"
+                                
+                                auto_space2(values, file_type, files)
+                            }}/>
+                    </Box>
+                    <Box 
+                        style={{
+                            marginTop: "10vh"
+                        }}>
+                        <Button
+                            variant="contained" 
+                            component="label" 
+                            onClick={()=>{
+                                let selected_file = ""
+                                let file_type = ""
+                                loop:
+                                for (let i = 0; i<files.length; i++) {
+                                    let temp = files[i].name.split(".")
+                                    switch(temp[temp.length-1]) {
+                                        case "shp":
+                                            selected_file = files[i]
+                                            file_type = "vector"
+                                            break loop
+                                        case "tif":
+                                            selected_file = files[i]
+                                            file_type = "raster"
+                                            break
+                                        default:
+                                            break
+                                    }
+                                }
+                                if (selected_file)
+                                    auto_space2(selected_file, file_type, files)
+                                else 
+                                    set_modal9(true)
+                            }}>
+                            Selecionar ficheiro automáticamente
+                        </Button>
+                    </Box>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={modal7}>
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}>
+                    <CircularProgress/>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={modal8}
+                onClose={()=>{
+                    set_modal8(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "30%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "left",
+                        height: "30vh",
+                        overflow: "auto"
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Erros
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Ficheiro selecionado não tem nenhum contexto espacial
+                        </Typography>
+                    </Box>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={modal9}
+                onClose={()=>{
+                    set_modal9(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "30%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "left",
+                        height: "30vh",
+                        overflow: "auto"
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Erros
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <Typography 
+                            variant="h6" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Não foi detetado nenhum ficheiro com contexto espacial
+                        </Typography>
+                    </Box>
+                </div>
+            </Modal>
             <Box
                 display="flex"
                 justifyContent="center"
@@ -980,8 +1675,10 @@ export default function Default() {
                         onClick={()=> {
                             if (new_name && new_time && files.length > 0)
                                 set_modal1(true)
-                            else 
+                            else {
                                 set_modal4(true)
+                                get_spatial_hierarchy_type()
+                            }
                         }}>
                         <CheckIcon
                             style={{
@@ -3088,7 +3785,9 @@ export default function Default() {
                             renderInput={(params) => <TextField 
                                 {...params} 
                                 label="Coleção"/>}
-                            onChange={(e, values)=>set_new_collection(values[0])}/>
+                            onChange={(e, values)=>{
+                                set_new_collection(values[0])
+                            }}/>
                         <Tooltip
                             title="Criar nova coleção">
                             <IconButton
@@ -3166,8 +3865,6 @@ export default function Default() {
                                 let ids = []
                                 for (let i = 0; i<values.length; i++)
                                     ids.push(values[i][0])
-                                
-                                console.log(ids)
 
                                 set_new_tags(ids)
                             }}
