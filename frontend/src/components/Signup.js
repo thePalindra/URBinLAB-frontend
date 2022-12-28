@@ -12,6 +12,31 @@ export default function Signup() {
     const [password, setPassword]=React.useState('');
     const [confirm, setConfirm]=React.useState('');
 
+    React.useEffect(() => {
+        const start = async () => {
+            let ignore = false
+            if (!ignore) {
+                await check_token("A");
+                window.localStorage.removeItem("token")
+            }
+            return () => { ignore = true; }
+        }
+        start()
+    },[]);
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
+    }
+
     const signup=(e)=> {
         if (confirm === password) {
 

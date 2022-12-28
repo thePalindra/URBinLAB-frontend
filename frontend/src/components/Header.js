@@ -25,9 +25,24 @@ const darkTheme = createTheme({
 export default function Default() {
     const [search, setSearch]=React.useState('');
     const [dictionary, set_dictionary]=React.useState([])
+    const [logged_in, set_logged_in]=React.useState(false)
     let navigate = useNavigate()
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    React.useEffect(() => {
+        const start = async () => {
+            let ignore = false;
+            if (!ignore) {
+                let token = await check_token("R")
+                set_logged_in(token)
+                if (!token)
+                    window.localStorage.removeItem("token")
+            }
+            return () => { ignore = true; }
+        }
+        start()
+    },[]);
 
     async function get_search_result() {
         let form = new FormData()
@@ -55,6 +70,19 @@ export default function Default() {
                 console.log(result)
                 set_dictionary(result)
             });
+    }
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
     }
 
     const handleClick = (event) => {
@@ -177,28 +205,58 @@ export default function Default() {
                         
                     </Tooltip>
                 </Box>
-                <Menu dense
-                        id="pbasic-menu"
-                        anchorEl={anchorEl}
-                        PaperProps={{  
-                            style: {  
-                              width: 170,  
-                              background: "rgba(60, 60, 60, 1)"
-                            }
-                        }}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{'aria-labelledby': 'pbasic-button'}}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}>
-                        <MenuItem divider onClick={() => {navigate(`/login`)}}>Entrar</MenuItem>
-                        <MenuItem onClick={() => {navigate(`/signup`)}}>Registar</MenuItem>
+                <Menu 
+                    dense
+                    id="pbasic-menu"
+                    anchorEl={anchorEl}
+                    PaperProps={{  
+                        style: {  
+                            width: 170,  
+                            background: "rgba(60, 60, 60, 1)"
+                        }
+                    }}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{'aria-labelledby': 'pbasic-button'}}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}>
+                    {!logged_in && 
+                        <>
+                            <MenuItem 
+                                divider 
+                                onClick={() => {
+                                    navigate(`/login`)
+                                }}>
+                                Entrar
+                            </MenuItem>
+                            <MenuItem 
+                                onClick={() => {
+                                    navigate(`/signup`)
+                                }}>
+                                Registar
+                            </MenuItem>     
+                        </> 
+                    }
+                    {logged_in &&
+                        <>
+                            <MenuItem 
+                                onClick={() => {
+                                    window.localStorage.removeItem("token")
+                                    if(window.location.pathname=="/")
+                                        window.location.reload(false);
+                                    else 
+                                        navigate(`/`)
+                                }}>
+                                Sair
+                            </MenuItem>     
+                        </>
+                    }
                 </Menu> 
             </ThemeProvider>  
         </div>

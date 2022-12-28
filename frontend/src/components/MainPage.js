@@ -88,20 +88,38 @@ export default function Default() {
     const [color, set_color]=React.useState("")
     const [order, set_order]=React.useState("")
 
-
     React.useEffect(() => {
-        let ignore = false;
-        if (!ignore) {
-            get_all_documents()
-            get_all_tags()
-            get_color()
-            group_providers()
-            group_years()
-            group_types()
-            group_archivists()
+        const start = async () => {
+            let ignore = await check_token("A");
+            if (ignore) {
+                get_all_documents()
+                get_all_tags()
+                get_color()
+                group_providers()
+                group_years()
+                group_types()
+                group_archivists()
+            } else {
+                window.localStorage.removeItem("token")
+                navigate(`/login`)
+            }
+            return () => { ignore = true; }
         }
-        return () => { ignore = true; }
+        start()
     },[]);
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
+    }
     
     const _created=e=> {
         set_spatial_list(<></>)

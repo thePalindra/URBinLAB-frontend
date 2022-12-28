@@ -63,11 +63,30 @@ export default function Signup() {
     const [dictionary, set_dictionary]=React.useState([])
 
     React.useEffect(() => {
-        let ignore = false;
-        if (!ignore) {
+        const start = async () => {
+            let ignore = await check_token("A");
+            if (ignore) {
+            } else {
+                window.localStorage.removeItem("token")
+                navigate(`/login`)
+            }
+            return () => { ignore = true; }
         }
-        return () => { ignore = true; }
+        start()
     },[]);
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
+    }
 
     const _created=e=> {
         setSpatialList(<></>)

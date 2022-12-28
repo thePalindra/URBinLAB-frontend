@@ -151,14 +151,21 @@ export default function Default() {
 
 
     React.useEffect(() => {
-        let ignore = false;
-        if (!ignore) {
-            get_space()
-            get_document()
-            get_files()
-            get_spatial_hierarchy_type()
+        const start = async () => {
+            let ignore = await check_token("A");
+            if (ignore) {
+            
+                get_space()
+                get_document()
+                get_files()
+                set_spatial_hierarchy_type()
+            } else {
+                window.localStorage.removeItem("token")
+                navigate(`/login`)
+            }
+            return () => { ignore = true; }
         }
-        return () => { ignore = true; }
+        start()
     },[]);
 
     const onFeatureGroupReady = reactFGref => {
@@ -193,6 +200,19 @@ export default function Default() {
             default:
                 break;
         }
+    }
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
     }
 
     const return_spaces =()=> {
@@ -286,8 +306,7 @@ export default function Default() {
         .then(result=>{
             result[0][8] = result[0][8].split(" ")[2]
             set_document(result[0])
-            if (!result[0][1])
-                set_collection("")
+            set_collection(result[0][1])
             
             get_archiver(result[0][2])
             get_type(result[0][6])

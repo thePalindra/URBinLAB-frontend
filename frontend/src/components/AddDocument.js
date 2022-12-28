@@ -167,33 +167,39 @@ export default function Default() {
     const [all_spatial_names, set_all_spatial_names]=React.useState([]);
 
     React.useEffect(() => {
-        let ignore = false;
-        if (!ignore) {
-            get_color()
-            get_tags()
-            get_collections()
-            getAllAerialPhotoImageResolution()
-            getAllAerialPhotoScale()
-            getAllPhotoImageResolution()
-            getAllDrawingsContext()
-            getAllStatisticsThemes() 
-            getAllSatelliteResolution()
-            getAllSatellite()
-            getAllLiDARResolution()
-            getAllMapImageResolution()
-            getAllMapScale()
-            getAllMapGeometryType()
-            getAllMapType()
-            getAllMapTheme()
-            getAllOrtosScale()
-            getAllOrtosResolution()
-            getAllReportsContext()
-            getAllReportsTheme()
-            getAllSensorsVariable()
-            getAllProviders()
-            getAllURLS()
+        const start = async () => {
+            let ignore = await check_token("R");
+            if (ignore) {
+                get_color()
+                get_tags()
+                get_collections()
+                getAllAerialPhotoImageResolution()
+                getAllAerialPhotoScale()
+                getAllPhotoImageResolution()
+                getAllDrawingsContext()
+                getAllStatisticsThemes() 
+                getAllSatelliteResolution()
+                getAllSatellite()
+                getAllLiDARResolution()
+                getAllMapImageResolution()
+                getAllMapScale()
+                getAllMapGeometryType()
+                getAllMapType()
+                getAllMapTheme()
+                getAllOrtosScale()
+                getAllOrtosResolution()
+                getAllReportsContext()
+                getAllReportsTheme()
+                getAllSensorsVariable()
+                getAllProviders()
+                getAllURLS()
+            } else {
+                window.localStorage.removeItem("token")
+                navigate(`/login`)
+            }
+            return () => { ignore = true; }
         }
-        return () => { ignore = true; }
+        start()
     },[]);
 
     const onFeatureGroupReady = reactFGref => {
@@ -228,6 +234,19 @@ export default function Default() {
             default:
                 break;
         }
+    }
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+
+        let res = await fetch("http://localhost:8080/token/check", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+
+        return res.ok
     }
 
     function get_tags() {
@@ -871,20 +890,6 @@ export default function Default() {
                     break;
             }
 
-            if (new_collection) {
-                let form_collection = new FormData()
-                form_collection.append("id", docId)
-                form_collection.append("col", new_collection)
-
-                fetch("http://localhost:8080/generic/add_collection", {
-                    method: "POST",
-                    headers: window.localStorage,
-                    body: form_collection
-                })
-
-                
-            }
-
             if (new_tags.length>0) {
                 let form_tags = new FormData();
                 form_tags.append("keywords", new_tags)
@@ -894,6 +899,18 @@ export default function Default() {
                     method: "POST",
                     headers: window.localStorage,
                     body: form_tags
+                })
+            }
+
+            if (new_collection) {
+                form = new FormData();
+                form.append("collection", new_collection)
+                form.append("document", docId)
+
+                fetch("http://localhost:8080/generic/add_collection", {
+                    method: "POST",
+                    headers: window.localStorage,
+                    body: form
                 })
             }
 
@@ -910,7 +927,7 @@ export default function Default() {
 
                 fileres = await fileres.json()
             }
-            //navigate(`/document/${docId}`)
+            navigate(`/document/${docId}`)
         }
     }
     
