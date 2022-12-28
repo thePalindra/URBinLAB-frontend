@@ -49,7 +49,7 @@ export default function Signup() {
             
             fetch("http://localhost:8080/user/signup", {
                 method: "POST",
-                headers: window.localStorage,
+                
                 body: form
             })
             .then(res=>res.json())

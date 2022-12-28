@@ -252,7 +252,7 @@ export default function Default() {
     function get_tags() {
         fetch("http://localhost:8080/keyword/get_all", {
             method: "POST",
-            headers: window.localStorage,
+            
         })
         .then(res=>res.json())
         .then(result=>{
@@ -263,7 +263,7 @@ export default function Default() {
     function get_collections() {
         fetch("http://localhost:8080/collection/get_all", {
             method: "POST",
-            headers: window.localStorage,
+            
         })
         .then(res=>res.json())
         .then(result=>{
@@ -296,7 +296,7 @@ export default function Default() {
 
         fetch("http://localhost:8080/space/search_by_name", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -317,7 +317,7 @@ export default function Default() {
     function getAllPhotoImageResolution () {
         fetch("http://localhost:8080/photography/get_image_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -329,7 +329,7 @@ export default function Default() {
     function getAllAerialPhotoImageResolution () {
         fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -341,7 +341,7 @@ export default function Default() {
     function getAllAerialPhotoScale () {
         fetch("http://localhost:8080/aerial_photography/get_scale", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -353,7 +353,7 @@ export default function Default() {
     function getAllDrawingsContext() {
         fetch("http://localhost:8080/drawings/get_context", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -365,7 +365,7 @@ export default function Default() {
     function getAllStatisticsThemes() {
         fetch("http://localhost:8080/thematic_statistics/get_themes", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -377,7 +377,7 @@ export default function Default() {
     function getAllSatelliteResolution() {
         fetch("http://localhost:8080/satellite_image/get_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -389,7 +389,7 @@ export default function Default() {
     function getAllSatellite() {
         fetch("http://localhost:8080/satellite_image/get_satellite", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -401,7 +401,7 @@ export default function Default() {
     function getAllLiDARResolution() {
         fetch("http://localhost:8080/LiDAR/get_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -413,7 +413,7 @@ export default function Default() {
     function getAllMapImageResolution() {
         fetch("http://localhost:8080/geographic_map/get_image_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -425,7 +425,7 @@ export default function Default() {
     function getAllMapScale() {
         fetch("http://localhost:8080/geographic_map/get_scale", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -437,7 +437,7 @@ export default function Default() {
     function getAllMapGeometryType() {
         fetch("http://localhost:8080/geographic_map/get_geometry_type", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -449,7 +449,7 @@ export default function Default() {
     function getAllMapType() {
         fetch("http://localhost:8080/thematic_map/get_type", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -461,7 +461,7 @@ export default function Default() {
     function getAllMapTheme() {
         fetch("http://localhost:8080/thematic_map/get_theme", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -473,7 +473,7 @@ export default function Default() {
     function getAllOrtosScale() {
         fetch("http://localhost:8080/ortos/get_scale", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -485,7 +485,7 @@ export default function Default() {
     function getAllOrtosResolution() {
         fetch("http://localhost:8080/ortos/get_resolution", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -497,7 +497,7 @@ export default function Default() {
     function getAllReportsContext() {
         fetch("http://localhost:8080/reports/get_context", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -509,7 +509,7 @@ export default function Default() {
     function getAllReportsTheme() {
         fetch("http://localhost:8080/reports/get_theme", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -521,7 +521,7 @@ export default function Default() {
     function getAllSensorsVariable() {
         fetch("http://localhost:8080/sensors/get_variable", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -533,7 +533,7 @@ export default function Default() {
     function getAllProviders() {
         fetch("http://localhost:8080/generic/get_all_providers", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -546,7 +546,7 @@ export default function Default() {
     function getAllURLS() {
         fetch("http://localhost:8080/generic/get_all_urls", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -558,7 +558,7 @@ export default function Default() {
     function get_spatial_hierarchy_type() {
         fetch("http://localhost:8080/space/get_hierarchy_type", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: []
         })
         .then(res=>res.json())
@@ -572,7 +572,7 @@ export default function Default() {
         form.append("type", value)
         fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -587,7 +587,7 @@ export default function Default() {
 
         fetch("http://localhost:8080/space/get_levels", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -603,7 +603,7 @@ export default function Default() {
 
         fetch("http://localhost:8080/space/get_names", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -679,7 +679,7 @@ export default function Default() {
         form.append("keyword", tag_input)
         fetch("http://localhost:8080/keyword/add", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -861,7 +861,7 @@ export default function Default() {
                     sform.append("id", wkt);
                     fetch("http://localhost:8080/space/attach", {
                         method: "POST",
-                        headers: window.localStorage,
+                        
                         body: sform
                     })
                     break;
@@ -873,7 +873,7 @@ export default function Default() {
                     sform.append("name", spatial_query)
                     fetch("http://localhost:8080/space/add_circle", {
                         method: "POST",
-                        headers: window.localStorage,
+                        
                         body: sform
                     })
                     break;
@@ -884,7 +884,7 @@ export default function Default() {
                     sform.append("space", wkttemp)
                     fetch("http://localhost:8080/space/add_Geo", {
                         method: "POST",
-                        headers: window.localStorage,
+                        
                         body: sform
                     })
                     break;
@@ -897,7 +897,6 @@ export default function Default() {
 
                 fetch("http://localhost:8080/keyword/document", {
                     method: "POST",
-                    headers: window.localStorage,
                     body: form_tags
                 })
             }
@@ -909,7 +908,6 @@ export default function Default() {
 
                 fetch("http://localhost:8080/generic/add_collection", {
                     method: "POST",
-                    headers: window.localStorage,
                     body: form
                 })
             }
@@ -921,7 +919,6 @@ export default function Default() {
 
                 let fileres = await fetch("http://localhost:8080/file/add", {
                     method: "POST",
-                    headers: window.localStorage,
                     body: fform
                 })
 

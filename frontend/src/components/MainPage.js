@@ -176,7 +176,7 @@ export default function Default() {
         form.append("limit", 1*100)
         fetch("http://localhost:8080/generic/all", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -211,7 +211,7 @@ export default function Default() {
     function group_years() {
         fetch("http://localhost:8080/generic/group_year", {
             method: "POST",
-            headers: window.localStorage,
+            
         })
         .then(res=>res.json())
         .then(result=>{
@@ -222,7 +222,7 @@ export default function Default() {
     function group_types() {
         fetch("http://localhost:8080/generic/group_type", {
             method: "POST",
-            headers: window.localStorage,
+            
         })
         .then(res=>res.json())
         .then(result=>{
@@ -233,7 +233,7 @@ export default function Default() {
     function group_archivists() {
         fetch("http://localhost:8080/generic/group_archivist", {
             method: "POST",
-            headers: window.localStorage,
+            
         })
         .then(res=>res.json())
         .then(result=>{
@@ -246,7 +246,7 @@ export default function Default() {
         form.append("name", search)
         fetch("http://localhost:8080/generic/name", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -265,7 +265,7 @@ export default function Default() {
         form.append("list", temp)
         fetch("http://localhost:8080/generic/" + url, {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -282,7 +282,7 @@ export default function Default() {
 
         fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -309,7 +309,7 @@ export default function Default() {
 
                 fetch("http://localhost:8080/generic/get_document_by_space_circle", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -323,7 +323,7 @@ export default function Default() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_marker", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -340,7 +340,7 @@ export default function Default() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -390,7 +390,7 @@ export default function Default() {
         form.append("types", types_temp)
         fetch("http://localhost:8080/generic/filter", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())

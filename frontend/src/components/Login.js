@@ -32,7 +32,7 @@ export default function BasicTextFields() {
         
         fetch("http://localhost:8080/user/login", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())

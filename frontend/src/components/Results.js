@@ -176,7 +176,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         const response = await fetch("http://localhost:8080/generic/from_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         const js = await response.json();
@@ -206,7 +206,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_provider_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -220,7 +220,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_year_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -234,7 +234,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_type_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -248,7 +248,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/group_archivist_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -263,7 +263,7 @@ export default function Default() {
         form.append("name", search)
         fetch("http://localhost:8080/generic/get_by_name_in_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -283,7 +283,7 @@ export default function Default() {
         form.append("list", temp)
         fetch("http://localhost:8080/generic/" + url, {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -300,7 +300,7 @@ export default function Default() {
 
         fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())
@@ -327,7 +327,7 @@ export default function Default() {
 
                 fetch("http://localhost:8080/generic/get_document_by_space_circle", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -341,7 +341,7 @@ export default function Default() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_marker", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -358,7 +358,7 @@ export default function Default() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -409,7 +409,7 @@ export default function Default() {
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         fetch("http://localhost:8080/generic/filter_list", {
             method: "POST",
-            headers: window.localStorage,
+            
             body: form
         })
         .then(res=>res.json())

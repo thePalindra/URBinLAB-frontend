@@ -150,7 +150,7 @@ export default function Signup() {
 
                 fetch("http://localhost:8080/generic/get_document_by_space_circle", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -165,7 +165,7 @@ export default function Signup() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_marker", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
@@ -179,7 +179,7 @@ export default function Signup() {
                 
                 fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
-                    headers: window.localStorage,
+                    
                     body: form
                 })
                 .then(res=>res.json())
