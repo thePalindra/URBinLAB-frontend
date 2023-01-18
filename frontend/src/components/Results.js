@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import "leaflet-draw/dist/leaflet.draw.css"
+import CheckIcon from '@mui/icons-material/Check';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Tooltip from '@mui/material/Tooltip';
@@ -30,6 +31,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import FormGroup from '@mui/material/FormGroup';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -38,6 +41,9 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 let lat = 0
 let lng = 0
 let size = 0
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function circle(e) {
     let result =  "c"
@@ -85,8 +91,15 @@ export default function Default() {
     const [selected_types, set_selected_types]=React.useState([])
     const [providers, set_providers]=React.useState("")
     const [modal1, set_modal1]=React.useState(false);
+    const [modal2, set_modal2]=React.useState(false);
+    const [modal3, set_modal3]=React.useState(false);
     const [color, set_color]=React.useState("")
     const [order, set_order]=React.useState("")
+    const [favorite, set_favorite]=React.useState(false)
+    const [new_list, set_new_list]=React.useState("")
+    const [list, set_list]=React.useState([])
+    const [selected, set_selected]=React.useState(0)
+    const [all_lists, set_all_lists]=React.useState([])
 
     React.useEffect(() => {
         const start = async () => {
@@ -99,6 +112,7 @@ export default function Default() {
                 group_years()
                 group_types()
                 group_archivists()
+                get_all_lists()
             } else {
                 window.localStorage.removeItem("token")
                 navigate(`/login`)
@@ -112,7 +126,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://main-backend:5050/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -174,7 +188,7 @@ export default function Default() {
     async function get_all_documents() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        const response = await fetch("http://localhost:8080/generic/from_list", {
+        const response = await fetch("http://main-backend:5050/generic/from_list", {
             method: "POST",
             
             body: form
@@ -191,7 +205,7 @@ export default function Default() {
         Atualizado para as tags refletirem sobre os resultados
     */
     function get_all_tags() {
-        fetch("http://localhost:8080/keyword/group", {
+        fetch("http://main-backend:5050/keyword/group", {
             method: "POST",
             headers: window.localStorage
         })
@@ -204,13 +218,14 @@ export default function Default() {
     function group_providers() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_provider_list", {
+        fetch("http://main-backend:5050/generic/group_provider_list", {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
+            console.log(result)
             set_providers(result)
         });
     }
@@ -218,7 +233,7 @@ export default function Default() {
     function group_years() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_year_list", {
+        fetch("http://main-backend:5050/generic/group_year_list", {
             method: "POST",
             
             body: form
@@ -232,7 +247,7 @@ export default function Default() {
     function group_types() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_type_list", {
+        fetch("http://main-backend:5050/generic/group_type_list", {
             method: "POST",
             
             body: form
@@ -246,7 +261,7 @@ export default function Default() {
     function group_archivists() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/group_archivist_list", {
+        fetch("http://main-backend:5050/generic/group_archivist_list", {
             method: "POST",
             
             body: form
@@ -261,7 +276,7 @@ export default function Default() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         form.append("name", search)
-        fetch("http://localhost:8080/generic/get_by_name_in_list", {
+        fetch("http://main-backend:5050/generic/get_by_name_in_list", {
             method: "POST",
             
             body: form
@@ -274,6 +289,57 @@ export default function Default() {
         });
     }
 
+    function get_all_lists() {
+        let form = new FormData()
+        fetch("http://main-backend:5050/lists/get_all", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_all_lists(result)
+        });
+    }
+
+    function add_list() {
+        let form = new FormData()
+        form.append("name", new_list)
+        fetch("http://main-backend:5050/lists/add", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            let temp = [...all_lists]
+            temp.push([result.id, result.name])
+            console.log(result)
+            set_all_lists(temp)
+        });
+    }
+
+    function add_to_lists() {
+        if(favorite) {
+            let form = new FormData()
+            form.append("doc", selected)
+            fetch("http://main-backend:5050/lists/add_to_fav", {
+                method: "POST",
+                headers: window.localStorage,   
+                body: form
+            })
+        }
+        for(let i = 0; i<list.length; i++) {
+            let form = new FormData()
+            form.append("doc", selected)
+            form.append("list", list[i])
+            fetch("http://main-backend:5050/lists/add_to_list", {
+                method: "POST",
+                body: form
+            })
+        }
+    }
+
     function get_order(url) {
         let temp = []
         for (let i = 0; i<documents.length; i++)
@@ -281,7 +347,7 @@ export default function Default() {
 
         let form = new FormData()
         form.append("list", temp)
-        fetch("http://localhost:8080/generic/" + url, {
+        fetch("http://main-backend:5050/generic/" + url, {
             method: "POST",
             
             body: form
@@ -298,7 +364,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/get_space", {
+        fetch("http://main-backend:5050/generic/get_space", {
             method: "POST",
             
             body: form
@@ -325,7 +391,7 @@ export default function Default() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                fetch("http://main-backend:5050/generic/get_document_by_space_circle", {
                     method: "POST",
                     
                     body: form
@@ -339,7 +405,7 @@ export default function Default() {
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                fetch("http://main-backend:5050/generic/get_document_by_space_marker", {
                     method: "POST",
                     
                     body: form
@@ -356,7 +422,7 @@ export default function Default() {
             default:
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                fetch("http://main-backend:5050/generic/get_document_by_space_geometry", {
                     method: "POST",
                     
                     body: form
@@ -373,6 +439,7 @@ export default function Default() {
     
     function filter(years_temp, providers_temp, archivers_temp, types_temp) {
         let form = new FormData()
+
 
         if (years_temp.length == 0) {
             for (let i = 0; i<years.length; i++)
@@ -407,7 +474,7 @@ export default function Default() {
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://localhost:8080/generic/filter_list", {
+        fetch("http://main-backend:5050/generic/filter_list", {
             method: "POST",
             
             body: form
@@ -507,26 +574,27 @@ export default function Default() {
                                     color: "grey"
                                 }}>                                 
                                 {providers?.length>0 && providers.map((doc, index)=> {
-                                    return (
-                                        <div
-                                            key={index}>
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox 
-                                                    onChange={(e)=> {
-                                                        let temp=[...selected_providers]
-                                                        if (temp.includes(doc[0])) 
-                                                            temp.splice(selected_providers.indexOf(doc[0]), 1);
-                                                        else 
-                                                            temp.push(doc[0])
+                                    if (doc[0]!=="")
+                                        return (
+                                            <div
+                                                key={index}>
+                                                <FormControlLabel
+                                                    control={
+                                                    <Checkbox 
+                                                        onChange={(e)=> {
+                                                            let temp=[...selected_providers]
+                                                            if (temp.includes(doc[0])) 
+                                                                temp.splice(selected_providers.indexOf(doc[0]), 1);
+                                                            else 
+                                                                temp.push(doc[0])
 
-                                                        filter(selected_years, temp, selected_archivers, selected_types)
-                                                }}/>
-                                                }
-                                                label={doc[0] + " (" + doc[1] + ")"}
-                                            />
-                                        </div>
-                                    )
+                                                            filter(selected_years, temp, selected_archivers, selected_types)
+                                                    }}/>
+                                                    }
+                                                    label={doc[0] + " (" + doc[1] + ")"}
+                                                />
+                                            </div>
+                                        )
                                 })}
                             </FormGroup>
                         </FormControl>
@@ -618,6 +686,147 @@ export default function Default() {
                                 })}
                             </FormGroup>
                         </FormControl>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={modal2}
+                onClose={()=>{
+                    set_modal2(false)
+                    set_selected(0)
+                    set_favorite(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "40%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "center",
+                        height: "330px",
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "40px"
+                            }}>
+                            Adicionar a uma lista
+                        </Typography>
+                    </Box>
+                    <div
+                        style={{ 
+                            position: "relative",
+                            marginTop: "2vh",
+                        }}>
+                        <Typography 
+                            variant="h5" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                float:"left",
+                                marginLeft:"50px"
+                            }}>
+                            Favoritos 
+                                <Checkbox
+                                    checked={favorite}
+                                    onClick={()=>{
+                                        set_favorite(!favorite)
+                                    }}/>
+                        </Typography>
+                    </div>
+                    <div
+                        style={{ 
+                            position: "relative",
+                            marginTop: "100px",
+                            textAlign: "center",
+                            display: "flex",
+                            left: "25%"
+                        }}>
+                        <Autocomplete
+                            multiple
+                            options={all_lists}
+                            disableCloseOnSelect
+                            getOptionLabel={(option) => option[1]}
+                            renderOption={(props, option, { sel }) => (
+                            <li 
+                                {...props}
+                                key={option[0]}>
+                                <Checkbox
+                                    icon={icon}
+                                    checkedIcon={checkedIcon}
+                                    style={{ marginRight: 8 }}
+                                    checked={sel}/>
+                                {option[1]}
+                            </li>
+                            )}
+                            style={{ width: "50%" }}
+                            renderInput={(params) => (
+                            <TextField 
+                                {...params}
+                                size="small" 
+                                label="Listas" 
+                                placeholder="Selecione as listas"
+                                onChange={(e)=> {
+                                    set_new_list(e.target.value)
+                                }}/>
+                            )}
+                            onChange={(e, values)=>{
+                                let ids = []
+                                for (let i = 0; i<values.length; i++)
+                                    ids.push(values[i][0])
+
+                                set_list(ids)
+                            }}
+                        />
+                        <Tooltip
+                            title="Criar nova lista">
+                            <IconButton
+                                style={{
+                                    background: "rgba(3,137,173,255)",
+                                    left: "20px"
+                                }} 
+                                onClick={()=> {
+                                    add_list()
+                                }}>
+                                <AddIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 1)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                    <div
+                        style={{ 
+                            position: "relative",
+                            top: "10%",
+                        }}>
+                        <Tooltip
+                            title="Confirmar">
+                            <IconButton
+                                style={{
+                                    background: "rgba(121,183,46,255)",
+                                    height: "60px",
+                                    width: "60px"
+                                }} 
+                                onClick={()=> {
+                                    add_to_lists()
+                                    set_modal2(false)
+                                    set_favorite(false)
+                                }}>
+                                <CheckIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 1)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
                 </div>
             </Modal>
             <div 
@@ -800,21 +1009,21 @@ export default function Default() {
                             </Tooltip>
                             <Tooltip 
                                 title="Limpar procura">
-                                    <IconButton 
-                                        style={{ 
-                                            position: "relative",
-                                            borderRadius: "5px",
-                                            background: 'rgba(0, 0, 0, 0.26)',
-                                            left: "-16%"
-                                        }}
-                                        onClick={()=> {
-                                            window.location.reload(false);
-                                        }}>
-                                        <DeleteIcon 
-                                            style={{
-                                                color:"rgba(254,254,255,255)"
-                                            }}/>
-                                    </IconButton>
+                                <IconButton 
+                                    style={{ 
+                                        position: "relative",
+                                        borderRadius: "5px",
+                                        background: 'rgba(0, 0, 0, 0.26)',
+                                        left: "-16%"
+                                    }}
+                                    onClick={()=> {
+                                        window.location.reload(false);
+                                    }}>
+                                    <DeleteIcon 
+                                        style={{
+                                            color:"rgba(254,254,255,255)"
+                                        }}/>
+                                </IconButton>
                             </Tooltip>
                         </Box>
                         <List
@@ -857,6 +1066,10 @@ export default function Default() {
                                                 <IconButton
                                                     style={{ 
                                                         background: color_list[3],
+                                                    }}
+                                                    onClick={()=>{
+                                                        set_selected(doc[0])
+                                                        set_modal2(true)
                                                     }}>
                                                     <AddIcon
                                                         style={{

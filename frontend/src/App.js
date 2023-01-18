@@ -8,6 +8,7 @@ import SearchMenu from "./pages/SearchMenu"
 import MainPage from "./pages/MainPage"
 import Results from "./pages/Results"
 import Document from "./pages/Document"
+import Lists from "./pages/ProfileLists"
 
 /*function checkToken() {
   return window.localStorage.getItem('token');
@@ -27,6 +28,7 @@ function App() {
             <Route path="/search_menu" element={<SearchMenu/>}/>
             <Route path="/results" element={<Results/>}/>
             <Route path="/document/:id" element={<Document/>}/>
+            <Route path="/profile/lists" element={<Lists/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
             <Route path="/all/documents" element={<AllDocuments/>}/>
             <Route path="/add/document" element={<AddFiles/>}/>

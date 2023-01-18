@@ -47,7 +47,7 @@ export default function Default() {
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://localhost:5050/es/search", {
+        const response = await fetch("http://aux-backend:5050/es/search", {
             method: "POST",
             body: form
         })
@@ -62,27 +62,42 @@ export default function Default() {
     }
 
     function get_dictionary() {
-        fetch("http://localhost:5050/dictionary", {
-                method: "GET"
-            })
-            .then(res=>res.json())
-            .then(result=>{
-                console.log(result)
-                set_dictionary(result)
-            });
+        fetch("http://aux-backend:5050/dictionary", {
+            method: "GET"
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            set_dictionary(result)
+        });
     }
 
     async function check_token(type) {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://main-backend:5050/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
         })
 
         return res.ok
+    }
+
+    function get_nav(temp_name) {
+        let form = new FormData()
+        form.append("name", temp_name)
+        fetch("http://main-backend:5050/lists/get_by_name", {
+            method: "POST",
+            headers: window.localStorage,
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+
+            navigate(`/results/list/${result[0][0]}`)
+        });
     }
 
     const handleClick = (event) => {
@@ -245,6 +260,27 @@ export default function Default() {
                     }
                     {logged_in &&
                         <>
+                            <MenuItem 
+                                onClick={() => {
+                                    if(window.location.pathname=="/profile/lists")
+                                        window.location.reload(false);
+                                    else 
+                                        navigate(`/profile/lists`)
+                                }}>
+                                Listas
+                            </MenuItem>  
+                            <MenuItem 
+                                onClick={() => { 
+                                    get_nav("Favoritos")
+                                }}>
+                                Favoritos
+                            </MenuItem>  
+                            <MenuItem 
+                                onClick={() => {
+                                    get_nav("Histórico")
+                                }}>
+                                Histórico 
+                            </MenuItem>  
                             <MenuItem 
                                 onClick={() => {
                                     window.localStorage.removeItem("token")

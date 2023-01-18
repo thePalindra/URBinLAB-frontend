@@ -1,13 +1,12 @@
 FROM node:16.15.0
 
-WORKDIR /
+WORKDIR /app
 
-ENV PATH /node_modules/.bin:$PATH
+COPY package.json .
+COPY package-lock.json .
 
-COPY package.json ./
-COPY package-lock.json ./
+RUN npm install
 
-COPY src ./
-COPY public ./
+COPY . .
 
 CMD ["npm", "start"]

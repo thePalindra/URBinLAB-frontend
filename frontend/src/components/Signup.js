@@ -28,7 +28,7 @@ export default function Signup() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://main-backend:5050/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -47,7 +47,7 @@ export default function Signup() {
             form.append("password", password);
             form.append("email", email);
             
-            fetch("http://localhost:8080/user/signup", {
+            fetch("http://main-backend:5050/user/signup", {
                 method: "POST",
                 
                 body: form
@@ -55,6 +55,12 @@ export default function Signup() {
             .then(res=>res.json())
             .then(result=>{
                 console.log(result);
+                form = new FormData()
+                form.append("id", result)
+                fetch("http://main-backend:5050/lists/startup", {
+                    method: "POST",
+                    body: form
+                })
                 navigate(`/login`);
             });
         }
@@ -99,11 +105,13 @@ export default function Signup() {
                 </form>
 
                 <div>
-                    <Link href="#" underline="hover">
+                    <Link href="" underline="hover" onClick={()=>{
+                        navigate(`/login`)
+                    }}>
                     {'Fazer Login!'}
                     </Link>
 
-                    <Link href="#" underline="hover" style={{marginLeft:"15em"}}>
+                    <Link href="" underline="hover" style={{marginLeft:"15em"}}>
                     {'Recuperar conta!'}
                     </Link>
                 </div>
