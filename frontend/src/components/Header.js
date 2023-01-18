@@ -47,7 +47,7 @@ export default function Default() {
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://aux-backend:5050/es/search", {
+        const response = await fetch("http://localhost:5050/es/search", {
             method: "POST",
             body: form
         })
@@ -62,7 +62,7 @@ export default function Default() {
     }
 
     function get_dictionary() {
-        fetch("http://aux-backend:5050/dictionary", {
+        fetch("http://localhost:5050/dictionary", {
             method: "GET"
         })
         .then(res=>res.json())
@@ -76,7 +76,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -88,7 +88,7 @@ export default function Default() {
     function get_nav(temp_name) {
         let form = new FormData()
         form.append("name", temp_name)
-        fetch("http://main-backend:5050/lists/get_by_name", {
+        fetch("http://localhost:8080/lists/get_by_name", {
             method: "POST",
             headers: window.localStorage,
             body: form

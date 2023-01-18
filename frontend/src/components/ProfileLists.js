@@ -52,7 +52,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -63,7 +63,7 @@ export default function Default() {
 
     function get_all_lists() {
         let form = new FormData()
-        fetch("http://main-backend:5050/lists/get_all", {
+        fetch("http://localhost:8080/lists/get_all", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -82,7 +82,7 @@ export default function Default() {
     function add_list() {
         let form = new FormData()
         form.append("name", new_list)
-        fetch("http://main-backend:5050/lists/add", {
+        fetch("http://localhost:8080/lists/add", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -96,7 +96,7 @@ export default function Default() {
     function get_by_name() {
         let form = new FormData()
         form.append("name", search)
-        fetch("http://main-backend:5050/lists/get_by_name", {
+        fetch("http://localhost:8080/lists/get_by_name", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -110,7 +110,7 @@ export default function Default() {
     function get_nav(temp_name) {
         let form = new FormData()
         form.append("name", temp_name)
-        fetch("http://main-backend:5050/lists/get_by_name", {
+        fetch("http://localhost:8080/lists/get_by_name", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -125,7 +125,7 @@ export default function Default() {
         let form = new FormData()
         form.append("name", new_list)
         form.append("id", temp_id[0])
-        fetch("http://main-backend:5050/lists/update_name", {
+        fetch("http://localhost:8080/lists/update_name", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -139,7 +139,7 @@ export default function Default() {
     function delete_list() {
         let form = new FormData()
         form.append("id", temp_id[0])
-        fetch("http://main-backend:5050/lists/delete", {
+        fetch("http://localhost:8080/lists/delete", {
             method: "POST",
             body: form
         })

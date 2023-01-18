@@ -126,7 +126,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -188,7 +188,7 @@ export default function Default() {
     async function get_all_documents() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        const response = await fetch("http://main-backend:5050/generic/from_list", {
+        const response = await fetch("http://localhost:8080/generic/from_list", {
             method: "POST",
             
             body: form
@@ -205,7 +205,7 @@ export default function Default() {
         Atualizado para as tags refletirem sobre os resultados
     */
     function get_all_tags() {
-        fetch("http://main-backend:5050/keyword/group", {
+        fetch("http://localhost:8080/keyword/group", {
             method: "POST",
             headers: window.localStorage
         })
@@ -218,7 +218,7 @@ export default function Default() {
     function group_providers() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://main-backend:5050/generic/group_provider_list", {
+        fetch("http://localhost:8080/generic/group_provider_list", {
             method: "POST",
             
             body: form
@@ -233,7 +233,7 @@ export default function Default() {
     function group_years() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://main-backend:5050/generic/group_year_list", {
+        fetch("http://localhost:8080/generic/group_year_list", {
             method: "POST",
             
             body: form
@@ -247,7 +247,7 @@ export default function Default() {
     function group_types() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://main-backend:5050/generic/group_type_list", {
+        fetch("http://localhost:8080/generic/group_type_list", {
             method: "POST",
             
             body: form
@@ -261,7 +261,7 @@ export default function Default() {
     function group_archivists() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://main-backend:5050/generic/group_archivist_list", {
+        fetch("http://localhost:8080/generic/group_archivist_list", {
             method: "POST",
             
             body: form
@@ -276,7 +276,7 @@ export default function Default() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
         form.append("name", search)
-        fetch("http://main-backend:5050/generic/get_by_name_in_list", {
+        fetch("http://localhost:8080/generic/get_by_name_in_list", {
             method: "POST",
             
             body: form
@@ -291,7 +291,7 @@ export default function Default() {
 
     function get_all_lists() {
         let form = new FormData()
-        fetch("http://main-backend:5050/lists/get_all", {
+        fetch("http://localhost:8080/lists/get_all", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -305,7 +305,7 @@ export default function Default() {
     function add_list() {
         let form = new FormData()
         form.append("name", new_list)
-        fetch("http://main-backend:5050/lists/add", {
+        fetch("http://localhost:8080/lists/add", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -323,7 +323,7 @@ export default function Default() {
         if(favorite) {
             let form = new FormData()
             form.append("doc", selected)
-            fetch("http://main-backend:5050/lists/add_to_fav", {
+            fetch("http://localhost:8080/lists/add_to_fav", {
                 method: "POST",
                 headers: window.localStorage,   
                 body: form
@@ -333,7 +333,7 @@ export default function Default() {
             let form = new FormData()
             form.append("doc", selected)
             form.append("list", list[i])
-            fetch("http://main-backend:5050/lists/add_to_list", {
+            fetch("http://localhost:8080/lists/add_to_list", {
                 method: "POST",
                 body: form
             })
@@ -347,7 +347,7 @@ export default function Default() {
 
         let form = new FormData()
         form.append("list", temp)
-        fetch("http://main-backend:5050/generic/" + url, {
+        fetch("http://localhost:8080/generic/" + url, {
             method: "POST",
             
             body: form
@@ -364,7 +364,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/generic/get_space", {
+        fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -391,7 +391,7 @@ export default function Default() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://main-backend:5050/generic/get_document_by_space_circle", {
+                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
                     method: "POST",
                     
                     body: form
@@ -405,7 +405,7 @@ export default function Default() {
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://main-backend:5050/generic/get_document_by_space_marker", {
+                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
                     method: "POST",
                     
                     body: form
@@ -422,7 +422,7 @@ export default function Default() {
             default:
                 form.append("space", space);
                 
-                fetch("http://main-backend:5050/generic/get_document_by_space_geometry", {
+                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
                     
                     body: form
@@ -474,7 +474,7 @@ export default function Default() {
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://main-backend:5050/generic/filter_list", {
+        fetch("http://localhost:8080/generic/filter_list", {
             method: "POST",
             
             body: form

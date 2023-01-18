@@ -28,7 +28,7 @@ export default function Signup() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -47,7 +47,7 @@ export default function Signup() {
             form.append("password", password);
             form.append("email", email);
             
-            fetch("http://main-backend:5050/user/signup", {
+            fetch("http://localhost:8080/user/signup", {
                 method: "POST",
                 
                 body: form
@@ -57,7 +57,7 @@ export default function Signup() {
                 console.log(result);
                 form = new FormData()
                 form.append("id", result)
-                fetch("http://main-backend:5050/lists/startup", {
+                fetch("http://localhost:8080/lists/startup", {
                     method: "POST",
                     body: form
                 })

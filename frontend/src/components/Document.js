@@ -210,7 +210,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -234,7 +234,7 @@ export default function Default() {
         form.append("level", selected_level)
         form.append("hierarchy", selected_hierarchy)
 
-        fetch("http://main-backend:5050/space/search_by_name", {
+        fetch("http://localhost:8080/space/search_by_name", {
             method: "POST",
             
             body: form
@@ -258,7 +258,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/lists/add_to_historic", {
+        fetch("http://localhost:8080/lists/add_to_historic", {
             method: "POST",
             headers: window.localStorage,
             body: form
@@ -270,7 +270,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/file/get", {
+        fetch("http://localhost:8080/file/get", {
             method: "POST",
             
             body: form
@@ -286,7 +286,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/generic/get_space", {
+        fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -313,7 +313,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/generic/by_id", {
+        fetch("http://localhost:8080/generic/by_id", {
             method: "POST",
             
             body: form
@@ -333,7 +333,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", archiver_id)
 
-        fetch("http://main-backend:5050/user/archiver_name", {
+        fetch("http://localhost:8080/user/archiver_name", {
             method: "POST",
             
             body: form
@@ -345,7 +345,7 @@ export default function Default() {
     }
 
     function getAllPhotoImageResolution () {
-        fetch("http://main-backend:5050/photography/get_image_resolution", {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -357,7 +357,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoImageResolution () {
-        fetch("http://main-backend:5050/aerial_photography/get_image_resolution", {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -369,7 +369,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoScale () {
-        fetch("http://main-backend:5050/aerial_photography/get_scale", {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
             method: "POST",
             
             body: []
@@ -381,7 +381,7 @@ export default function Default() {
     }
 
     function getAllDrawingsContext() {
-        fetch("http://main-backend:5050/drawings/get_context", {
+        fetch("http://localhost:8080/drawings/get_context", {
             method: "POST",
             
             body: []
@@ -393,7 +393,7 @@ export default function Default() {
     }
 
     function getAllStatisticsThemes() {
-        fetch("http://main-backend:5050/thematic_statistics/get_themes", {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
             method: "POST",
             
             body: []
@@ -405,7 +405,7 @@ export default function Default() {
     }
 
     function getAllSatelliteResolution() {
-        fetch("http://main-backend:5050/satellite_image/get_resolution", {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
             method: "POST",
             
             body: []
@@ -417,7 +417,7 @@ export default function Default() {
     }
 
     function getAllSatellite() {
-        fetch("http://main-backend:5050/satellite_image/get_satellite", {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
             method: "POST",
             
             body: []
@@ -429,7 +429,7 @@ export default function Default() {
     }
 
     function getAllLiDARResolution() {
-        fetch("http://main-backend:5050/LiDAR/get_resolution", {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
             method: "POST",
             
             body: []
@@ -441,7 +441,7 @@ export default function Default() {
     }
 
     function getAllMapImageResolution() {
-        fetch("http://main-backend:5050/geographic_map/get_image_resolution", {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -453,7 +453,7 @@ export default function Default() {
     }
 
     function getAllMapScale() {
-        fetch("http://main-backend:5050/geographic_map/get_scale", {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
             method: "POST",
             
             body: []
@@ -465,7 +465,7 @@ export default function Default() {
     }
 
     function getAllMapGeometryType() {
-        fetch("http://main-backend:5050/geographic_map/get_geometry_type", {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
             method: "POST",
             
             body: []
@@ -477,7 +477,7 @@ export default function Default() {
     }
 
     function getAllMapType() {
-        fetch("http://main-backend:5050/thematic_map/get_type", {
+        fetch("http://localhost:8080/thematic_map/get_type", {
             method: "POST",
             
             body: []
@@ -489,7 +489,7 @@ export default function Default() {
     }
 
     function getAllMapTheme() {
-        fetch("http://main-backend:5050/thematic_map/get_theme", {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
             method: "POST",
             
             body: []
@@ -501,7 +501,7 @@ export default function Default() {
     }
 
     function getAllOrtosScale() {
-        fetch("http://main-backend:5050/ortos/get_scale", {
+        fetch("http://localhost:8080/ortos/get_scale", {
             method: "POST",
             
             body: []
@@ -513,7 +513,7 @@ export default function Default() {
     }
 
     function getAllOrtosResolution() {
-        fetch("http://main-backend:5050/ortos/get_resolution", {
+        fetch("http://localhost:8080/ortos/get_resolution", {
             method: "POST",
             
             body: []
@@ -525,7 +525,7 @@ export default function Default() {
     }
 
     function getAllReportsContext() {
-        fetch("http://main-backend:5050/reports/get_context", {
+        fetch("http://localhost:8080/reports/get_context", {
             method: "POST",
             
             body: []
@@ -537,7 +537,7 @@ export default function Default() {
     }
 
     function getAllReportsTheme() {
-        fetch("http://main-backend:5050/reports/get_theme", {
+        fetch("http://localhost:8080/reports/get_theme", {
             method: "POST",
             
             body: []
@@ -549,7 +549,7 @@ export default function Default() {
     }
 
     function getAllSensorsVariable() {
-        fetch("http://main-backend:5050/sensors/get_variable", {
+        fetch("http://localhost:8080/sensors/get_variable", {
             method: "POST",
             
             body: []
@@ -561,7 +561,7 @@ export default function Default() {
     }
 
     function getAllProviders() {
-        fetch("http://main-backend:5050/generic/get_all_providers", {
+        fetch("http://localhost:8080/generic/get_all_providers", {
             method: "POST",
             
             body: []
@@ -575,7 +575,7 @@ export default function Default() {
     }
     
     function getAllURLS() {
-        fetch("http://main-backend:5050/generic/get_all_urls", {
+        fetch("http://localhost:8080/generic/get_all_urls", {
             method: "POST",
             
             body: []
@@ -590,7 +590,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/geographic_map/get_by_id", {
+        fetch("http://localhost:8080/geographic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -704,7 +704,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/thematic_statistics/get_by_id", {
+        fetch("http://localhost:8080/thematic_statistics/get_by_id", {
             method: "POST",
             
             body: form
@@ -746,7 +746,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/aerial_photography/get_by_id", {
+        fetch("http://localhost:8080/aerial_photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -812,7 +812,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/lidar/get_by_id", {
+        fetch("http://localhost:8080/lidar/get_by_id", {
             method: "POST",
             
             body: form
@@ -854,7 +854,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/ortos/get_by_id", {
+        fetch("http://localhost:8080/ortos/get_by_id", {
             method: "POST",
             
             body: form
@@ -920,7 +920,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/satellite_image/get_by_id", {
+        fetch("http://localhost:8080/satellite_image/get_by_id", {
             method: "POST",
             
             body: form
@@ -986,7 +986,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/thematic_map/get_by_id", {
+        fetch("http://localhost:8080/thematic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -1148,7 +1148,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/drawings/get_by_id", {
+        fetch("http://localhost:8080/drawings/get_by_id", {
             method: "POST",
             
             body: form
@@ -1190,7 +1190,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/photography/get_by_id", {
+        fetch("http://localhost:8080/photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -1232,7 +1232,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/reports/get_by_id", {
+        fetch("http://localhost:8080/reports/get_by_id", {
             method: "POST",
             
             body: form
@@ -1298,7 +1298,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/sensors/get_by_id", {
+        fetch("http://localhost:8080/sensors/get_by_id", {
             method: "POST",
             
             body: form
@@ -1409,7 +1409,7 @@ export default function Default() {
     }
 
     function get_spatial_hierarchy_type() {
-        fetch("http://main-backend:5050/space/get_hierarchy_type", {
+        fetch("http://localhost:8080/space/get_hierarchy_type", {
             method: "POST",
             
             body: []
@@ -1423,7 +1423,7 @@ export default function Default() {
     function get_spatial_hierarchy(value) {
         let form = new FormData()
         form.append("type", value)
-        fetch("http://main-backend:5050/space/get_hierarchy", {
+        fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
@@ -1438,7 +1438,7 @@ export default function Default() {
         let form = new FormData();
         form.append("hierarchy", hier)
 
-        fetch("http://main-backend:5050/space/get_levels", {
+        fetch("http://localhost:8080/space/get_levels", {
             method: "POST",
             
             body: form
@@ -1454,7 +1454,7 @@ export default function Default() {
         form.append("hierarchy", selected_hierarchy)
         form.append("level", level)
 
-        fetch("http://main-backend:5050/space/get_names", {
+        fetch("http://localhost:8080/space/get_names", {
             method: "POST",
             
             body: form
@@ -1469,7 +1469,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://main-backend:5050/generic/delete", {
+        fetch("http://localhost:8080/generic/delete", {
             method: "POST",
             
             body: form
@@ -1496,7 +1496,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", file_id)
 
-        fetch("http://main-backend:5050/file/delete", {
+        fetch("http://localhost:8080/file/delete", {
             method: "POST",
             
             body: form
@@ -1522,7 +1522,7 @@ export default function Default() {
                 form.append("file", new_files[j])
                 form.append("document", id)
 
-                let file_res = await fetch("http://main-backend:5050/file/add", {
+                let file_res = await fetch("http://localhost:8080/file/add", {
                     method: "POST",
                     
                     body: form
@@ -1541,7 +1541,7 @@ export default function Default() {
         switch(typeof wkt) {
             case typeof 1:
                 sform.append("id", wkt);
-                fetch("http://main-backend:5050/space/attach", {
+                fetch("http://localhost:8080/space/attach", {
                     method: "POST",
                     
                     body: sform
@@ -1558,7 +1558,7 @@ export default function Default() {
                 sform.append("lat", lat)
                 sform.append("size", size)
                 sform.append("name", document[4])
-                fetch("http://main-backend:5050/space/add_circle", {
+                fetch("http://localhost:8080/space/add_circle", {
                     method: "POST",
                     
                     body: sform
@@ -1574,7 +1574,7 @@ export default function Default() {
                 let wkttemp = JSON.stringify(wkt);
                 sform.append("name", document[4])
                 sform.append("space", wkttemp)
-                fetch("http://main-backend:5050/space/add_Geo", {
+                fetch("http://localhost:8080/space/add_Geo", {
                     method: "POST",
                     
                     body: sform
@@ -1652,7 +1652,7 @@ export default function Default() {
     async function update_document() {
         let form = allFormAppend()
         
-        let docId = await fetch("http://main-backend:5050/"+ URLs +"/add_document", {
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
             
             body: form
@@ -1662,7 +1662,7 @@ export default function Default() {
         let sform = new FormData();
         sform.append("document", docId);
         sform.append("id", wkt);
-        fetch("http://main-backend:5050/space/attach", {
+        fetch("http://localhost:8080/space/attach", {
             method: "POST",
             
             body: sform
@@ -1672,7 +1672,7 @@ export default function Default() {
             let fform = new FormData();
             fform.append("document", docId);
             fform.append("id", files[i][0]);
-            await fetch("http://main-backend:5050/file/update", {
+            await fetch("http://localhost:8080/file/update", {
                 method: "POST",
                 
                 body: fform
@@ -1682,7 +1682,7 @@ export default function Default() {
         form = new FormData();
         form.append("id", id)
 
-        await fetch("http://main-backend:5050/generic/delete", {
+        await fetch("http://localhost:8080/generic/delete", {
             method: "POST",
             
             body: form

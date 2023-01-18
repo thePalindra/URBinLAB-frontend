@@ -30,7 +30,7 @@ export default function BasicTextFields() {
         form.append("name", name);
         form.append("password", password);
         
-        fetch("http://main-backend:5050/user/login", {
+        fetch("http://localhost:8080/user/login", {
             method: "POST",
             
             body: form
@@ -53,7 +53,7 @@ export default function BasicTextFields() {
         let form = new FormData();
         form.append("type", type)
 
-        let res = await fetch("http://main-backend:5050/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             headers: window.localStorage,
             body: form
