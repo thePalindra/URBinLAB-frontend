@@ -47,7 +47,7 @@ export default function Default() {
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://localhost:5050/es/search", {
+        const response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
             method: "POST",
             body: form
         })
@@ -62,7 +62,7 @@ export default function Default() {
     }
 
     function get_dictionary() {
-        fetch("http://localhost:5050/dictionary", {
+        fetch("http://urbingeo.fa.ulisboa.pt:5050/dictionary", {
             method: "GET"
         })
         .then(res=>res.json())
@@ -75,10 +75,10 @@ export default function Default() {
     async function check_token(type) {
         let form = new FormData();
         form.append("type", type)
+        form.append("token", window.localStorage.getItem("token"))
 
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
-            headers: window.localStorage,
             body: form
         })
 
@@ -88,9 +88,10 @@ export default function Default() {
     function get_nav(temp_name) {
         let form = new FormData()
         form.append("name", temp_name)
-        fetch("http://localhost:8080/lists/get_by_name", {
+        form.append("token", window.localStorage.getItem("token"))
+
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_by_name", {
             method: "POST",
-            headers: window.localStorage,
             body: form
         })
         .then(res=>res.json())

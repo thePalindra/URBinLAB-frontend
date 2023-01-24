@@ -27,10 +27,9 @@ export default function Signup() {
     async function check_token(type) {
         let form = new FormData();
         form.append("type", type)
-
-        let res = await fetch("http://localhost:8080/token/check", {
+        form.append("token", window.localStorage.getItem("token"))
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
-            headers: window.localStorage,
             body: form
         })
 
@@ -47,7 +46,7 @@ export default function Signup() {
             form.append("password", password);
             form.append("email", email);
             
-            fetch("http://localhost:8080/user/signup", {
+            fetch("http://urbingeo.fa.ulisboa.pt:8080/user/signup", {
                 method: "POST",
                 
                 body: form
@@ -57,7 +56,7 @@ export default function Signup() {
                 console.log(result);
                 form = new FormData()
                 form.append("id", result)
-                fetch("http://localhost:8080/lists/startup", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/startup", {
                     method: "POST",
                     body: form
                 })

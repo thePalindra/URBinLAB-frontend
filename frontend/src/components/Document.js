@@ -209,10 +209,9 @@ export default function Default() {
     async function check_token(type) {
         let form = new FormData();
         form.append("type", type)
-
-        let res = await fetch("http://localhost:8080/token/check", {
+        form.append("token", window.localStorage.getItem("token"))
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
-            headers: window.localStorage,
             body: form
         })
 
@@ -234,7 +233,7 @@ export default function Default() {
         form.append("level", selected_level)
         form.append("hierarchy", selected_hierarchy)
 
-        fetch("http://localhost:8080/space/search_by_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/search_by_name", {
             method: "POST",
             
             body: form
@@ -257,10 +256,10 @@ export default function Default() {
     function add_to_historic() {
         let form = new FormData();
         form.append("id", id)
+        form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/add_to_historic", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_historic", {
             method: "POST",
-            headers: window.localStorage,
             body: form
         })
 
@@ -270,7 +269,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/file/get", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/file/get", {
             method: "POST",
             
             body: form
@@ -286,7 +285,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/get_space", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -313,7 +312,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/by_id", {
             method: "POST",
             
             body: form
@@ -333,7 +332,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", archiver_id)
 
-        fetch("http://localhost:8080/user/archiver_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/user/archiver_name", {
             method: "POST",
             
             body: form
@@ -345,7 +344,7 @@ export default function Default() {
     }
 
     function getAllPhotoImageResolution () {
-        fetch("http://localhost:8080/photography/get_image_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -357,7 +356,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoImageResolution () {
-        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -369,7 +368,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoScale () {
-        fetch("http://localhost:8080/aerial_photography/get_scale", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_scale", {
             method: "POST",
             
             body: []
@@ -381,7 +380,7 @@ export default function Default() {
     }
 
     function getAllDrawingsContext() {
-        fetch("http://localhost:8080/drawings/get_context", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/drawings/get_context", {
             method: "POST",
             
             body: []
@@ -393,7 +392,7 @@ export default function Default() {
     }
 
     function getAllStatisticsThemes() {
-        fetch("http://localhost:8080/thematic_statistics/get_themes", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_statistics/get_themes", {
             method: "POST",
             
             body: []
@@ -405,7 +404,7 @@ export default function Default() {
     }
 
     function getAllSatelliteResolution() {
-        fetch("http://localhost:8080/satellite_image/get_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_resolution", {
             method: "POST",
             
             body: []
@@ -417,7 +416,7 @@ export default function Default() {
     }
 
     function getAllSatellite() {
-        fetch("http://localhost:8080/satellite_image/get_satellite", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_satellite", {
             method: "POST",
             
             body: []
@@ -429,7 +428,7 @@ export default function Default() {
     }
 
     function getAllLiDARResolution() {
-        fetch("http://localhost:8080/LiDAR/get_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/LiDAR/get_resolution", {
             method: "POST",
             
             body: []
@@ -441,7 +440,7 @@ export default function Default() {
     }
 
     function getAllMapImageResolution() {
-        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -453,7 +452,7 @@ export default function Default() {
     }
 
     function getAllMapScale() {
-        fetch("http://localhost:8080/geographic_map/get_scale", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_scale", {
             method: "POST",
             
             body: []
@@ -465,7 +464,7 @@ export default function Default() {
     }
 
     function getAllMapGeometryType() {
-        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_geometry_type", {
             method: "POST",
             
             body: []
@@ -477,7 +476,7 @@ export default function Default() {
     }
 
     function getAllMapType() {
-        fetch("http://localhost:8080/thematic_map/get_type", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_type", {
             method: "POST",
             
             body: []
@@ -489,7 +488,7 @@ export default function Default() {
     }
 
     function getAllMapTheme() {
-        fetch("http://localhost:8080/thematic_map/get_theme", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_theme", {
             method: "POST",
             
             body: []
@@ -501,7 +500,7 @@ export default function Default() {
     }
 
     function getAllOrtosScale() {
-        fetch("http://localhost:8080/ortos/get_scale", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_scale", {
             method: "POST",
             
             body: []
@@ -513,7 +512,7 @@ export default function Default() {
     }
 
     function getAllOrtosResolution() {
-        fetch("http://localhost:8080/ortos/get_resolution", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_resolution", {
             method: "POST",
             
             body: []
@@ -525,7 +524,7 @@ export default function Default() {
     }
 
     function getAllReportsContext() {
-        fetch("http://localhost:8080/reports/get_context", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_context", {
             method: "POST",
             
             body: []
@@ -537,7 +536,7 @@ export default function Default() {
     }
 
     function getAllReportsTheme() {
-        fetch("http://localhost:8080/reports/get_theme", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_theme", {
             method: "POST",
             
             body: []
@@ -549,7 +548,7 @@ export default function Default() {
     }
 
     function getAllSensorsVariable() {
-        fetch("http://localhost:8080/sensors/get_variable", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/sensors/get_variable", {
             method: "POST",
             
             body: []
@@ -561,7 +560,7 @@ export default function Default() {
     }
 
     function getAllProviders() {
-        fetch("http://localhost:8080/generic/get_all_providers", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_providers", {
             method: "POST",
             
             body: []
@@ -575,7 +574,7 @@ export default function Default() {
     }
     
     function getAllURLS() {
-        fetch("http://localhost:8080/generic/get_all_urls", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_urls", {
             method: "POST",
             
             body: []
@@ -590,7 +589,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/geographic_map/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -704,7 +703,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/thematic_statistics/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_statistics/get_by_id", {
             method: "POST",
             
             body: form
@@ -746,7 +745,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/aerial_photography/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -812,7 +811,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/lidar/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lidar/get_by_id", {
             method: "POST",
             
             body: form
@@ -854,7 +853,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/ortos/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_by_id", {
             method: "POST",
             
             body: form
@@ -920,7 +919,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/satellite_image/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_by_id", {
             method: "POST",
             
             body: form
@@ -986,7 +985,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/thematic_map/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -1148,7 +1147,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/drawings/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/drawings/get_by_id", {
             method: "POST",
             
             body: form
@@ -1190,7 +1189,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/photography/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -1232,7 +1231,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/reports/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_by_id", {
             method: "POST",
             
             body: form
@@ -1298,7 +1297,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/sensors/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/sensors/get_by_id", {
             method: "POST",
             
             body: form
@@ -1338,7 +1337,7 @@ export default function Default() {
 
     function get_type(type) {
         switch(type) {
-            case "AERIAL PHOTOGRAPHY":
+            case "AERIAL PHOTOS":
                 set_type_translation("Fotografia aérea")
                 get_aerial_photography()
                 break
@@ -1378,7 +1377,7 @@ export default function Default() {
                 set_type_translation("Desenhos")
                 get_drawings()
                 break
-            case "PHOTOGRAPHY":
+            case "PHOTOS":
                 set_type_translation("Fotografia")
                 get_photography()
                 break
@@ -1409,7 +1408,7 @@ export default function Default() {
     }
 
     function get_spatial_hierarchy_type() {
-        fetch("http://localhost:8080/space/get_hierarchy_type", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy_type", {
             method: "POST",
             
             body: []
@@ -1423,7 +1422,7 @@ export default function Default() {
     function get_spatial_hierarchy(value) {
         let form = new FormData()
         form.append("type", value)
-        fetch("http://localhost:8080/space/get_hierarchy", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
@@ -1438,7 +1437,7 @@ export default function Default() {
         let form = new FormData();
         form.append("hierarchy", hier)
 
-        fetch("http://localhost:8080/space/get_levels", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_levels", {
             method: "POST",
             
             body: form
@@ -1454,7 +1453,7 @@ export default function Default() {
         form.append("hierarchy", selected_hierarchy)
         form.append("level", level)
 
-        fetch("http://localhost:8080/space/get_names", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_names", {
             method: "POST",
             
             body: form
@@ -1469,7 +1468,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/delete", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/delete", {
             method: "POST",
             
             body: form
@@ -1496,7 +1495,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", file_id)
 
-        fetch("http://localhost:8080/file/delete", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/file/delete", {
             method: "POST",
             
             body: form
@@ -1522,7 +1521,7 @@ export default function Default() {
                 form.append("file", new_files[j])
                 form.append("document", id)
 
-                let file_res = await fetch("http://localhost:8080/file/add", {
+                let file_res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/file/add", {
                     method: "POST",
                     
                     body: form
@@ -1541,7 +1540,7 @@ export default function Default() {
         switch(typeof wkt) {
             case typeof 1:
                 sform.append("id", wkt);
-                fetch("http://localhost:8080/space/attach", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/attach", {
                     method: "POST",
                     
                     body: sform
@@ -1558,7 +1557,7 @@ export default function Default() {
                 sform.append("lat", lat)
                 sform.append("size", size)
                 sform.append("name", document[4])
-                fetch("http://localhost:8080/space/add_circle", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_circle", {
                     method: "POST",
                     
                     body: sform
@@ -1574,7 +1573,7 @@ export default function Default() {
                 let wkttemp = JSON.stringify(wkt);
                 sform.append("name", document[4])
                 sform.append("space", wkttemp)
-                fetch("http://localhost:8080/space/add_Geo", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_Geo", {
                     method: "POST",
                     
                     body: sform
@@ -1651,8 +1650,9 @@ export default function Default() {
 
     async function update_document() {
         let form = allFormAppend()
+        form.append("token", window.localStorage.getItem("token"))
         
-        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
+        let docId = await fetch("http://urbingeo.fa.ulisboa.pt:8080/"+ URLs +"/add_document", {
             method: "POST",
             
             body: form
@@ -1662,7 +1662,7 @@ export default function Default() {
         let sform = new FormData();
         sform.append("document", docId);
         sform.append("id", wkt);
-        fetch("http://localhost:8080/space/attach", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/attach", {
             method: "POST",
             
             body: sform
@@ -1672,7 +1672,7 @@ export default function Default() {
             let fform = new FormData();
             fform.append("document", docId);
             fform.append("id", files[i][0]);
-            await fetch("http://localhost:8080/file/update", {
+            await fetch("http://urbingeo.fa.ulisboa.pt:8080/file/update", {
                 method: "POST",
                 
                 body: fform
@@ -1682,7 +1682,7 @@ export default function Default() {
         form = new FormData();
         form.append("id", id)
 
-        await fetch("http://localhost:8080/generic/delete", {
+        await fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/delete", {
             method: "POST",
             
             body: form
