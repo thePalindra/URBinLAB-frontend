@@ -16,6 +16,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -85,7 +86,7 @@ const MenuProps = {
 export default function Default() {
     let navigate = useNavigate()
     let { id } = useParams();
-    const [position, set_position]=React.useState([39.5, -9])
+    const [position, set_position]=React.useState([39.7, -14])
     const [space, set_space]=React.useState(<></>)
     const [tags, set_tags]=React.useState([]);
     const [document, set_document]=React.useState([])
@@ -210,7 +211,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -233,7 +234,7 @@ export default function Default() {
         form.append("level", selected_level)
         form.append("hierarchy", selected_hierarchy)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/search_by_name", {
+        fetch("http://localhost:8080/space/search_by_name", {
             method: "POST",
             
             body: form
@@ -258,7 +259,7 @@ export default function Default() {
         form.append("id", id)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_historic", {
+        fetch("http://localhost:8080/lists/add_to_historic", {
             method: "POST",
             body: form
         })
@@ -269,7 +270,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/file/get", {
+        fetch("http://localhost:8080/file/get", {
             method: "POST",
             
             body: form
@@ -285,7 +286,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
+        fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -312,7 +313,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/by_id", {
+        fetch("http://localhost:8080/generic/by_id", {
             method: "POST",
             
             body: form
@@ -332,7 +333,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", archiver_id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/user/archiver_name", {
+        fetch("http://localhost:8080/user/archiver_name", {
             method: "POST",
             
             body: form
@@ -344,7 +345,7 @@ export default function Default() {
     }
 
     function getAllPhotoImageResolution () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/photography/get_image_resolution", {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -356,7 +357,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoImageResolution () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_image_resolution", {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -368,7 +369,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoScale () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_scale", {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
             method: "POST",
             
             body: []
@@ -380,7 +381,7 @@ export default function Default() {
     }
 
     function getAllDrawingsContext() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/drawings/get_context", {
+        fetch("http://localhost:8080/drawings/get_context", {
             method: "POST",
             
             body: []
@@ -392,7 +393,7 @@ export default function Default() {
     }
 
     function getAllStatisticsThemes() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_statistics/get_themes", {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
             method: "POST",
             
             body: []
@@ -404,7 +405,7 @@ export default function Default() {
     }
 
     function getAllSatelliteResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_resolution", {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
             method: "POST",
             
             body: []
@@ -416,7 +417,7 @@ export default function Default() {
     }
 
     function getAllSatellite() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_satellite", {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
             method: "POST",
             
             body: []
@@ -428,7 +429,7 @@ export default function Default() {
     }
 
     function getAllLiDARResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/LiDAR/get_resolution", {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
             method: "POST",
             
             body: []
@@ -440,7 +441,7 @@ export default function Default() {
     }
 
     function getAllMapImageResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_image_resolution", {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -452,7 +453,7 @@ export default function Default() {
     }
 
     function getAllMapScale() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_scale", {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
             method: "POST",
             
             body: []
@@ -464,7 +465,7 @@ export default function Default() {
     }
 
     function getAllMapGeometryType() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_geometry_type", {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
             method: "POST",
             
             body: []
@@ -476,7 +477,7 @@ export default function Default() {
     }
 
     function getAllMapType() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_type", {
+        fetch("http://localhost:8080/thematic_map/get_type", {
             method: "POST",
             
             body: []
@@ -488,7 +489,7 @@ export default function Default() {
     }
 
     function getAllMapTheme() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_theme", {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
             method: "POST",
             
             body: []
@@ -500,7 +501,7 @@ export default function Default() {
     }
 
     function getAllOrtosScale() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_scale", {
+        fetch("http://localhost:8080/ortos/get_scale", {
             method: "POST",
             
             body: []
@@ -512,7 +513,7 @@ export default function Default() {
     }
 
     function getAllOrtosResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_resolution", {
+        fetch("http://localhost:8080/ortos/get_resolution", {
             method: "POST",
             
             body: []
@@ -524,7 +525,7 @@ export default function Default() {
     }
 
     function getAllReportsContext() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_context", {
+        fetch("http://localhost:8080/reports/get_context", {
             method: "POST",
             
             body: []
@@ -536,7 +537,7 @@ export default function Default() {
     }
 
     function getAllReportsTheme() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_theme", {
+        fetch("http://localhost:8080/reports/get_theme", {
             method: "POST",
             
             body: []
@@ -548,7 +549,7 @@ export default function Default() {
     }
 
     function getAllSensorsVariable() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/sensors/get_variable", {
+        fetch("http://localhost:8080/sensors/get_variable", {
             method: "POST",
             
             body: []
@@ -560,7 +561,7 @@ export default function Default() {
     }
 
     function getAllProviders() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_providers", {
+        fetch("http://localhost:8080/generic/get_all_providers", {
             method: "POST",
             
             body: []
@@ -574,7 +575,7 @@ export default function Default() {
     }
     
     function getAllURLS() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_urls", {
+        fetch("http://localhost:8080/generic/get_all_urls", {
             method: "POST",
             
             body: []
@@ -589,7 +590,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_by_id", {
+        fetch("http://localhost:8080/geographic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -703,7 +704,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_statistics/get_by_id", {
+        fetch("http://localhost:8080/thematic_statistics/get_by_id", {
             method: "POST",
             
             body: form
@@ -745,7 +746,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_by_id", {
+        fetch("http://localhost:8080/aerial_photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -811,7 +812,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lidar/get_by_id", {
+        fetch("http://localhost:8080/lidar/get_by_id", {
             method: "POST",
             
             body: form
@@ -853,7 +854,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_by_id", {
+        fetch("http://localhost:8080/ortos/get_by_id", {
             method: "POST",
             
             body: form
@@ -919,7 +920,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_by_id", {
+        fetch("http://localhost:8080/satellite_image/get_by_id", {
             method: "POST",
             
             body: form
@@ -985,7 +986,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_by_id", {
+        fetch("http://localhost:8080/thematic_map/get_by_id", {
             method: "POST",
             
             body: form
@@ -1147,7 +1148,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/drawings/get_by_id", {
+        fetch("http://localhost:8080/drawings/get_by_id", {
             method: "POST",
             
             body: form
@@ -1189,7 +1190,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/photography/get_by_id", {
+        fetch("http://localhost:8080/photography/get_by_id", {
             method: "POST",
             
             body: form
@@ -1231,7 +1232,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_by_id", {
+        fetch("http://localhost:8080/reports/get_by_id", {
             method: "POST",
             
             body: form
@@ -1297,7 +1298,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/sensors/get_by_id", {
+        fetch("http://localhost:8080/sensors/get_by_id", {
             method: "POST",
             
             body: form
@@ -1408,7 +1409,7 @@ export default function Default() {
     }
 
     function get_spatial_hierarchy_type() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy_type", {
+        fetch("http://localhost:8080/space/get_hierarchy_type", {
             method: "POST",
             
             body: []
@@ -1422,7 +1423,7 @@ export default function Default() {
     function get_spatial_hierarchy(value) {
         let form = new FormData()
         form.append("type", value)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy", {
+        fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
@@ -1437,7 +1438,7 @@ export default function Default() {
         let form = new FormData();
         form.append("hierarchy", hier)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_levels", {
+        fetch("http://localhost:8080/space/get_levels", {
             method: "POST",
             
             body: form
@@ -1453,7 +1454,7 @@ export default function Default() {
         form.append("hierarchy", selected_hierarchy)
         form.append("level", level)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_names", {
+        fetch("http://localhost:8080/space/get_names", {
             method: "POST",
             
             body: form
@@ -1468,7 +1469,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/delete", {
+        fetch("http://localhost:8080/generic/delete", {
             method: "POST",
             
             body: form
@@ -1495,7 +1496,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", file_id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/file/delete", {
+        fetch("http://localhost:8080/file/delete", {
             method: "POST",
             
             body: form
@@ -1505,6 +1506,24 @@ export default function Default() {
             console.log(result)
             
         })
+    }
+
+    async function download_files() {
+        let res = []
+        for (let i = 0; i<files.length; i++) {
+            console.log(files[i][0])
+            let form = new FormData();
+            form.append("id", files[i][0])
+
+            let download_res = await fetch("http://localhost:8080/file/download", {
+                method: "POST",
+                
+                body: form
+            })
+
+            download_res = await download_res.blob()
+            console.log(download_res)
+        }
     }
 
     async function upload_new_files() {
@@ -1521,7 +1540,7 @@ export default function Default() {
                 form.append("file", new_files[j])
                 form.append("document", id)
 
-                let file_res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/file/add", {
+                let file_res = await fetch("http://localhost:8080/file/add", {
                     method: "POST",
                     
                     body: form
@@ -1540,7 +1559,7 @@ export default function Default() {
         switch(typeof wkt) {
             case typeof 1:
                 sform.append("id", wkt);
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/attach", {
+                fetch("http://localhost:8080/space/attach", {
                     method: "POST",
                     
                     body: sform
@@ -1557,7 +1576,7 @@ export default function Default() {
                 sform.append("lat", lat)
                 sform.append("size", size)
                 sform.append("name", document[4])
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_circle", {
+                fetch("http://localhost:8080/space/add_circle", {
                     method: "POST",
                     
                     body: sform
@@ -1573,7 +1592,7 @@ export default function Default() {
                 let wkttemp = JSON.stringify(wkt);
                 sform.append("name", document[4])
                 sform.append("space", wkttemp)
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_Geo", {
+                fetch("http://localhost:8080/space/add_Geo", {
                     method: "POST",
                     
                     body: sform
@@ -1652,7 +1671,7 @@ export default function Default() {
         let form = allFormAppend()
         form.append("token", window.localStorage.getItem("token"))
         
-        let docId = await fetch("http://urbingeo.fa.ulisboa.pt:8080/"+ URLs +"/add_document", {
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
             
             body: form
@@ -1662,7 +1681,7 @@ export default function Default() {
         let sform = new FormData();
         sform.append("document", docId);
         sform.append("id", wkt);
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/attach", {
+        fetch("http://localhost:8080/space/attach", {
             method: "POST",
             
             body: sform
@@ -1672,7 +1691,7 @@ export default function Default() {
             let fform = new FormData();
             fform.append("document", docId);
             fform.append("id", files[i][0]);
-            await fetch("http://urbingeo.fa.ulisboa.pt:8080/file/update", {
+            await fetch("http://localhost:8080/file/update", {
                 method: "POST",
                 
                 body: fform
@@ -1682,7 +1701,7 @@ export default function Default() {
         form = new FormData();
         form.append("id", id)
 
-        await fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/delete", {
+        await fetch("http://localhost:8080/generic/delete", {
             method: "POST",
             
             body: form
@@ -4084,460 +4103,449 @@ export default function Default() {
                     </Box>
                 </div>
             </Modal>
-            <div 
+            <MapContainer 
                 style={{ 
-                    margin: "auto",
-                    position: "relative",
+                    position: "absolute",
+                    height: "92%",
+                    width:"100%",
+                    float: "left"}}
+                center={position} 
+                zoom={7} 
+                scrollWheelZoom={true} 
+                minZoom={4}>
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />     
+                {space}
+            </MapContainer> 
+            <div
+                style={{ 
+                    marginTop: "10px",
+                    marginLeft: "10px",
+                    borderRadius: "5px",
+                    position: "absolute",
+                    float: "left",
+                    width:"35%",
+                    height: "92%",
+                    minWidth: "550px",
                     border: "1px solid grey",
-                    background: "rgba(256, 256, 256, 0.9)",
-                    height: "8vh",
-                    width:"120%",
-                    left: "-10%",}}>
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
-                        position: "relative",
-                        width: "150%",
-                        left:"-25%",
-                        top: "20%",
-                    }}>                
-                    <IconButton 
-                        size="small" 
-                        onClick={() => {
-                            document.getElementById("overflowing").scrollBy(-300,0)
-                        }}>
-                        <NavigateBeforeIcon 
-                            fontSize="large"/>
-                    </IconButton>
-                    <Box
-                        id="overflowing"
-                        display="flex"
-                        style={{
-                            background: "rgba(0, 0, 0, 0.4)",
-                            borderRadius: "17px",
-                            position:"relative",
-                            left:"1%",
-                            width: "35%",
-                            overflowY: "hidden",
-                            overflowX: "hidden"
-                        }}>
-                        {tags?.length>0 && tags.map((doc, index)=>{
-                            return(
-                                <Typography 
-                                    variant="h6" 
-                                    style={{ 
-                                        color: "rgba(256, 256, 256, 0.9)",
-                                    }}>
-                                        {doc[0]} ({doc[1]})
-                                </Typography>
-                            )
-                        })}
-                    </Box>
-                    <IconButton 
-                        size="small" 
-                        style={{left:"2%"}} 
-                        onClick={ () => {
-                            document.getElementById("overflowing").scrollBy(300,0)
-                        }}>
-                        <NavigateNextIcon 
-                            fontSize="large"/>
-                    </IconButton>
-                    <Tooltip
-                        title="Editar tags">
-                        <IconButton
-                            style={{
-                                background: "rgba(3,137,173,255)",
-                                left: "2%"
-                            }} >
-                            <EditIcon
+                    background: "rgba(256, 256, 256, 0.70)",
+                    height: "400px",
+                    zIndex: 400
+                    }}>
+                    <div
+                        style={{ 
+                            borderRadius: "5px",
+                            position: "relative",
+                            height: "400px",
+                            width:"50%",
+                            float: "left"
+                            }}>
+                        <div
+                            style={{ 
+                                margin: "auto",
+                                position: "relative",
+                                height: "100%",
+                                width:"100%",
+                                float: "left"}}>
+                            <Box
+                                display="flex"
+                                alignItems="center"
                                 style={{
-                                    color: "rgba(256, 256, 256, 0.9)"}}/>
-                        </IconButton>
-                    </Tooltip>
-                </Box>
+                                    marginTop: "10px"
+                                }}>
+                                <Typography 
+                                    variant="h4" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        margin:"auto",
+                                        maxWidth: "65%"
+                                    }}>
+                                        {document[4]}
+                                </Typography>
+                                <Tooltip
+                                    title="Editar meta informação">
+                                    <IconButton
+                                        style={{
+                                            background: "rgba(3,137,173,255)",
+                                            left: "-10%"
+                                        }}
+                                        onClick={()=> {
+                                            /*
+                                            set_modal1(true)
+                                            getAllProviders()
+                                            getAllURLS()
+                                            getAllDrawingsContext()
+                                            getAllStatisticsThemes()
+                                            getAllPhotoImageResolution()
+                                            getAllAerialPhotoImageResolution()
+                                            getAllAerialPhotoScale()
+                                            getAllSatellite()
+                                            getAllSatelliteResolution()
+                                            getAllLiDARResolution()
+                                            getAllMapGeometryType()
+                                            getAllMapImageResolution()
+                                            getAllMapScale()
+                                            getAllMapTheme()
+                                            getAllMapType()
+                                            getAllOrtosScale()
+                                            getAllOrtosResolution()
+                                            getAllReportsContext()
+                                            getAllReportsTheme()
+                                            getAllSensorsVariable()
+                                            */
+                                        }}>
+                                        <EditIcon
+                                            style={{
+                                                color: "rgba(256, 256, 256, 0.9)"}}/>
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                            <div 
+                                style={{
+                                    height: "100%",
+                                    overflow: "auto",
+
+                                }}>{/*
+                                <div 
+                                    style={{
+                                        marginTop: "10px"
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "2%",
+                                            marginTop: "0.5vh",
+                                            float: "left"
+                                        }}>
+                                            Coleção:
+                                    </Typography>
+                                    <Typography 
+                                        variant="h6" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginLeft: "1%"
+                                        }}>
+                                            {collection}
+                                    </Typography>
+                               
+                                </div> */}
+                                    
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "30px",
+                                        marginTop: "20px"
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Arquivista:
+                                    </Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginTop: "-2px",
+                                            marginLeft: "5px"
+                                        }}>
+                                            {archiver}
+                                    </Typography>
+                                </div>
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "30px",
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Tipo de documento:
+                                    </Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginTop: "-2px",
+                                            marginLeft: "5px"
+                                        }}>
+                                            {type_translation}
+                                    </Typography>
+                                </div>
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "30px",
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Fornecedor/autor:
+                                    </Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginTop: "-2px",
+                                            marginLeft: "5px"
+                                        }}>
+                                            {document[7]}
+                                    </Typography>
+                                </div>
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "30px",
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Ano:
+                                    </Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginTop: "-2px",
+                                            marginLeft: "5px"
+                                        }}>
+                                            {document[8]}
+                                    </Typography>
+                                </div>
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "30px",
+                                    }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Adicinado a:
+                                    </Typography>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
+                                            marginTop: "-2px",
+                                            marginLeft: "5px"
+                                        }}>
+                                            {document[9]}
+                                    </Typography>
+                                </div>
+                                <div 
+                                    style={{
+                                        position: "relative",
+                                        width: "100%",
+                                        height: "150px",
+                                    }}>
+                                    <div 
+                                        style={{
+                                            margin: "auto",
+                                            width: "95%",
+                                            height: "100%",
+                                            border: "1px solid grey",
+                                            borderRadius: "5px",
+                                            overflow: "auto"
+                                        }}>
+                                        <Typography 
+                                            variant="body1" 
+                                            style={{ 
+                                                color: "rgba(0, 0, 0, 0.7)",
+                                                marginLeft: "10px",
+                                                float: "left"
+                                            }}>
+                                                Descrição:
+                                        </Typography>
+                                        <Typography 
+                                            variant="body2" 
+                                            style={{ 
+                                                color: "rgba(0, 0, 0, 0.9)",
+                                                float: "left",
+                                                marginLeft: "2%",
+                                                width: "95%",
+                                                top: "4vh",
+                                                textAlign: "justify",
+                                                textJustify: "inter-word"
+                                            }}>
+                                                {document[5]} 
+                                        </Typography>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div
+                    style={{ 
+                        borderRadius: "5px",
+                        position: "relative",
+                        float: "left",
+                        height: "100%",
+                        width:"50%"
+                    }}>
+                    {specifics}
+                </div>
             </div>
             <div
                 style={{ 
                     margin: "auto",
-                    position: "relative",
-                    background: "rgba(256, 256, 256, 0.90)",
-                    height: "84vh",
-                    width:"100%"}}>
+                    position: "absolute",
+                    height: "45%",
+                    minHeight: "400px",
+                    top: "500px",
+                    width:"40%",
+                    borderRadius: "5px",
+                    float: "left",
+                    background: "rgba(256, 256, 256, 0.70)",
+                    border: "1px solid grey",
+                    zIndex: 400,
+                    marginLeft:"10px"}}>
                 <div
-                    style={{ 
-                        margin: "auto",
-                        position: "relative",
-                        height: "84vh",
-                        width:"26%",
-                        float: "left"}}>
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        style={{
-                            heigth: "5vh",
-                            marginTop: "2vh"
+                    style={{
+                        width: "100%",
+                        heigth: "30px",
+                        marginTop: "2vh"
+                    }}>
+                    <Typography 
+                        variant="h5" 
+                        style={{ 
+                            position: "relative",
+                            float: "left",
+                            marginLeft: "20px",
+                            margin: "auto",
+                            color: "rgba(0, 0, 0, 0.9)",
                         }}>
-                        <Typography 
-                            variant="h4" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.9)",
-                                margin:"auto",
-                                maxWidth: "65%"
+                            {files.length} Ficheiros
+                    </Typography>
+                    <Tooltip
+                        title="Download de Ficheiros">
+                        <IconButton
+                            style={{
+                                background: "rgba(3,137,173,255)",
+                                left: "35%"
+                            }} 
+                            onClick={()=> {
+                                download_files()
                             }}>
-                                {document[4]}
-                        </Typography>
-                        <Tooltip
-                            title="Editar meta informação">
-                            <IconButton
+                            <DownloadIcon
                                 style={{
-                                    background: "rgba(3,137,173,255)",
-                                    left: "-10%"
-                                }}
-                                onClick={()=> {
-                                    set_modal1(true)
-                                    getAllProviders()
-                                    getAllURLS()
-                                    getAllDrawingsContext()
-                                    getAllStatisticsThemes()
-                                    getAllPhotoImageResolution()
-                                    getAllAerialPhotoImageResolution()
-                                    getAllAerialPhotoScale()
-                                    getAllSatellite()
-                                    getAllSatelliteResolution()
-                                    getAllLiDARResolution()
-                                    getAllMapGeometryType()
-                                    getAllMapImageResolution()
-                                    getAllMapScale()
-                                    getAllMapTheme()
-                                    getAllMapType()
-                                    getAllOrtosScale()
-                                    getAllOrtosResolution()
-                                    getAllReportsContext()
-                                    getAllReportsTheme()
-                                    getAllSensorsVariable()
-                                }}>
-                                <EditIcon
-                                    style={{
-                                        color: "rgba(256, 256, 256, 0.9)"}}/>
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                    <div 
-                        style={{
-                            height: "72vh",
-                            overflow: "auto",
-                        }}>
-                        <div 
-                            style={{
-                                marginTop: "2vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Coleção:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {collection}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "6vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Arquivista:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {archiver}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "10vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Tipo de documento:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {type_translation}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "14vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Fornecedor/autor:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {document[7]}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "18vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Ano:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {document[8]}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "22vh"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Adicinado a:
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "1%"
-                                }}>
-                                    {document[9]}
-                            </Typography>
-                        </div>
-                        <div 
-                            style={{
-                                marginTop: "26vh",
-                                width: "95%",
-                                height: "20%",
-                                border: "1px solid grey",
-                                borderRadius: "5px",
-                                overflow: "auto"
-                            }}>
-                            <Typography 
-                                variant="b3" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.7)",
-                                    marginLeft: "2%",
-                                    marginTop: "0.5vh",
-                                    float: "left"
-                                }}>
-                                    Descrição:
-                            </Typography>
-                            <Typography 
-                                variant="h7" 
-                                style={{ 
-                                    color: "rgba(0, 0, 0, 0.9)",
-                                    float: "left",
-                                    marginLeft: "2%",
-                                    width: "95%",
-                                    top: "4vh",
-                                    textAlign: "justify",
-                                    textJustify: "inter-word"
-                                }}>
-                                    {document[5]} 
-                            </Typography>
-                        </div>
-                        {specifics}
-                    </div>
+                                    color: "rgba(256, 256, 256, 1)"}}/>
+                        </IconButton>
+                    </Tooltip>
                 </div>
                 <div
-                    style={{ 
-                        margin: "auto",
-                        position: "relative",
-                        height: "84vh",
-                        width:"26%",
-                        float: "left",
-                        marginLeft:"2%"}}>
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        style={{
-                            heigth: "5vh",
-                            marginTop: "2vh"
-                        }}>
-                        <Typography 
-                            variant="h5" 
-                            style={{ 
-                                position: "relative",
-                                margin: "auto",
-                                color: "rgba(0, 0, 0, 0.9)",
-                            }}>
-                                Lista de Ficheiros
-                        </Typography>
-                        <Tooltip
-                            title="Adicionar ficheiros">
-                            <IconButton
-                                style={{
-                                    background: "rgba(3,137,173,255)",
-                                    left: "-10%"
-                                }} 
-                                onClick={()=> {
-                                    set_modal2(true)
-                                }}>
-                                <AddIcon
-                                    style={{
-                                        color: "rgba(256, 256, 256, 1)"}}/>
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
-                    <List
-                        style={{
-                            top: "2.5vh",
-                            overflow: "auto",
-                            height: "76vh"
-                        }}>
+                    style={{
+                        marginTop: "10px",
+                        overflow: "auto",
+                        height: "83%"
+                    }}>
+                            
                         {files?.length && files.map((doc, index) => {
+                            let temp_size = (doc[3] / (1024*1024)).toFixed(2);
                             return(
-                                <div 
+                                <div
                                     key={index}
-                                    style={{
-                                        height: "12vh",
-                                        border: "1px solid grey",
+                                    style={{ 
+                                        position: "relative",
+                                        height: "40%", 
+                                        width: "25%",
+                                        marginTop: "30px",
+                                        float:"left",
                                     }}>
-                                    <Box>
-                                        <Typography 
-                                            variant="h7" 
+                                    <div
+                                        style={{ 
+                                            margin:"auto",
+                                            position: "relative",
+                                            height: "95%", 
+                                            width: "80%",
+                                            borderRadius: "10px",
+                                            border: "3px solid grey",
+                                        }}>
+                                        <Typography
+                                            variant="body2" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.9)"
                                             style={{ 
-                                                color: "rgba(0, 0, 0, 0.9)",
-                                                maxWidth: "85%",
-                                                float: "left",
-                                                marginLeft: "2%",
-                                                textAlign: "left"
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "90%",
+                                                marginTop: "5px",
                                             }}>
                                             {doc[1]}
                                         </Typography>
-                                        <Tooltip
-                                            title="Remover ficheiro">
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="delete" 
-                                                style={{
-                                                    float: "right",
-                                                    right: "6%"
-                                                }}
-                                                onClick={()=>{
-                                                    let aux = [...files]
-                                                    aux.splice(index, 1)
-                                                    set_files(aux)
-                                                    remove_file(doc[0])
-                                                }}>
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Box>
+                                        <Typography
+                                            variant="body2" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.5)"
+                                            style={{ 
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "85%",
+                                                marginTop: "5px",
+                                            }}>
+                                            {doc[2]}
+                                        </Typography>
+                                        <UploadFileIcon
+                                            color= "action"
+                                            fontSize="large"
+                                            variant="contained" 
+                                            style={{
+                                                position: "relative",
+                                                margin:"auto", 
+                                                marginTop: "5px",
+                                                height: "20px",
+                                                width: "20px",
+                                            }}/>
+                                        <Typography
+                                            variant="body1" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.9)"
+                                            style={{ 
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "85%",
+                                                marginTop: "5px",
+                                            }}>
+                                            {temp_size} MB
+                                        </Typography>
+                                    </div>
                                 </div>
                             )
                         })}
-                    </List>
-                </div>
-                <MapContainer 
-                    style={{ 
-                        margin: "auto",
-                        position: "relative",
-                        height: "84vh",
-                        width:"46%",
-                        float: "left"}}
-                    center={position} 
-                    zoom={7} 
-                    scrollWheelZoom={true} 
-                    minZoom={4}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />     
-                    {space}
-                </MapContainer> 
+                    </div>
             </div>
-            <Tooltip
-                title="Editar contexto espacial">
-                <IconButton
-                    style={{
-                        background: "rgba(3,137,173,255)",
-                        position: 'absolute',
-                        top: '21%',
-                        left: '97%',
-                        transform: 'translate(-50%, -50%)',
-                        border: '1px solid #000',
-                        boxShadow: 24,
-                        zIndex: 400
-                    }}
-                    onClick={()=> {
-                        set_modal3(true)
-                    }}>
-                    <EditIcon
-                        style={{
-                            color: "rgba(256, 256, 256, 0.9)"}}/>
-                </IconButton>
-            </Tooltip>
         </>
     );
 }

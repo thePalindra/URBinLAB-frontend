@@ -27,6 +27,7 @@ import Radio from '@mui/material/Radio';
 import FormControl from '@mui/material/FormControl';
 import Modal from '@mui/material/Modal';
 import Autocomplete from '@mui/material/Autocomplete';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
@@ -241,7 +242,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -250,7 +251,7 @@ export default function Default() {
     }
 
     function get_tags() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/get_all", {
+        fetch("http://localhost:8080/keyword/get_all", {
             method: "POST",
             
         })
@@ -261,7 +262,7 @@ export default function Default() {
     }
 
     function get_collections() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/collection/get_all", {
+        fetch("http://localhost:8080/collection/get_all", {
             method: "POST",
             
         })
@@ -294,7 +295,7 @@ export default function Default() {
         form.append("level", selected_level)
         form.append("hierarchy", selected_hierarchy)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/search_by_name", {
+        fetch("http://localhost:8080/space/search_by_name", {
             method: "POST",
             
             body: form
@@ -315,7 +316,7 @@ export default function Default() {
     }
 
     function getAllPhotoImageResolution () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/photography/get_image_resolution", {
+        fetch("http://localhost:8080/photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -327,7 +328,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoImageResolution () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_image_resolution", {
+        fetch("http://localhost:8080/aerial_photography/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -339,7 +340,7 @@ export default function Default() {
     }
 
     function getAllAerialPhotoScale () {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/aerial_photography/get_scale", {
+        fetch("http://localhost:8080/aerial_photography/get_scale", {
             method: "POST",
             
             body: []
@@ -351,7 +352,7 @@ export default function Default() {
     }
 
     function getAllDrawingsContext() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/drawings/get_context", {
+        fetch("http://localhost:8080/drawings/get_context", {
             method: "POST",
             
             body: []
@@ -363,7 +364,7 @@ export default function Default() {
     }
 
     function getAllStatisticsThemes() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_statistics/get_themes", {
+        fetch("http://localhost:8080/thematic_statistics/get_themes", {
             method: "POST",
             
             body: []
@@ -375,7 +376,7 @@ export default function Default() {
     }
 
     function getAllSatelliteResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_resolution", {
+        fetch("http://localhost:8080/satellite_image/get_resolution", {
             method: "POST",
             
             body: []
@@ -387,7 +388,7 @@ export default function Default() {
     }
 
     function getAllSatellite() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/satellite_image/get_satellite", {
+        fetch("http://localhost:8080/satellite_image/get_satellite", {
             method: "POST",
             
             body: []
@@ -399,7 +400,7 @@ export default function Default() {
     }
 
     function getAllLiDARResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/LiDAR/get_resolution", {
+        fetch("http://localhost:8080/LiDAR/get_resolution", {
             method: "POST",
             
             body: []
@@ -411,7 +412,7 @@ export default function Default() {
     }
 
     function getAllMapImageResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_image_resolution", {
+        fetch("http://localhost:8080/geographic_map/get_image_resolution", {
             method: "POST",
             
             body: []
@@ -423,7 +424,7 @@ export default function Default() {
     }
 
     function getAllMapScale() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_scale", {
+        fetch("http://localhost:8080/geographic_map/get_scale", {
             method: "POST",
             
             body: []
@@ -435,7 +436,7 @@ export default function Default() {
     }
 
     function getAllMapGeometryType() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/geographic_map/get_geometry_type", {
+        fetch("http://localhost:8080/geographic_map/get_geometry_type", {
             method: "POST",
             
             body: []
@@ -447,7 +448,7 @@ export default function Default() {
     }
 
     function getAllMapType() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_type", {
+        fetch("http://localhost:8080/thematic_map/get_type", {
             method: "POST",
             
             body: []
@@ -459,7 +460,7 @@ export default function Default() {
     }
 
     function getAllMapTheme() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/thematic_map/get_theme", {
+        fetch("http://localhost:8080/thematic_map/get_theme", {
             method: "POST",
             
             body: []
@@ -471,7 +472,7 @@ export default function Default() {
     }
 
     function getAllOrtosScale() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_scale", {
+        fetch("http://localhost:8080/ortos/get_scale", {
             method: "POST",
             
             body: []
@@ -483,7 +484,7 @@ export default function Default() {
     }
 
     function getAllOrtosResolution() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/ortos/get_resolution", {
+        fetch("http://localhost:8080/ortos/get_resolution", {
             method: "POST",
             
             body: []
@@ -495,7 +496,7 @@ export default function Default() {
     }
 
     function getAllReportsContext() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_context", {
+        fetch("http://localhost:8080/reports/get_context", {
             method: "POST",
             
             body: []
@@ -507,7 +508,7 @@ export default function Default() {
     }
 
     function getAllReportsTheme() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/reports/get_theme", {
+        fetch("http://localhost:8080/reports/get_theme", {
             method: "POST",
             
             body: []
@@ -519,7 +520,7 @@ export default function Default() {
     }
 
     function getAllSensorsVariable() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/sensors/get_variable", {
+        fetch("http://localhost:8080/sensors/get_variable", {
             method: "POST",
             
             body: []
@@ -531,7 +532,7 @@ export default function Default() {
     }
 
     function getAllProviders() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_providers", {
+        fetch("http://localhost:8080/generic/get_all_providers", {
             method: "POST",
             
             body: []
@@ -544,7 +545,7 @@ export default function Default() {
     }
     
     function getAllURLS() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_all_urls", {
+        fetch("http://localhost:8080/generic/get_all_urls", {
             method: "POST",
             
             body: []
@@ -556,7 +557,7 @@ export default function Default() {
     }
 
     function get_spatial_hierarchy_type() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy_type", {
+        fetch("http://localhost:8080/space/get_hierarchy_type", {
             method: "POST",
             
             body: []
@@ -570,7 +571,7 @@ export default function Default() {
     function get_spatial_hierarchy(value) {
         let form = new FormData()
         form.append("type", value)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy", {
+        fetch("http://localhost:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
@@ -585,7 +586,7 @@ export default function Default() {
         let form = new FormData();
         form.append("hierarchy", hier)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_levels", {
+        fetch("http://localhost:8080/space/get_levels", {
             method: "POST",
             
             body: form
@@ -601,7 +602,7 @@ export default function Default() {
         form.append("hierarchy", selected_hierarchy)
         form.append("level", level)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_names", {
+        fetch("http://localhost:8080/space/get_names", {
             method: "POST",
             
             body: form
@@ -677,7 +678,7 @@ export default function Default() {
         let form = new FormData()
 
         form.append("keyword", tag_input)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/add", {
+        fetch("http://localhost:8080/keyword/add", {
             method: "POST",
             
             body: form
@@ -696,7 +697,7 @@ export default function Default() {
         form.append("description", new_collection_description)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/collection/add", {
+        fetch("http://localhost:8080/collection/add", {
             method: "POST",
             body: form
         })
@@ -726,7 +727,7 @@ export default function Default() {
         }
 
         if (file_type==="raster") {
-            let resultRaster = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/raster", {
+            let resultRaster = await fetch("http://localhost:5050/transform/raster", {
                 method: "POST",
                 body: form
             })
@@ -743,7 +744,7 @@ export default function Default() {
                 </GeoJSON>
             )
         } else {
-            let resultBox = await fetch("http://urbingeo.fa.ulisboa.pt:5050/mbox", {
+            let resultBox = await fetch("http://localhost:5050/mbox", {
                 method: "POST",
                 body: form
             })
@@ -753,7 +754,7 @@ export default function Default() {
             let parse = require('wellknown');
             setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
                 
-            let resultVector = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/vector", {
+            let resultVector = await fetch("http://localhost:5050/transform/vector", {
                 method: "POST",
                 body: form
             })
@@ -787,7 +788,7 @@ export default function Default() {
         }
 
         if (file_type==="raster") {
-            let resultRaster = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/raster", {
+            let resultRaster = await fetch("http://localhost:5050/transform/raster", {
                 method: "POST",
                 body: form
             })
@@ -805,7 +806,7 @@ export default function Default() {
             } else 
                 set_modal8(true)
         } else {
-            let resultBox = await fetch("http://urbingeo.fa.ulisboa.pt:5050/mbox", {
+            let resultBox = await fetch("http://localhost:5050/mbox", {
                 method: "POST",
                 body: form
             })
@@ -815,7 +816,7 @@ export default function Default() {
                 let parse = require('wellknown');
                 setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
                     
-                let resultVector = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/vector", {
+                let resultVector = await fetch("http://localhost:5050/transform/vector", {
                     method: "POST",
                     body: form
                 })
@@ -838,7 +839,7 @@ export default function Default() {
         set_modal7(true)
         console.log(URLs)
         
-        let docId = await fetch("http://urbingeo.fa.ulisboa.pt:8080/"+ URLs +"/add_document", {
+        let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
             body: form
         })
@@ -849,7 +850,7 @@ export default function Default() {
             form.append("spatialName", spatial_query)
             form.append("timeScope", new_time)
 
-            fetch("http://urbingeo.fa.ulisboa.pt:5050/es/put", {
+            fetch("http://localhost:5050/es/put", {
                 method: "POST",
                 body: form
             })
@@ -861,7 +862,7 @@ export default function Default() {
                 case typeof 1:
                     console.log(wkt)
                     sform.append("id", wkt);
-                    fetch("http://urbingeo.fa.ulisboa.pt:8080/space/attach", {
+                    fetch("http://localhost:8080/space/attach", {
                         method: "POST",
                         
                         body: sform
@@ -873,7 +874,7 @@ export default function Default() {
                     sform.append("lat", lat)
                     sform.append("size", size)
                     sform.append("name", spatial_query)
-                    fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_circle", {
+                    fetch("http://localhost:8080/space/add_circle", {
                         method: "POST",
                         
                         body: sform
@@ -884,7 +885,7 @@ export default function Default() {
                     let wkttemp = JSON.stringify(wkt);
                     sform.append("name", spatial_query)
                     sform.append("space", wkttemp)
-                    fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_Geo", {
+                    fetch("http://localhost:8080/space/add_Geo", {
                         method: "POST",
                         
                         body: sform
@@ -897,7 +898,7 @@ export default function Default() {
                 form_tags.append("keywords", new_tags)
                 form_tags.append("document", docId)
 
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/document", {
+                fetch("http://localhost:8080/keyword/document", {
                     method: "POST",
                     body: form_tags
                 })
@@ -908,7 +909,7 @@ export default function Default() {
                 form.append("collection", new_collection)
                 form.append("document", docId)
 
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/add_collection", {
+                fetch("http://localhost:8080/generic/add_collection", {
                     method: "POST",
                     body: form
                 })
@@ -919,7 +920,7 @@ export default function Default() {
                 fform.append("file", files[j])
                 fform.append("document", docId)
 
-                let fileres = await fetch("http://urbingeo.fa.ulisboa.pt:8080/file/add", {
+                let fileres = await fetch("http://localhost:8080/file/add", {
                     method: "POST",
                     body: fform
                 })
@@ -1711,134 +1712,8 @@ export default function Default() {
                     }}>
                 <div
                     style={{
-                        position: "relative",
                         height: "100%",
-                        width:"25%",
-                        float: "left",
-                    }}>
-                    <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        style={{
-                            position: "relative",
-                            width: "100%",
-                            top: "2vh",
-                        }}>
-                        <Typography 
-                            variant="h4" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.9)",
-                                margin:"auto",
-                                maxWidth: "80%"
-                            }}>
-                            Adicionar ficheiros
-                        </Typography>
-                    </Box>
-                    <Box 
-                        style={{   
-                            margin: "auto",
-                            position: "relative",
-                            paddingTop: "5vh",
-                            }}>
-                        <Button
-                            variant="contained"
-                            component="label"
-                            style={{ 
-                                margin:"auto",
-                                width: "30%",
-                            }}>
-                            Upload
-                            <input
-                                type="file"
-                                hidden
-                                multiple
-                                onChange={(e)=> {
-                                    let arr = [...files]
-                                    for (let i = 0; i<e.target.files.length; i++) {
-                                        let current = e.target.files[i]
-                                        if (!arr.find(file=> file.name===current.name))
-                                            arr.push(e.target.files[i])
-                                    }
-                                    set_files(arr)
-
-                                    let selected_file = ""
-                                    let file_type = ""
-                                    loop:
-                                    for (let i = 0; i<arr.length; i++) {
-                                        let temp = arr[i].name.split(".")
-                                        switch(temp[temp.length-1]) {
-                                            case "shp":
-                                                selected_file = arr[i]
-                                                file_type = "vector"
-                                                break loop
-                                            case "tif":
-                                                selected_file = arr[i]
-                                                file_type = "raster"
-                                                break
-                                            default:
-                                                break
-                                        }
-                                    }
-                                    if (selected_file)
-                                        auto_space(selected_file, file_type, arr)
-                                }}/>
-                        </Button>
-                    </Box>
-                    <List
-                        style={{
-                            top: "2.5vh",
-                            overflow: "auto",
-                            height: "67vh"
-                        }}>
-                        {files?.length && files.map((doc, index) => {
-                            return(
-                                <div 
-                                    key={index}
-                                    style={{
-                                        height: "12vh",
-                                        border: "1px solid grey",
-                                    }}>
-                                    <Box>
-                                        <Typography 
-                                            variant="h7" 
-                                            style={{ 
-                                                color: "rgba(0, 0, 0, 0.9)",
-                                                maxWidth: "85%",
-                                                float: "left",
-                                                marginLeft: "2%",
-                                                textAlign: "left"
-                                            }}>
-                                            {doc.name}
-                                        </Typography>
-                                        <Tooltip
-                                            title="Remover ficheiro">
-                                            <IconButton 
-                                                edge="end" 
-                                                aria-label="delete" 
-                                                style={{
-                                                    float: "right",
-                                                    right: "6%"
-                                                }}
-                                                onClick={()=>{
-                                                    let aux = [...files]
-                                                    aux.splice(index, 1)
-                                                    set_files(aux)
-                                                }}>
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Box>
-                                </div>
-                            )
-                        })}
-                    </List>
-                </div>
-                <div
-                    style={{
-                        height: "100%",
-                        width: "40%",
-                        left: "2%",
+                        width: "28%",
                         position: "relative",
                         float: "left",
                         borderRadius: "5px",
@@ -3755,11 +3630,212 @@ export default function Default() {
                     style={{
                         position: "relative",
                         height: "100%",
+                        width:"37%",
+                        float: "left",
+                    }}>
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        style={{
+                            position: "relative",
+                            width: "100%",
+                            top: "2vh",
+                        }}>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "80%"
+                            }}>
+                            Adicionar ficheiros
+                        </Typography>
+                    </Box>
+                    <Box 
+                        style={{   
+                            margin: "auto",
+                            position: "relative",
+                            paddingTop: "5vh",
+                            }}>
+                        <Button
+                            variant="contained"
+                            component="label"
+                            style={{ 
+                                margin:"auto",
+                                width: "30%",
+                            }}>
+                            Upload
+                            <input
+                                type="file"
+                                hidden
+                                multiple
+                                onChange={(e)=> {
+                                    let arr = [...files]
+                                    for (let i = 0; i<e.target.files.length; i++) {
+                                        let current = e.target.files[i]
+                                        if (!arr.find(file=> file.name===current.name))
+                                            arr.push(e.target.files[i])
+                                    }
+                                    set_files(arr)
+
+                                    let selected_file = ""
+                                    let file_type = ""
+                                    loop:
+                                    for (let i = 0; i<arr.length; i++) {
+                                        let temp = arr[i].name.split(".")
+                                        switch(temp[temp.length-1]) {
+                                            case "shp":
+                                                selected_file = arr[i]
+                                                file_type = "vector"
+                                                break loop
+                                            case "tif":
+                                                selected_file = arr[i]
+                                                file_type = "raster"
+                                                break
+                                            default:
+                                                break
+                                        }
+                                    }
+                                    if (selected_file)
+                                        auto_space(selected_file, file_type, arr)
+                                }}/>
+                        </Button>
+                    </Box>
+                    <div 
+                        style={{
+                            position:"relative",
+                            width:"100%",
+                            height:"25px",
+                            top: "10px"
+                        }}>
+                        <Typography
+                            variant="h5" 
+                            component="h2" 
+                            color="rgba(0, 0, 0, 0.7)"
+                            style={{ 
+                                position: "relative",
+                                margin:"auto",
+                                maxWidth: "85%",
+                                left: "50px",
+                                float: "left"
+                            }}>
+                            {files.length} Ficheiros
+                        </Typography>
+                    </div>
+                    <div
+                        style={{
+                            marginTop: "10px",
+                            overflow: "auto",
+                            height: "67vh"
+                        }}>
+                            
+                        {files?.length && files.map((doc, index) => {
+                            let temp_time = new Date(doc.lastModified).toString().split(" ")
+                            temp_time = temp_time[2] + " " + temp_time[1]   + "," + temp_time[3]
+                            
+                            let temp_size = (doc.size / (1024*1024)).toFixed(2);
+                            console.log(temp_size)
+                            return(
+                                <div
+                                    key={index}
+                                    style={{ 
+                                        position: "relative",
+                                        height: "40%", 
+                                        width: "50%",
+                                        top: "20px",
+                                        float:"left",
+                                    }}>
+                                    <div
+                                        style={{ 
+                                            margin:"auto",
+                                            position: "relative",
+                                            height: "90%", 
+                                            width: "70%",
+                                            borderRadius: "10px",
+                                            border: "3px solid grey",
+                                        }}>
+                                        <Typography
+                                            variant="body2" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.9)"
+                                            style={{ 
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "90%",
+                                                marginTop: "10%",
+                                            }}>
+                                            {doc.name}
+                                        </Typography>
+                                        <Typography
+                                            variant="body1" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.5)"
+                                            style={{ 
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "85%",
+                                                marginTop: "10px",
+                                            }}>
+                                            {temp_time}
+                                        </Typography>
+                                        <UploadFileIcon
+                                            color= "action"
+                                            fontSize="large"
+                                            variant="contained" 
+                                            style={{
+                                                position: "relative",
+                                                margin:"auto", 
+                                                marginTop: "20px",
+                                            }}/>
+                                        <Typography
+                                            variant="h6" 
+                                            component="h2" 
+                                            color="rgba(0, 0, 0, 0.9)"
+                                            style={{ 
+                                                position: "relative",
+                                                margin:"auto",
+                                                maxWidth: "85%",
+                                                marginTop: "20px",
+                                            }}>
+                                            {temp_size} MB
+                                        </Typography>
+                                        <Tooltip
+                                            title="Apagar ficheiro">
+                                            <IconButton
+                                                style={{
+                                                    position: "absolute",
+                                                    background: "rgba(228,38,76,255)",
+                                                    left:"95%",
+                                                    top: "-15px",
+                                                    height: "30px",
+                                                    width: "30px",
+                                                }} 
+                                                onClick={()=> {
+                                                    let aux = [...files]
+                                                    aux.splice(index, 1)
+                                                    set_files(aux)
+                                                }}>
+                                                <DeleteIcon
+                                                    style={{
+                                                        color: "rgba(256, 256, 256, 0.9)"}}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div
+                    style={{
+                        position: "relative",
+                        height: "100%",
                         width:"35%",
                         float: "left",
                         borderRadius: "5px"
                     }}>
-                    <Box
+                    {/*<Box
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
@@ -3818,7 +3894,7 @@ export default function Default() {
                                         color: "rgba(256, 256, 256, 1)"}}/>
                             </IconButton>
                         </Tooltip>
-                    </Box>
+                    </Box>*/}
                     <Box
                         display="flex"
                         justifyContent="center"
@@ -3826,7 +3902,7 @@ export default function Default() {
                         style={{
                             position: "relative",
                             width: "100%",
-                            marginTop: "35vh",
+                            marginTop: "30%",
                         }}>
                         <Typography 
                             variant="h4" 
@@ -3835,7 +3911,7 @@ export default function Default() {
                                 margin:"auto",
                                 maxWidth: "65%",
                             }}>
-                            Keywords
+                            Keywords (Beta)
                         </Typography>
                     </Box>
                     <Box

@@ -47,7 +47,7 @@ export default function Default() {
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
+        const response = await fetch("http://localhost:5050/es/search", {
             method: "POST",
             body: form
         })
@@ -62,7 +62,7 @@ export default function Default() {
     }
 
     function get_dictionary() {
-        fetch("http://urbingeo.fa.ulisboa.pt:5050/dictionary", {
+        fetch("http://localhost:5050/dictionary", {
             method: "GET"
         })
         .then(res=>res.json())
@@ -77,7 +77,7 @@ export default function Default() {
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
 
-        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -90,7 +90,7 @@ export default function Default() {
         form.append("name", temp_name)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_by_name", {
+        fetch("http://localhost:8080/lists/get_by_name", {
             method: "POST",
             body: form
         })
@@ -113,7 +113,7 @@ export default function Default() {
         <div 
             style={{ 
                 background: "rgba(256, 256, 256, 0.98)",
-                height: "8vh",
+                height: "8%",
                 minHeight: "65px",
                 margin: "auto"}}>
             <ThemeProvider theme={darkTheme}>
@@ -290,7 +290,7 @@ export default function Default() {
                                     else 
                                         navigate(`/`)
                                 }}>
-                                Sair
+                                Logout
                             </MenuItem>     
                         </>
                     }

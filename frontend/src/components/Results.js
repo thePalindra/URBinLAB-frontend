@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import IconButton from '@mui/material/IconButton';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import "leaflet-draw/dist/leaflet.draw.css"
@@ -47,7 +48,6 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function circle(e) {
     let result =  "c"
-    console.log(result)
     
     lng = e.layer._latlng.lng
     lat = e.layer._latlng.lat 
@@ -57,7 +57,6 @@ function circle(e) {
 
 function point(e) {
     let result = ["POINT","(" + e.layer._latlng.lng, e.layer._latlng.lat + ")"].join(" ")
-    console.log(result)
     return result;
 }
 
@@ -67,14 +66,12 @@ function polygon(e) {
         result = [result + e.layer._latlngs[0][i].lng, e.layer._latlngs[0][i].lat + ","].join(" ")
     
     result = [result + e.layer._latlngs[0][0].lng, e.layer._latlngs[0][0].lat + "))"].join(" ")
-    console.log(result)
     return result;
 }
 
 export default function Default() {
-    let space = ""
     let navigate = useNavigate()
-    const position = [38, -17.7];
+    const position = [39.7, -10.5];
     const color_list = ["rgba(228,38,76,255)", "rgba(121,183,46,255)", "rgba(247,166,20,255)", "rgba(3,137,173,255)"]
     const [spatial_list, set_spatial_list]=React.useState(<></>);
     const [editable_fg, set_editable_fg]=React.useState(null);
@@ -101,6 +98,23 @@ export default function Default() {
     const [selected, set_selected]=React.useState(0)
     const [all_lists, set_all_lists]=React.useState([])
 
+    const [selected_hierarchy, set_selected_hierarchy]=React.useState("");
+    const [selected_level, set_selected_level]=React.useState("");
+    const [spatial_hierarchy, set_spatial_hierarchy]=React.useState([]);
+    const [spatial_hierarchy_type, set_spatial_hierarchy_type]=React.useState([]);
+    const [selected_spatial_hierarchy_type, set_selected_spactial_hierarchy_type]=React.useState([]);
+    const [spatial_level, set_spatial_level]=React.useState([]);
+    const [spatial_query, set_spatial_query] =React.useState("");
+    const [all_spatial_names, set_all_spatial_names]=React.useState([]);
+
+    const [menu, set_menu]=React.useState(0)
+    const [layer_type, set_layer_type]=React.useState("")
+    const [default_space, set_default_space]=React.useState(false);
+
+    const [ready_to_space, set_ready_to_space]=React.useState(false);
+    const [space, set_space]=React.useState(false);
+
+
     React.useEffect(() => {
         const start = async () => {
             let ignore = await check_token("A");
@@ -108,11 +122,9 @@ export default function Default() {
                 get_all_documents()
                 get_all_tags()
                 get_color()
-                group_providers()
-                group_years()
-                group_types()
-                group_archivists()
                 get_all_lists()
+                get_spatial_hierarchy_type()
+                
             } else {
                 window.localStorage.removeItem("token")
                 navigate(`/login`)
@@ -126,7 +138,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
+        let res = await fetch("http://localhost:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -136,6 +148,7 @@ export default function Default() {
     
     const _created=e=> {
         set_spatial_list(<></>)
+        set_menu(2)
         const drawnItems = editable_fg._layers;
         if (Object.keys(drawnItems).length > 1) {
             Object.keys(drawnItems).forEach((layerid, index) => {
@@ -147,27 +160,133 @@ export default function Default() {
         let parse = require('wellknown');
         switch(e.layerType) {
             case "circle":
-                space = circle(e)
+                set_space(circle(e))
                 break;
             case "rectangle":
-                space = polygon(e)
+                set_space(polygon(e))
                 break;
             case "marker":
-                space = point(e)
+                set_space(point(e))
                 break;
             case "polygon":
-                space = polygon(e)
+                set_space(polygon(e))
                 break;
             default:
                 break;
         }
-        get_document_by_space_geometry(e.layerType)
+        set_default_space(false)
+        set_layer_type(e.layerType)
+        set_ready_to_space(true)
     }
 
     const onFeatureGroupReady = reactFGref => {
         // store the featureGroup ref for future access to content
         set_editable_fg(reactFGref);
     };
+
+    const get_spaces =()=> {
+        const drawnItems = editable_fg._layers;
+        if (Object.keys(drawnItems).length > 0) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editable_fg.removeLayer(layer);
+            });
+        }
+
+        let form = new FormData();
+        form.append("name", spatial_query)
+        form.append("level", selected_level)
+        form.append("hierarchy", selected_hierarchy)
+
+        fetch("http://localhost:8080/space/search_by_name", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            let parse = require('wellknown');
+            set_spatial_list(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                </GeoJSON>
+            )))
+
+            form = new FormData();
+            form.append("list", JSON.parse(window.localStorage.getItem('results')))
+            form.append("space", result[0][0])
+            fetch("http://localhost:8080/generic/get_by_space_id_list", {
+            method: "POST",
+            
+            body: form
+            })
+            .then(res=>res.json())
+            .then(result=>{
+                set_documents(result)
+                group_providers(result)
+                group_archivists(result)
+                group_years(result)
+                group_types(result)
+            })
+        })
+    }
+
+    function get_spatial_hierarchy_type() {
+        fetch("http://localhost:8080/space/get_hierarchy_type", {
+            method: "POST",
+            
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_spatial_hierarchy_type(result)
+        })
+    }
+
+    function get_spatial_hierarchy(value) {
+        let form = new FormData()
+        form.append("type", value)
+        fetch("http://localhost:8080/space/get_hierarchy", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_spatial_hierarchy(result)
+        })
+    }
+
+    function get_spatial_level(hier) {
+        let form = new FormData();
+        form.append("hierarchy", hier)
+
+        fetch("http://localhost:8080/space/get_levels", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_spatial_level(result)
+        })
+    }
+
+    function get_names_from_level(level) {
+        let form = new FormData();
+        form.append("hierarchy", selected_hierarchy)
+        form.append("level", level)
+
+        fetch("http://localhost:8080/space/get_names", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_all_spatial_names(result)
+        })
+    }
 
     function get_all_names(js) {
         let temp = []
@@ -187,51 +306,53 @@ export default function Default() {
     async function get_all_documents() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        const response = await fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/from_list", {
+        const response = await fetch("http://localhost:8080/generic/from_list", {
             method: "POST",
             
             body: form
         })
         const js = await response.json();
 
-        console.log(js)
         set_documents(js)
         get_all_names(js)
         set_selected_years([])
+        group_providers(js)
+        group_archivists(js)
+        group_years(js)
+        group_types(js)
+
     }
 
     /*
         Atualizado para as tags refletirem sobre os resultados
     */
     function get_all_tags() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/group", {
+        fetch("http://localhost:8080/keyword/group", {
             method: "POST",
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
         });
     }
 
-    function group_providers() {
+    function group_providers(temp_doc) {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_provider_list", {
+        form.append("list", get_all_ids(temp_doc))
+        fetch("http://localhost:8080/generic/group_provider_list", {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result)
             set_providers(result)
         });
     }
 
-    function group_years() {
+    function group_years(temp_doc) {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_year_list", {
+        form.append("list", get_all_ids(temp_doc))
+        fetch("http://localhost:8080/generic/group_year_list", {
             method: "POST",
             
             body: form
@@ -242,10 +363,10 @@ export default function Default() {
         });
     }
 
-    function group_types() {
+    function group_types(temp_doc) {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_type_list", {
+        form.append("list", get_all_ids(temp_doc))
+        fetch("http://localhost:8080/generic/group_type_list", {
             method: "POST",
             
             body: form
@@ -256,10 +377,10 @@ export default function Default() {
         });
     }
 
-    function group_archivists() {
+    function group_archivists(temp_doc) {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_archivist_list", {
+        form.append("list", get_all_ids(temp_doc))
+        fetch("http://localhost:8080/generic/group_archivist_list", {
             method: "POST",
             
             body: form
@@ -272,16 +393,16 @@ export default function Default() {
 
     function get_document_by_name() {
         let form = new FormData()
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
+        form.append("list", get_all_ids())
         form.append("name", search)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_name_in_list", {
+        fetch("http://localhost:8080/generic/get_by_name_in_list", {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result);
+            console.log("by name")
             set_documents(result)
             get_all_names(result)
         });
@@ -291,7 +412,7 @@ export default function Default() {
         let form = new FormData()
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_all", {
+        fetch("http://localhost:8080/lists/get_all", {
             method: "POST",
             body: form
         })
@@ -306,7 +427,7 @@ export default function Default() {
         form.append("name", new_list)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add", {
+        fetch("http://localhost:8080/lists/add", {
             method: "POST",
             body: form
         })
@@ -314,7 +435,6 @@ export default function Default() {
         .then(result=>{
             let temp = [...all_lists]
             temp.push([result.id, result.name])
-            console.log(result)
             set_all_lists(temp)
         });
     }
@@ -325,7 +445,7 @@ export default function Default() {
             form.append("doc", selected)
             form.append("token", window.localStorage.getItem("token"))
 
-            fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_fav", {
+            fetch("http://localhost:8080/lists/add_to_fav", {
                 method: "POST",
                 body: form
             })
@@ -334,7 +454,7 @@ export default function Default() {
             let form = new FormData()
             form.append("doc", selected)
             form.append("list", list[i])
-            fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_list", {
+            fetch("http://localhost:8080/lists/add_to_list", {
                 method: "POST",
                 body: form
             })
@@ -348,15 +468,15 @@ export default function Default() {
 
         let form = new FormData()
         form.append("list", temp)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/" + url, {
+        fetch("http://localhost:8080/generic/" + url, {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
+            console.log("order")
             set_documents(result)
-            console.log(result)
         });
     }
 
@@ -365,7 +485,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
+        fetch("http://localhost:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -382,9 +502,26 @@ export default function Default() {
         })
     }
 
-    function get_document_by_space_geometry(layer_type) {
+    function get_document_by_space_id() {
         let form = new FormData();
-        form.append("page", 0);
+        form.append("space", space)
+
+        fetch("http://localhost:8080/generic/get_by_space_id", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            window.localStorage.setItem('results', JSON.stringify(result));
+            navigate(`/results`)
+        })
+    }
+
+    function get_document_by_space_geometry() {
+
+        let form = new FormData();
+        form.append("list", JSON.parse(window.localStorage.getItem('results')))
 
         switch(layer_type) {
             case "circle":
@@ -392,54 +529,69 @@ export default function Default() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_circle", {
+                fetch("http://localhost:8080/generic/get_document_by_space_circle_list", {
                     method: "POST",
                     
                     body: form
                 })
                 .then(res=>res.json())
                 .then(result=>{
-                    window.localStorage.setItem('results', JSON.stringify(result));
-                    window.location.reload(false);
+                    set_documents(result)
+                    group_providers(result)
+                    group_archivists(result)
+                    group_years(result)
+                    group_types(result)
                 });
                 break;
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_marker", {
+                fetch("http://localhost:8080/generic/get_document_by_space_marker_list", {
                     method: "POST",
                     
                     body: form
                 })
                 .then(res=>res.json())
                 .then(result=>{
-                    let temp = []
-                    for (let i = 0; i<result.length; i++)
-                        temp.push(result[i][0])
-                    window.localStorage.setItem('results', JSON.stringify(temp));
-                    window.location.reload(false);
+                    set_documents(result)
+                    group_providers(result)
+                    group_archivists(result)
+                    group_years(result)
+                    group_types(result)
                 });
                 break;
             default:
                 form.append("space", space);
-                
-                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_geometry", {
+                console.log(space)
+                fetch("http://localhost:8080/generic/get_document_by_space_geometry_list", {
                     method: "POST",
                     
                     body: form
                 })
                 .then(res=>res.json())
                 .then(result=>{
-                    console.log(result)
-                    window.localStorage.setItem('results', JSON.stringify(result));
-                    window.location.reload(false);
+                    set_documents(result)
+                    group_providers(result)
+                    group_archivists(result)
+                    group_years(result)
+                    group_types(result)
                 });
                 break;
         }
     }
+
+    function get_all_ids(temp_doc) {
+        let temp = []
+        for (let i = 0; i<temp_doc.length; i++)
+            temp.push(temp_doc[i][0])
+
+        return temp
+    }
     
     function filter(years_temp, providers_temp, archivers_temp, types_temp) {
         let form = new FormData()
+        let temp = get_all_ids(documents)
+        console.log(documents)
 
 
         if (years_temp.length == 0) {
@@ -474,18 +626,77 @@ export default function Default() {
         form.append("providers", providers_temp)
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
-        form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/filter_list", {
+        form.append("list", temp)
+        fetch("http://localhost:8080/generic/filter_list", {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result);
             set_documents(result)
             get_all_names(result)
+            group_providers(result)
+            group_archivists(result)
+            group_years(result)
+            group_types(result)
         });
+    }
+
+    function get_type(type) {
+        switch(type) {
+            case "AERIAL PHOTOS":
+                return "Fotografia aérea"
+                break
+            case "LiDAR":
+                return "LiDAR"
+                break
+            case "ORTOS":
+                return "Ortofotomapa"
+                break
+            case "SATELLITE IMAGE":
+                return "Imagem satélite"
+                break
+            case "CHOROGRAPHIC MAP":
+                return "Carta corográfica"
+                break
+            case "TOPOGRAPHIC MAP":
+                return "Carta topográfica"
+                break
+            case "GEOGRAPHIC MAP":
+                return "Carta geográfica"
+                break
+            case "TOPOGRAPHIC PLAN":
+                return "Plano topográfico"
+                break
+            case "THEMATIC MAP":
+                return "Carta temática"
+                break
+            case "DRAWINGS":
+                return "Desenhos"
+                break
+            case "PHOTOS":
+                return "Fotografia"
+                break
+            case "REPORTS":
+                return "Relatório"
+                break
+            case "SENSORS":
+                return "Dados de sensores"
+                break
+            case "CENSUS":
+                return "Censos"
+                break
+            case "SURVEYS":
+                return "Estatística de formulário"
+                break
+            case "THEMATIC STATISTICS":
+                return "Estatística temática"
+                break
+            default:
+                return "Documento"
+                break
+        }
     }
 
     return (
@@ -664,6 +875,7 @@ export default function Default() {
                                     color: "grey"
                                 }}>                                 
                                 {types?.length>0 && types.map((doc, index)=> {
+                                    let temp_type = get_type(doc[0])
                                     return (
                                         <div
                                             key={index}>
@@ -680,7 +892,7 @@ export default function Default() {
                                                         filter(selected_years, selected_providers, selected_archivers, temp)
                                                 }}/>
                                                 }
-                                                label={doc[0] + " (" + doc[1] + ")"}
+                                                label={temp_type + " (" + doc[1] + ")"}
                                             />
                                         </div>
                                     )
@@ -720,7 +932,7 @@ export default function Default() {
                                 maxWidth: "90%",
                                 marginTop: "40px"
                             }}>
-                            Adicionar a uma lista
+                            Adicionar a uma lista (Beta)
                         </Typography>
                     </Box>
                     <div
@@ -788,7 +1000,7 @@ export default function Default() {
                                 set_list(ids)
                             }}
                         />
-                        <Tooltip
+                        {/*<Tooltip
                             title="Criar nova lista">
                             <IconButton
                                 style={{
@@ -802,7 +1014,7 @@ export default function Default() {
                                     style={{
                                         color: "rgba(256, 256, 256, 1)"}}/>
                             </IconButton>
-                        </Tooltip>
+                                    </Tooltip>*/}
                     </div>
                     <div
                         style={{ 
@@ -830,7 +1042,7 @@ export default function Default() {
                     </div>
                 </div>
             </Modal>
-            <div 
+            {/*<div 
                 style={{ 
                     margin: "auto",
                     position: "relative",
@@ -917,41 +1129,78 @@ export default function Default() {
                         </Button>
                     </Tooltip>
                 </Box>
-            </div>
+            </div>*/}
             <div 
                 style={{ 
                     margin: "auto",
                     position: "relative",
                     background: "rgba(256, 256, 256, 0.90)",
-                    height: "90vh",
+                    height: "92%",
                     width:"100%"}}>
-                <div 
+                <MapContainer 
                     style={{
-                        position:"relative",
-                        float:"left",
-                        width:"40%"                  
+                        position: 'relative',
+                        width: "100%",
+                        boxShadow: 24,
+                        height: "100%",
+                    }} 
+                    center={position} 
+                    zoom={7} 
+                    scrollWheelZoom={true} 
+                    minZoom={4}>
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <FeatureGroup ref={featureGroupRef => {
+                        onFeatureGroupReady(featureGroupRef);
                     }}>
+                        <EditControl 
+                            position="topleft"
+                            onCreated={_created}
+                            draw= {{
+                                circlemarker: false,
+                                polyline: false,
+                                polygon: false
+                            }}
+                            edit={{edit:false}}/>
+                    </FeatureGroup>      
+                    {spatial_list}
+                </MapContainer> 
+                <div 
+                    style={{   
+                        position: "absolute",
+                        margin: "auto",
+                        float: "left",
+                        width: "45%",
+                        height: "99%",
+                        minWidth: "550px",
+                        left: "10px",
+                        top: "10px",
+                        textAlign: "center",
+                        zIndex: 400}}>
+                    <div 
+                        style={{   
+                            position: "relative",
+                            margin: "auto",
+                            float: "left",
+                            width: "50%",
+                            height: "230px",
+                            background: "rgba(256, 256, 256, 0.6)",
+                            borderRadius: "5px",
+                            top: "-20px",
+                            marginTop: "20px",
+                            textAlign: "center",
+                            border: "1px solid grey",
+                        }}> 
                         <div
                             style={{
-                                width:"100%",
-                                height:"8vh"
+                                width: "100%"
                             }}>
-                            <Typography
-                                variant="h7" 
-                                component="h2" 
-                                color="rgba(0, 0, 0, 0.5)"
-                                style={{
-                                    float:"left",
-                                    margin: "15px",
-                                    marginLeft: "25px"
-                                }}>
-                                {documents.length} Resultados
-                            </Typography>
                             <FormControl 
                                 style={{
-                                    left: "18%",
-                                    top: "2vh",
-                                    width:"30%"
+                                    marginTop: "20px",
+                                    width:"60%"
                                 }}
                                 fullWidth>
                                 <InputLabel>Ordenar</InputLabel>
@@ -970,17 +1219,503 @@ export default function Default() {
                                 </Select>
                             </FormControl>
                         </div>
+                        <div
+                            style={{
+                                width: "100%"
+                            }}>
+                            <Tooltip 
+                                title="Filtrar resultados">
+                                <Button 
+                                    variant="filled" 
+                                    style={{ 
+                                        background: color,
+                                        marginTop: "25px"
+                                    }} 
+                                    onClick={()=> {
+                                        if (menu == 1)
+                                            set_menu(0)
+                                        else 
+                                            set_menu(1)
+                                    }}
+                                    startIcon={<FilterListIcon />}>
+                                    Filtros (Beta)
+                                </Button>
+                            </Tooltip>
+                        </div>
+                        <div
+                            style={{
+                                width: "100%"
+                            }}>
+                            <Tooltip 
+                                title="Filtros espaciais">
+                                <Button 
+                                    variant="filled" 
+                                    style={{ 
+                                        background: color,
+                                        marginTop: "25px"
+                                    }} 
+                                    onClick={()=> {
+                                        if (menu == 2)
+                                            set_menu(0)
+                                        else 
+                                            set_menu(2)
+                                    }}
+                                    startIcon={<TravelExploreIcon />}>
+                                    Procura espacial
+                                </Button>
+                            </Tooltip>
+                        </div>
+                    </div>   
+                    {menu==1 &&
+                        <div
+                            style={{   
+                                position: "relative",
+                                margin: "auto",
+                                float: "left",
+                                width: "50%",
+                                height: "230px",
+                                top: "-20px",
+                                marginTop: "20px",
+                                textAlign: "center",
+                                zIndex: 400, 
+                            }}>
+                            <div 
+                                style={{   
+                                    position: "absolute",
+                                    margin: "auto",
+                                    float: "left",
+                                    width: "100%",
+                                    height: "100%",
+                                    background: "rgba(256, 256, 256, 0.6)",
+                                    borderRadius: "5px",
+                                    top: "-20px",
+                                    marginTop: "20px",
+                                    border: "1px solid grey", 
+                                }}>
+                                <div
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        overflow: "auto"
+                                    }}>
+                                    <Typography 
+                                        variant="h5" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.8)",
+                                            margin:"auto",
+                                            marginTop: "10px"
+                                        }}>
+                                        Filtros (Beta)
+                                    </Typography>
+                                    <div 
+                                        style={{
+                                            position: "relative",   
+                                            marginTop: "10px",
+                                            width: "100%",
+                                        }}
+                                        component="fieldset" 
+                                        variant="standard">
+                                        <Typography 
+                                            style={{
+                                                marginLeft:"10px",
+                                                float: "left",
+                                                color: "black"
+                                            }}
+                                            component="legend">
+                                            Ano:
+                                        </Typography>
+                                        <FormGroup 
+                                            style={{
+                                                width: "100%",
+                                                color: "grey"
+                                            }}>                                
+                                            {years?.length>0 && years.map((doc, index)=> {
+                                                return (
+                                                    <div
+                                                        key={index}>
+                                                        <FormControlLabel
+                                                            style={{
+                                                                float: "left",
+                                                                color: "grey",
+                                                                marginLeft: "10px"
+                                                            }}
+                                                            control={
+                                                            <Checkbox 
+                                                                onChange={(e)=> {
+                                                                    let temp=[...selected_years]
+                                                                    if (temp.includes(doc[0])) 
+                                                                        temp.splice(selected_years.indexOf(doc[0]), 1);
+                                                                    else 
+                                                                        temp.push(doc[0])
+
+                                                                    filter(temp, selected_providers, selected_archivers, selected_types)
+                                                            }}/>
+                                                            }
+                                                            label={doc[0] + " (" + doc[1] + ")"}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+                                        </FormGroup>
+                                    </div>
+                                    <div 
+                                        style={{
+                                            position: "relative",   
+                                            marginTop: "10px",
+                                            width: "100%",
+                                        }}
+                                        component="fieldset" 
+                                        variant="standard">
+                                        <Typography 
+                                            style={{
+                                                float: "left",
+                                                marginLeft:"10px",
+                                                color: "black"
+                                            }}>
+                                            Fornecedor:</Typography>
+                                        <FormGroup 
+                                            style={{
+                                                width: "100%",
+                                                color: "grey"
+                                            }}>                                   
+                                            {providers?.length>0 && providers.map((doc, index)=> {
+                                                if (doc[0]!=="")
+                                                    return (
+                                                        <div
+                                                            key={index}>
+                                                            <FormControlLabel
+                                                                style={{
+                                                                    float: "left",
+                                                                    color: "grey",
+                                                                    marginLeft: "10px"
+                                                                }}
+                                                                control={
+                                                                <Checkbox 
+                                                                    onChange={(e)=> {
+                                                                        let temp=[...selected_providers]
+                                                                        if (temp.includes(doc[0])) 
+                                                                            temp.splice(selected_providers.indexOf(doc[0]), 1);
+                                                                        else 
+                                                                            temp.push(doc[0])
+
+                                                                        filter(selected_years, temp, selected_archivers, selected_types)
+                                                                }}/>
+                                                                }
+                                                                label={doc[0] + " (" + doc[1] + ")"}
+                                                            />
+                                                        </div>
+                                                    )
+                                            })}
+                                        </FormGroup>
+                                    </div>
+                                    <div 
+                                        style={{
+                                            position: "relative",   
+                                            marginTop: "10px",
+                                            width: "100%",
+                                        }}
+                                        component="fieldset" 
+                                        variant="standard">
+                                        <Typography 
+                                            style={{
+                                                marginLeft:"10px",
+                                                float: "left",
+                                                color: "black"
+                                            }}>
+                                            Arquivista:</Typography>
+                                        <FormGroup 
+                                            style={{
+                                                width: "100%",
+                                                color: "grey"
+                                            }}>                                 
+                                            {archivists?.length>0 && archivists.map((doc, index)=> {
+                                                return (
+                                                    <div
+                                                        key={index}>
+                                                        <FormControlLabel
+                                                            style={{
+                                                                float: "left",
+                                                                color: "grey",
+                                                                marginLeft: "10px"
+                                                            }}
+                                                            control={
+                                                            <Checkbox 
+                                                                onChange={(e)=> {
+                                                                    let temp=[...selected_archivers]
+                                                                    if (temp.includes(doc[1])) 
+                                                                        temp.splice(selected_archivers.indexOf(doc[1]), 1);
+                                                                    else 
+                                                                        temp.push(doc[1])
+
+                                                                    filter(selected_years, selected_providers, temp, selected_types)
+                                                            }}/>
+                                                            }
+                                                            label={doc[0] + " (" + doc[2] + ")"}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+                                        </FormGroup>
+                                    </div>
+                                    <div 
+                                        style={{
+                                            position: "relative",   
+                                            marginTop: "10px",
+                                            width: "100%",
+                                        }}
+                                        component="fieldset" 
+                                        variant="standard">
+                                        <Typography 
+                                            style={{
+                                                marginLeft:"10px",
+                                                float: "left",
+                                                color: "black"
+                                            }}>
+                                            Tipos de Documento:</Typography>
+                                        <FormGroup 
+                                            style={{
+                                                width: "100%",
+                                                color: "grey"
+                                            }}>                                
+                                            {types?.length>0 && types.map((doc, index)=> {
+                                                let temp_type = get_type(doc[0])
+                                                return (
+                                                    <div
+                                                        key={index}>
+                                                        <FormControlLabel
+                                                            style={{
+                                                                float: "left",
+                                                                color: "grey",
+                                                                marginLeft: "10px"
+                                                            }}
+                                                            control={
+                                                            <Checkbox 
+                                                                onChange={(e)=> {
+                                                                    let temp=[...selected_types]
+                                                                    if (temp.includes(doc[0])) 
+                                                                        temp.splice(selected_types.indexOf(doc[0]), 1);
+                                                                    else 
+                                                                        temp.push(doc[0])
+
+                                                                    filter(selected_years, selected_providers, selected_archivers, temp)
+                                                            }}/>
+                                                            }
+                                                            label={temp_type + " (" + doc[1] + ")"}
+                                                        />
+                                                    </div>
+                                                )
+                                            })}
+                                        </FormGroup>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    {menu==2 && 
+                        <div
+                            style={{   
+                                position: "relative",
+                                margin: "auto",
+                                float: "left",
+                                width: "50%",
+                                height: "230px",
+                                top: "-20px",
+                                marginTop: "20px",
+                                textAlign: "center",
+                                zIndex: 400, 
+                            }}>
+                            <div 
+                                style={{   
+                                    position: "absolute",
+                                    margin: "auto",
+                                    float: "left",
+                                    width: "100%",
+                                    height: "100%",
+                                    background: "rgba(256, 256, 256, 0.6)",
+                                    borderRadius: "5px",
+                                    top: "-20px",
+                                    marginTop: "20px",
+                                    border: "1px solid grey",
+                                    zIndex: 400, 
+                                }}>
+                                <div
+                                    style={{   
+                                        position: "relative",
+                                        margin: "auto",
+                                        float: "left",
+                                        width: "100%",
+                                    }}>
+                                    <Typography 
+                                        variant="h5" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.8)",
+                                            margin:"auto",
+                                        }}>
+                                        Contexto espacial
+                                    </Typography>
+                                </div>
+                                <div
+                                    style={{   
+                                        position: "relative",
+                                        margin: "auto",
+                                        float: "left",
+                                        width: "70%",
+                                        height: "85%",
+                                    }}>
+                                    <Autocomplete
+                                        disablePortal
+                                        options={spatial_hierarchy_type}
+                                        size="small"
+                                        renderInput={(params) => <TextField 
+                                            style={{
+                                                marginTop: "10px",
+                                                marginLeft: "10px",
+                                                float: "left",
+                                                zIndex: 400,    
+                                                width: "90%"
+                                            }} 
+                                            {...params} 
+                                            label="Tipo de contexto"/>}
+                                        onChange={(e, values)=>{
+                                            if (values) {
+                                                set_selected_spactial_hierarchy_type(values)
+                                                get_spatial_hierarchy(values)
+                                            }
+                                        }}/>
+                                    <Autocomplete
+                                        disablePortal
+                                        options={spatial_hierarchy}
+                                        size="small"
+                                        renderInput={(params) => <TextField 
+                                            style={{
+                                                marginTop: "5px",
+                                                marginLeft: "10px",
+                                                float: "left",
+                                                zIndex: 400,    
+                                                width: "90%"
+                                            }} 
+                                            {...params} 
+                                            label="Nome"/>}
+                                        onChange={(e, values)=>{
+                                            if (values) {
+                                                set_selected_hierarchy(values)
+                                                get_spatial_level(values)
+                                            }
+                                        }}/>
+                                    <Autocomplete
+                                        disablePortal
+                                        options={spatial_level}
+                                        size="small"
+                                        renderInput={(params) => <TextField 
+                                            style={{
+                                                marginTop: "5px",
+                                                zIndex: 400,
+                                                marginLeft: "10px",
+                                                float: "left",    
+                                                width: "90%"
+                                            }} 
+                                            {...params} 
+                                            label="Nível" 
+                                            />}
+                                        onChange={(e, values)=>{
+                                            if (values) {
+                                                set_selected_level(values)
+                                                get_names_from_level(values)
+                                            }
+                                        }}/>
+                                    <Autocomplete
+                                        disablePortal
+                                        options={all_spatial_names}
+                                        size="small"
+                                        renderInput={(params) => <TextField 
+                                            style={{
+                                                marginTop: "5px",                                
+                                                zIndex: 400,
+                                                marginLeft: "10px",
+                                                float: "left",    
+                                                width: "90%"
+                                            }} 
+                                            {...params} 
+                                            label={selected_level.charAt(0).toUpperCase() + selected_level.slice(1)}
+                                            />
+                                        }
+                                        onChange={(e, values)=>{
+                                            if (values) {
+                                                set_spatial_query(values)
+                                                set_default_space(true)
+                                            }
+
+                                        }}/>
+                                </div>
+                                <div
+                                    style={{   
+                                        position: "relative",
+                                        margin: "auto",
+                                        float: "left",
+                                        width: "30%",
+                                        height: "85%",
+                                    }}>
+                                    <Tooltip
+                                        title="Procurar Local">
+                                        <IconButton
+                                            style={{
+                                                width: "50px",
+                                                height: "50px",
+                                                background: "rgba(3,137,173,255)",
+                                                top: "35%",
+                                                margin: "auto"
+                                            }} 
+                                            onClick={()=> {
+                                                set_menu(1)
+                                                if (default_space)
+                                                    get_spaces()
+                                                else
+                                                    get_document_by_space_geometry()
+                                            }}>
+                                            <TravelExploreIcon
+                                                style={{
+                                                    color: "rgba(256, 256, 256, 1)"}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            </div> 
+                        </div> 
+                    }         
+                    <div
+                        style={{
+                            position: "absolute",
+                            top:"250px",
+                            width: "100%",
+                            background: "rgba(256, 256, 256, 0.7)",
+                            border: "1px solid grey",
+                            borderRadius: "10px",
+                            height: "65%",
+                        }}>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.8)",
+                                margin:"auto",
+                                marginTop: "10px"
+                            }}>
+                            {documents.length} Resultados
+                        </Typography>
                         <Box
                             display="flex"
                             alignItems="center"
                             style={{
                                 margin: "auto",
                                 position: "relative",
-                                width: "100%"
+                                width: "100%",
+                                marginTop: "10px",
                             }}>
                             <Tooltip 
                                 title="Procurar por nome">
                                 <Autocomplete
+                                    style={{
+                                        margin: "auto",
+                                        width: "45%",
+                                    }}
                                     freeSolo
                                     fullWidth
                                     options={all_name}
@@ -988,7 +1723,7 @@ export default function Default() {
                                     renderInput={(params) => 
                                     <TextField 
                                         style={{
-                                            width: "65%",
+                                            width: "100%",
                                         }}
                                         {...params} 
                                         label="Nome" 
@@ -1009,13 +1744,14 @@ export default function Default() {
                                     }}/>
                             </Tooltip>
                             <Tooltip 
-                                title="Limpar procura">
+                                title="Limpar filtros">
                                 <IconButton 
                                     style={{ 
                                         position: "relative",
                                         borderRadius: "5px",
+                                        float: "left",
                                         background: 'rgba(0, 0, 0, 0.26)',
-                                        left: "-16%"
+                                        left: "-25%"
                                     }}
                                     onClick={()=> {
                                         window.location.reload(false);
@@ -1027,46 +1763,103 @@ export default function Default() {
                                 </IconButton>
                             </Tooltip>
                         </Box>
-                        <List
+                        <div
                             style={{
-                                marginTop: "1vh",
-                                height: "71vh",
-                                overflow: "auto"
-                            }}>
+                                position: "relative",
+                                margin: "auto",
+                                marginTop: "20px",
+                                width: "100%",
+                                height: "78%",
+                                overflow: "auto",}}>
                             {documents?.length>0 && documents.map((doc, index) => {
+                                let temp_type = get_type(doc[2])
                                 return(
                                     <div 
                                         key={index} 
                                         style={{
+                                            position: "relative",
                                             margin: "auto",
-                                            height: "12vh", 
-                                            border: "1px solid grey",}}>
-                                        <IconButton
-                                            style={{
-                                                float:"left",
-                                                margin: "15px",
-                                                marginLeft: "25px"
-                                            }}
-                                            onClick={()=> {
-                                                navigate(`/document/${doc[0]}`)
-                                            }}>
-                                            <Typography
-                                                variant="h6" 
-                                                component="h2" 
-                                                color="rgba(0, 0, 0, 0.9)">
-                                                {doc[4]}
-                                            </Typography>
-                                        </IconButton>
+                                            height: "50%", 
+                                            width: "33%", 
+                                            float: "left",}}>
                                         <div
                                             style={{ 
-                                                marginLeft: "75%",
-                                                marginTop: "10px"
+                                                margin:"auto",
+                                                position: "relative",
+                                                height: "90%",
+                                                minHeight: "220px", 
+                                                width: "90%",
+                                                borderRadius: "10px",
+                                                border: "3px solid grey",
                                             }}>
                                             <Tooltip 
-                                                title="Adicionar a uma lista">
+                                                title="nome">
+                                                <Typography
+                                                    variant="h6" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.9)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "90%",
+                                                        marginTop: "10px",
+                                                    }}>
+                                                    {doc[4]}
+                                                </Typography>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                    title="Tipo de documento">
+                                                <Typography
+                                                    variant="body1" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.5)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "85%",
+                                                        marginTop: "5px",
+                                                    }}>
+                                                    {temp_type}
+                                                </Typography>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                    title="Ir para a página do documento">
+                                                <Button 
+                                                    variant="contained" 
+                                                    onClick={()=>{
+                                                        navigate(`/document/${doc[0]}`)
+                                                    }}
+                                                    style={{
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        marginTop: "10px",
+                                                    }}>
+                                                        Visitar página
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                    title="Contexto temporal">
+                                                <Typography
+                                                    variant="h6" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.9)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "85%",
+                                                        marginTop: "10px",
+                                                    }}>
+                                                    {doc[5]}
+                                                </Typography>
+                                            </Tooltip>
+                                            <Tooltip 
+                                                title="Adicionar a uma lista (Beta)">
                                                 <IconButton
                                                     style={{ 
                                                         background: color_list[3],
+                                                        position: "relative",
+                                                        margin: "auto",
+                                                        left:"-20px"
                                                     }}
                                                     onClick={()=>{
                                                         set_selected(doc[0])
@@ -1083,7 +1876,7 @@ export default function Default() {
                                                 <IconButton 
                                                     style={{ 
                                                         background: color_list[0],
-                                                        left:"7%"
+                                                        left:"20px"
                                                     }}
                                                     onClick={()=>{
                                                         get_space_from_document(doc[0])
@@ -1098,41 +1891,9 @@ export default function Default() {
                                     </div>
                                 )
                             })}
-                        </List>
+                        </div>
+                    </div>
                 </div>
-                <MapContainer 
-                    style={{
-                        position: 'absolute',
-                        top: '46.7%',
-                        left: '70%',
-                        transform: 'translate(-50%, -50%)',
-                        width: "60%",
-                        boxShadow: 24,
-                        height: "84vh",
-                    }} 
-                    center={position} 
-                    zoom={6} 
-                    scrollWheelZoom={true} 
-                    minZoom={4}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <FeatureGroup ref={featureGroupRef => {
-                        onFeatureGroupReady(featureGroupRef);
-                    }}>
-                        <EditControl 
-                            position="topleft"
-                            onCreated={_created}
-                            draw= {{
-                                circlemarker: false,
-                                polyline: false,
-                                polygon: false
-                            }}
-                            edit={{edit:false}}/>
-                    </FeatureGroup>       
-                    {spatial_list}
-                </MapContainer> 
             </div>
         </>
     );
