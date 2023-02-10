@@ -31,6 +31,7 @@ import { Container } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import RadioGroup from '@mui/material/RadioGroup';
 import Autocomplete from '@mui/material/Autocomplete';
+import JSZip from "jszip";
 import { useNavigate, useParams } from "react-router-dom";
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
@@ -99,6 +100,8 @@ export default function Default() {
     const [modal1, set_modal1]=React.useState(false);
     const [modal2, set_modal2]=React.useState(false);
     const [modal3, set_modal3]=React.useState(false);
+    const [modal4, set_modal4]=React.useState(false);
+    const [modal5, set_modal5]=React.useState(false);
     const [editable_FG, set_editable_FG] = React.useState(null);
     const [wkt, setWKT]=React.useState("[]");
     const [new_space, set_new_space]=React.useState("[]");
@@ -155,11 +158,11 @@ export default function Default() {
         const start = async () => {
             let ignore = await check_token("A");
             if (ignore) {
-            
+                
                 get_space()
                 get_document()
                 get_files()
-                set_spatial_hierarchy_type()
+                get_spatial_hierarchy_type()
                 let ignore2 = await check_token("R");
                     if (ignore2) 
                         add_to_historic()
@@ -1417,6 +1420,7 @@ export default function Default() {
         .then(res=>res.json())
         .then(result=>{
             set_spatial_hierarchy_type(result)
+            console.log(result)
         })
     }
 
@@ -1509,7 +1513,8 @@ export default function Default() {
     }
 
     async function download_files() {
-        let res = []
+        let zip = new JSZip();
+        let FileSaver = require('file-saver');
         for (let i = 0; i<files.length; i++) {
             console.log(files[i][0])
             let form = new FormData();
@@ -1522,8 +1527,11 @@ export default function Default() {
             })
 
             download_res = await download_res.blob()
-            console.log(download_res)
+            await zip.file(files[i][1], download_res)
         }
+        zip.generateAsync({type:"blob"}).then(function(content) {
+            FileSaver.saveAs(content, document[4] + ".zip");
+        });
     }
 
     async function upload_new_files() {
@@ -3769,50 +3777,109 @@ export default function Default() {
                                 borderRadius: "20px",
                                 marginTop: "3vh"
                             }}>
-                            <List 
+                            <div
                                 style={{
-                                    height: "50vh",
-                                    overflow: 'auto',
+                                    marginTop: "10px",
+                                    overflow: "auto",
+                                    height: "500px"
                                 }}>
-                                {new_files?.length>0 && new_files.map((doc, index)=> 
-                                    <div 
-                                        key={doc.name}
-                                        style={{
-                                            height: "15vh",
-                                            border: "1px solid grey",
-                                        }}>
-                                        <Box>
-                                            <Typography 
-                                                variant="h6" 
+                                {new_files?.length && new_files.map((doc, index) => {
+                                    let temp_time = new Date(doc.lastModified).toString().split(" ")
+                                    temp_time = temp_time[2] + " " + temp_time[1]   + "," + temp_time[3]
+                                    
+                                    let temp_size = (doc.size / (1024*1024)).toFixed(2);
+                                    console.log(temp_size)
+                                    return(
+                                        <div
+                                            key={index}
+                                            style={{ 
+                                                position: "relative",
+                                                height: "260px", 
+                                                width: "50%",
+                                                top: "20px",
+                                                float:"left",
+                                            }}>
+                                            <div
                                                 style={{ 
-                                                    color: "rgba(0, 0, 0, 0.9)",
-                                                    maxWidth: "85%",
-                                                    float: "left",
-                                                    marginLeft: "2%"
+                                                    margin:"auto",
+                                                    position: "relative",
+                                                    height: "90%", 
+                                                    width: "70%",
+                                                    borderRadius: "10px",
+                                                    border: "3px solid grey",
                                                 }}>
-                                                {doc.name}
-                                            </Typography>
-                                            <Tooltip
-                                                title="Remover da lista">
-                                                <IconButton 
-                                                    edge="end" 
-                                                    aria-label="delete" 
-                                                    style={{
-                                                        float: "right",
-                                                        right: "6%"
-                                                    }}
-                                                    onClick={()=>{
-                                                        let aux = [...new_files]
-                                                        aux.splice(index, 1)
-                                                        set_new_files(aux)
+                                                <Typography
+                                                    variant="body2" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.9)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "90%",
+                                                        marginTop: "10%",
                                                     }}>
-                                                    <DeleteIcon/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Box>
-                                    </div>
-                                )}
-                            </List>
+                                                    {doc.name}
+                                                </Typography>
+                                                <Typography
+                                                    variant="body1" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.5)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "85%",
+                                                        marginTop: "10px",
+                                                        
+                                                    }}>
+                                                    {temp_time}
+                                                </Typography>
+                                                <UploadFileIcon
+                                                    color= "action"
+                                                    fontSize="large"
+                                                    variant="contained" 
+                                                    style={{
+                                                        position: "relative",
+                                                        margin:"auto", 
+                                                        marginTop: "20px",
+                                                    }}/>
+                                                <Typography
+                                                    variant="h6" 
+                                                    component="h2" 
+                                                    color="rgba(0, 0, 0, 0.9)"
+                                                    style={{ 
+                                                        position: "relative",
+                                                        margin:"auto",
+                                                        maxWidth: "85%",
+                                                        marginTop: "20px",
+                                                    }}>
+                                                    {temp_size} MB
+                                                </Typography>
+                                                <Tooltip
+                                                    title="Apagar ficheiro">
+                                                    <IconButton
+                                                        style={{
+                                                            position: "absolute",
+                                                            background: "rgba(228,38,76,255)",
+                                                            left:"95%",
+                                                            top: "-15px",
+                                                            height: "30px",
+                                                            width: "30px",
+                                                        }} 
+                                                        onClick={()=> {
+                                                            let aux = [...files]
+                                                            aux.splice(index, 1)
+                                                            set_files(aux)
+                                                        }}>
+                                                        <DeleteIcon
+                                                            style={{
+                                                                color: "rgba(256, 256, 256, 0.9)"}}/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
                         </div>    
                         <div
                             style={{   
@@ -3982,28 +4049,14 @@ export default function Default() {
                                     marginTop:"30vh"
                                 }}>
                                 <Tooltip
-                                    title="Contexto espacial automático com ficheiro">
+                                    title="Selecionar contexto espacial escolhendo um ficheiro">
                                     <IconButton
                                         style={{
                                             background: "rgba(3,137,173,255)",
-                                            left: "-5%"
                                         }}>
                                         <FindInPageIcon 
                                             style={{
                                                 color: "rgba(256, 256, 256, 0.8)"
-                                            }}/>
-                                    </IconButton>
-                                </Tooltip>
-                                <Tooltip
-                                    title="Contexto espacial escolhendo um ficheiro">
-                                    <IconButton
-                                        style={{
-                                            background: "rgba(3,137,173,255)",
-                                            left: "5%"
-                                        }}>
-                                        <MoreHorizIcon
-                                            style={{
-                                                color: "rgba(256, 256, 256, 1)"
                                             }}/>
                                     </IconButton>
                                 </Tooltip>
@@ -4018,7 +4071,7 @@ export default function Default() {
                                 width:"60%",
                                 float: "left"}}
                             center={position} 
-                            zoom={7} 
+                            zoom={6} 
                             scrollWheelZoom={true} 
                             minZoom={4}>
                             <TileLayer
@@ -4103,6 +4156,168 @@ export default function Default() {
                     </Box>
                 </div>
             </Modal>
+            <Modal
+                keepMounted
+                open={modal4}
+                onClose={()=>{
+                    set_modal4(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "30%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "center",
+                        height: "30%",
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Definições de Edição
+                        </Typography>
+                    </Box>
+                    <div
+                        style={{ 
+                            position: "relative",
+                            marginTop: "10px",
+                            width: "100%",
+                        }}>
+                        <div
+                            style={{ 
+                                width: "50%",
+                                float: "left",
+                                position: "relative",
+                            }}>
+                            <Button 
+                                variant="contained" 
+                                onClick= {() => {
+                                    set_modal2(true)
+                                    set_modal4(false)
+                                }}
+                                style={{
+                                    zIndex: 400, 
+                                    width: "200px",   
+                                    margin: "auto",
+                                    top: "30px", 
+                                }}>
+                                    Adicionar ficheiros
+                            </Button>
+                        </div>
+                        <div
+                            style={{ 
+                                float: "left",
+                                width: "50%",
+                                position: "relative",
+                            }}>
+                            <Button 
+                                variant="contained" 
+                                onClick= {() => {
+                                    set_modal3(true)
+                                    set_modal4(false)
+                                }}
+                                style={{
+                                    zIndex: 400, 
+                                    width: "200px", 
+                                    margin: "auto",
+                                    top: "17px", 
+                                }}>
+                                    Editar contexto espacial
+                            </Button>
+                        </div>
+                        <div
+                            style={{ 
+                                position: "relative",
+                                width: "100%",
+                                top: "50px",
+                                margin:"auto",
+                            }}>
+                            <Button 
+                                variant="contained" 
+                                onClick= {() => {
+                                    set_modal5(true)
+                                    set_modal4(false)
+                                }}
+                                style={{
+                                    background: "rgba(228,38,76,255)",
+                                    zIndex: 400, 
+                                    margin:"auto",
+                                    width: "200px",  
+                                }}>
+                                    Apagar Documento
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                keepMounted
+                open={modal5}
+                onClose={()=>{
+                    set_modal5(false)
+                }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: "40%",
+                        background: "rgba(256, 256, 256, 0.9)",
+                        border: '1px solid #000',
+                        boxShadow: 24,
+                        borderRadius: "10px",
+                        textAlign: "center",
+                        height: "25vh",
+                        overflow: "auto"
+                    }}>
+                    <Box>
+                        <Typography 
+                            variant="h4" 
+                            style={{ 
+                                color: "rgba(0, 0, 0, 0.9)",
+                                margin:"auto",
+                                maxWidth: "90%",
+                                marginTop: "3vh"
+                            }}>
+                            Pretende apagar este Documento?
+                        </Typography>
+                    </Box>
+                    <div
+                        style={{ 
+                            position: "relative",
+                            top: "20%",
+                        }}>
+                         <Tooltip
+                            title="Apagar documento">
+                            <IconButton
+                                style={{
+                                    background: "rgba(228,38,76,255)",
+                                    height: "60px",
+                                    width: "60px"
+                                }} 
+                                onClick={()=> {
+                                    delete_document()
+                                }}>
+                                <ClearIcon
+                                    style={{
+                                        color: "rgba(256, 256, 256, 0.9)"}}/>
+                            </IconButton>
+                        </Tooltip>
+                    </div>
+                </div>
+            </Modal>
             <MapContainer 
                 style={{ 
                     position: "absolute",
@@ -4134,278 +4349,278 @@ export default function Default() {
                     height: "400px",
                     zIndex: 400
                     }}>
+                <div
+                    style={{ 
+                        borderRadius: "5px",
+                        position: "relative",
+                        height: "400px",
+                        width:"50%",
+                        float: "left"
+                        }}>
                     <div
                         style={{ 
-                            borderRadius: "5px",
+                            margin: "auto",
                             position: "relative",
-                            height: "400px",
-                            width:"50%",
-                            float: "left"
+                            height: "100%",
+                            width:"100%",
+                            float: "left"}}>
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            style={{
+                                marginTop: "10px"
                             }}>
-                        <div
-                            style={{ 
-                                margin: "auto",
-                                position: "relative",
+                            <Typography 
+                                variant="h4" 
+                                style={{ 
+                                    color: "rgba(0, 0, 0, 0.9)",
+                                    margin:"auto",
+                                    maxWidth: "65%"
+                                }}>
+                                    {document[4]}
+                            </Typography>
+                            <Tooltip
+                                title="Definições de edição do Documento">
+                                <IconButton
+                                    style={{
+                                        background: "rgba(3,137,173,255)",
+                                        left: "-10%"
+                                    }}
+                                    onClick={()=> {
+                                        
+                                        set_modal4(true)
+                                        /*getAllProviders()
+                                        getAllURLS()
+                                        getAllDrawingsContext()
+                                        getAllStatisticsThemes()
+                                        getAllPhotoImageResolution()
+                                        getAllAerialPhotoImageResolution()
+                                        getAllAerialPhotoScale()
+                                        getAllSatellite()
+                                        getAllSatelliteResolution()
+                                        getAllLiDARResolution()
+                                        getAllMapGeometryType()
+                                        getAllMapImageResolution()
+                                        getAllMapScale()
+                                        getAllMapTheme()
+                                        getAllMapType()
+                                        getAllOrtosScale()
+                                        getAllOrtosResolution()
+                                        getAllReportsContext()
+                                        getAllReportsTheme()
+                                        getAllSensorsVariable()
+                                        */
+                                    }}>
+                                    <EditIcon
+                                        style={{
+                                            color: "rgba(256, 256, 256, 0.9)"}}/>
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                        <div 
+                            style={{
                                 height: "100%",
-                                width:"100%",
-                                float: "left"}}>
-                            <Box
-                                display="flex"
-                                alignItems="center"
+                                overflow: "auto",
+
+                            }}>{/*
+                            <div 
                                 style={{
                                     marginTop: "10px"
                                 }}>
                                 <Typography 
-                                    variant="h4" 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "2%",
+                                        marginTop: "0.5vh",
+                                        float: "left"
+                                    }}>
+                                        Coleção:
+                                </Typography>
+                                <Typography 
+                                    variant="h6" 
                                     style={{ 
                                         color: "rgba(0, 0, 0, 0.9)",
-                                        margin:"auto",
-                                        maxWidth: "65%"
+                                        float: "left",
+                                        marginLeft: "1%"
                                     }}>
-                                        {document[4]}
+                                        {collection}
                                 </Typography>
-                                <Tooltip
-                                    title="Editar meta informação">
-                                    <IconButton
-                                        style={{
-                                            background: "rgba(3,137,173,255)",
-                                            left: "-10%"
-                                        }}
-                                        onClick={()=> {
-                                            /*
-                                            set_modal1(true)
-                                            getAllProviders()
-                                            getAllURLS()
-                                            getAllDrawingsContext()
-                                            getAllStatisticsThemes()
-                                            getAllPhotoImageResolution()
-                                            getAllAerialPhotoImageResolution()
-                                            getAllAerialPhotoScale()
-                                            getAllSatellite()
-                                            getAllSatelliteResolution()
-                                            getAllLiDARResolution()
-                                            getAllMapGeometryType()
-                                            getAllMapImageResolution()
-                                            getAllMapScale()
-                                            getAllMapTheme()
-                                            getAllMapType()
-                                            getAllOrtosScale()
-                                            getAllOrtosResolution()
-                                            getAllReportsContext()
-                                            getAllReportsTheme()
-                                            getAllSensorsVariable()
-                                            */
-                                        }}>
-                                        <EditIcon
-                                            style={{
-                                                color: "rgba(256, 256, 256, 0.9)"}}/>
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
+                            
+                            </div> */}
+                                
                             <div 
                                 style={{
-                                    height: "100%",
-                                    overflow: "auto",
-
-                                }}>{/*
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "30px",
+                                    marginTop: "20px"
+                                }}>
+                                <Typography 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Arquivista:
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        float: "left",
+                                        marginTop: "-2px",
+                                        marginLeft: "5px"
+                                    }}>
+                                        {archiver}
+                                </Typography>
+                            </div>
+                            <div 
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "30px",
+                                }}>
+                                <Typography 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Tipo de documento:
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        float: "left",
+                                        marginTop: "-2px",
+                                        marginLeft: "5px"
+                                    }}>
+                                        {type_translation}
+                                </Typography>
+                            </div>
+                            <div 
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "30px",
+                                }}>
+                                <Typography 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Fornecedor/autor:
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        float: "left",
+                                        marginTop: "-2px",
+                                        marginLeft: "5px"
+                                    }}>
+                                        {document[7]}
+                                </Typography>
+                            </div>
+                            <div 
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "30px",
+                                }}>
+                                <Typography 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Ano:
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        float: "left",
+                                        marginTop: "-2px",
+                                        marginLeft: "5px"
+                                    }}>
+                                        {document[8]}
+                                </Typography>
+                            </div>
+                            <div 
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "30px",
+                                }}>
+                                <Typography 
+                                    variant="body2" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Adicinado a:
+                                </Typography>
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.9)",
+                                        float: "left",
+                                        marginTop: "-2px",
+                                        marginLeft: "5px"
+                                    }}>
+                                        {document[9]}
+                                </Typography>
+                            </div>
+                            <div 
+                                style={{
+                                    position: "relative",
+                                    width: "100%",
+                                    height: "150px",
+                                }}>
                                 <div 
                                     style={{
-                                        marginTop: "10px"
+                                        margin: "auto",
+                                        width: "95%",
+                                        height: "100%",
+                                        border: "1px solid grey",
+                                        borderRadius: "5px",
+                                        overflow: "auto"
                                     }}>
+                                    <Typography 
+                                        variant="body1" 
+                                        style={{ 
+                                            color: "rgba(0, 0, 0, 0.7)",
+                                            marginLeft: "10px",
+                                            float: "left"
+                                        }}>
+                                            Descrição:
+                                    </Typography>
                                     <Typography 
                                         variant="body2" 
                                         style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
+                                            color: "rgba(0, 0, 0, 0.9)",
+                                            float: "left",
                                             marginLeft: "2%",
-                                            marginTop: "0.5vh",
-                                            float: "left"
-                                        }}>
-                                            Coleção:
-                                    </Typography>
-                                    <Typography 
-                                        variant="h6" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginLeft: "1%"
-                                        }}>
-                                            {collection}
-                                    </Typography>
-                               
-                                </div> */}
-                                    
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "30px",
-                                        marginTop: "20px"
-                                    }}>
-                                    <Typography 
-                                        variant="body2" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Arquivista:
-                                    </Typography>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginTop: "-2px",
-                                            marginLeft: "5px"
-                                        }}>
-                                            {archiver}
-                                    </Typography>
-                                </div>
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "30px",
-                                    }}>
-                                    <Typography 
-                                        variant="body2" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Tipo de documento:
-                                    </Typography>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginTop: "-2px",
-                                            marginLeft: "5px"
-                                        }}>
-                                            {type_translation}
-                                    </Typography>
-                                </div>
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "30px",
-                                    }}>
-                                    <Typography 
-                                        variant="body2" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Fornecedor/autor:
-                                    </Typography>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginTop: "-2px",
-                                            marginLeft: "5px"
-                                        }}>
-                                            {document[7]}
-                                    </Typography>
-                                </div>
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "30px",
-                                    }}>
-                                    <Typography 
-                                        variant="body2" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Ano:
-                                    </Typography>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginTop: "-2px",
-                                            marginLeft: "5px"
-                                        }}>
-                                            {document[8]}
-                                    </Typography>
-                                </div>
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "30px",
-                                    }}>
-                                    <Typography 
-                                        variant="body2" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Adicinado a:
-                                    </Typography>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.9)",
-                                            float: "left",
-                                            marginTop: "-2px",
-                                            marginLeft: "5px"
-                                        }}>
-                                            {document[9]}
-                                    </Typography>
-                                </div>
-                                <div 
-                                    style={{
-                                        position: "relative",
-                                        width: "100%",
-                                        height: "150px",
-                                    }}>
-                                    <div 
-                                        style={{
-                                            margin: "auto",
                                             width: "95%",
-                                            height: "100%",
-                                            border: "1px solid grey",
-                                            borderRadius: "5px",
-                                            overflow: "auto"
+                                            top: "4vh",
+                                            textAlign: "justify",
+                                            textJustify: "inter-word"
                                         }}>
-                                        <Typography 
-                                            variant="body1" 
-                                            style={{ 
-                                                color: "rgba(0, 0, 0, 0.7)",
-                                                marginLeft: "10px",
-                                                float: "left"
-                                            }}>
-                                                Descrição:
-                                        </Typography>
-                                        <Typography 
-                                            variant="body2" 
-                                            style={{ 
-                                                color: "rgba(0, 0, 0, 0.9)",
-                                                float: "left",
-                                                marginLeft: "2%",
-                                                width: "95%",
-                                                top: "4vh",
-                                                textAlign: "justify",
-                                                textJustify: "inter-word"
-                                            }}>
-                                                {document[5]} 
-                                        </Typography>
-                                    </div>
+                                            {document[5]} 
+                                    </Typography>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </div>
                 <div
                     style={{ 
@@ -4436,14 +4651,14 @@ export default function Default() {
                     style={{
                         width: "100%",
                         heigth: "30px",
-                        marginTop: "2vh"
+                        marginTop: "20px"
                     }}>
                     <Typography 
                         variant="h5" 
                         style={{ 
                             position: "relative",
                             float: "left",
-                            marginLeft: "20px",
+                            left: "20px",
                             margin: "auto",
                             color: "rgba(0, 0, 0, 0.9)",
                         }}>
