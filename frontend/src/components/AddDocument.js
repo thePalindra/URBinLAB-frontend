@@ -710,6 +710,7 @@ export default function Default() {
     }
 
     async function auto_space(selected_file, file_type, files) {
+        set_new_space(<></>)
         const drawnItems = editable_FG._layers;
         if (Object.keys(drawnItems).length > 0) {
             Object.keys(drawnItems).forEach((layerid, index) => {
@@ -770,6 +771,7 @@ export default function Default() {
     }
 
     async function auto_space2(selected_file, file_type, files, auto) {
+        set_new_space(<></>)
         set_modal7(true)
         const drawnItems = editable_FG._layers;
         if (Object.keys(drawnItems).length > 0) {
@@ -833,11 +835,15 @@ export default function Default() {
         set_modal7(false)
     }
 
+    function remove_duplicates(arr) {
+        return arr.filter((item,
+            index) => arr.indexOf(item) === index);
+    }
+
     async function create_document() {
         let form = all_form_append()
         form.append("token", window.localStorage.getItem("token"))
         set_modal7(true)
-        console.log(URLs)
         
         let docId = await fetch("http://localhost:8080/"+ URLs +"/add_document", {
             method: "POST",
@@ -845,14 +851,28 @@ export default function Default() {
         })
         if (docId.ok) {
             docId = await docId.json();
+            console.log(docId)
 
-            form.append("id", docId)
-            form.append("spatialName", spatial_query)
-            form.append("timeScope", new_time)
+            let es_form = all_form_append()
+            es_form.append("id", docId)
+            es_form.append("spatialName", spatial_query)
+            es_form.append("timeScope", new_time)
+
+            let temp_arr = []
+            for (let i = 0; i<files.length; i++) {
+                console.log(files[i])
+                console.log(temp_arr)
+                temp_arr = temp_arr.concat(files[i].name.split("."))
+            }
+            temp_arr = remove_duplicates(temp_arr)
+            console.log(temp_arr.join(" "))
+            es_form.append("files", temp_arr.join(" "))
+            es_form.append("archiver", JSON.parse(window.localStorage.getItem("token")).researcher.name)
+            
 
             fetch("http://localhost:5050/es/put", {
                 method: "POST",
-                body: form
+                body: es_form
             })
 
             let sform = new FormData();
@@ -1713,9 +1733,10 @@ export default function Default() {
                 <div
                     style={{
                         height: "100%",
-                        width: "28%",
+                        width: "30%",
                         position: "relative",
                         float: "left",
+                        marginLeft:"2%",
                         borderRadius: "5px",
                     }}>
                     <Box
@@ -1843,7 +1864,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -1879,7 +1900,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left"}} 
                                         {...params} 
                                         label="Escala" 
@@ -2092,7 +2113,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2221,7 +2242,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2347,7 +2368,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2498,7 +2519,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2647,7 +2668,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2795,7 +2816,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -2831,7 +2852,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left"}} 
                                         {...params} 
                                         label="Escala" 
@@ -2942,7 +2963,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -3073,7 +3094,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -3182,7 +3203,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -3239,7 +3260,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left"}} 
                                         {...params} 
                                         label="Escala aproximada" 
@@ -3353,7 +3374,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -3537,7 +3558,7 @@ export default function Default() {
                                     }}
                                     renderInput={(params) => <TextField 
                                         style={{
-                                            width: "30%", 
+                                            width: "50%", 
                                             float:"left",
                                         }} 
                                         {...params} 
@@ -3630,7 +3651,8 @@ export default function Default() {
                     style={{
                         position: "relative",
                         height: "100%",
-                        width:"37%",
+                        width:"30%",
+                        marginLeft:"3%",
                         float: "left",
                     }}>
                     <Box
@@ -3671,6 +3693,7 @@ export default function Default() {
                                 hidden
                                 multiple
                                 onChange={(e)=> {
+                                    set_new_space(<></>)
                                     let arr = [...files]
                                     for (let i = 0; i<e.target.files.length; i++) {
                                         let current = e.target.files[i]
@@ -3690,6 +3713,10 @@ export default function Default() {
                                                 file_type = "vector"
                                                 break loop
                                             case "tif":
+                                                selected_file = arr[i]
+                                                file_type = "raster"
+                                                break
+                                            case "jpg":
                                                 selected_file = arr[i]
                                                 file_type = "raster"
                                                 break
@@ -3741,7 +3768,7 @@ export default function Default() {
                                     key={index}
                                     style={{ 
                                         position: "relative",
-                                        height: "40%", 
+                                        height: "175px", 
                                         width: "50%",
                                         top: "20px",
                                         float:"left",
@@ -3751,7 +3778,9 @@ export default function Default() {
                                             margin:"auto",
                                             position: "relative",
                                             height: "90%", 
-                                            width: "70%",
+                                            minHeight: "165px", 
+                                            width: "170px",
+                                            maxWidth: "80%",
                                             borderRadius: "10px",
                                             border: "3px solid grey",
                                         }}>
@@ -3786,7 +3815,7 @@ export default function Default() {
                                             style={{
                                                 position: "relative",
                                                 margin:"auto", 
-                                                marginTop: "20px",
+                                                marginTop: "10px",
                                             }}/>
                                         <Typography
                                             variant="h6" 
@@ -3796,7 +3825,7 @@ export default function Default() {
                                                 position: "relative",
                                                 margin:"auto",
                                                 maxWidth: "85%",
-                                                marginTop: "20px",
+                                                marginTop: "0px",
                                             }}>
                                             {temp_size} MB
                                         </Typography>
@@ -3812,9 +3841,36 @@ export default function Default() {
                                                     width: "30px",
                                                 }} 
                                                 onClick={()=> {
-                                                    let aux = [...files]
-                                                    aux.splice(index, 1)
-                                                    set_files(aux)
+                                                    set_new_space(<></>)
+
+                                                    let arr = [...files]
+                                                    arr.splice(index, 1)
+                                                    set_files(arr)
+
+                                                    let selected_file = ""
+                                                    let file_type = ""
+                                                    loop:
+                                                    for (let i = 0; i<arr.length; i++) {
+                                                        let temp = arr[i].name.split(".")
+                                                        switch(temp[temp.length-1]) {
+                                                            case "shp":
+                                                                selected_file = arr[i]
+                                                                file_type = "vector"
+                                                                break loop
+                                                            case "tif":
+                                                                selected_file = arr[i]
+                                                                file_type = "raster"
+                                                                break
+                                                            case "jpg":
+                                                                selected_file = arr[i]
+                                                                file_type = "raster"
+                                                                break
+                                                            default:
+                                                                break
+                                                        }
+                                                    }
+                                                    if (selected_file)
+                                                        auto_space(selected_file, file_type, arr)
                                                 }}>
                                                 <DeleteIcon
                                                     style={{

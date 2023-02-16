@@ -593,7 +593,6 @@ export default function Default() {
         let temp = get_all_ids(documents)
         console.log(documents)
 
-
         if (years_temp.length == 0) {
             for (let i = 0; i<years.length; i++)
                 years_temp.push(years[i][0])
@@ -1145,7 +1144,7 @@ export default function Default() {
                         height: "100%",
                     }} 
                     center={position} 
-                    zoom={7} 
+                    zoom={6} 
                     scrollWheelZoom={true} 
                     minZoom={4}>
                     <TileLayer
@@ -1173,8 +1172,7 @@ export default function Default() {
                         margin: "auto",
                         float: "left",
                         width: "45%",
-                        height: "99%",
-                        minWidth: "550px",
+                        height: "95%",
                         left: "10px",
                         top: "10px",
                         textAlign: "center",
@@ -1185,13 +1183,13 @@ export default function Default() {
                             margin: "auto",
                             float: "left",
                             width: "50%",
-                            height: "230px",
-                            background: "rgba(256, 256, 256, 0.6)",
+                            height: "35%",
+                            maxHeight: "230px",
+                            background: "rgba(256, 256, 256, 0.85)",
                             borderRadius: "5px",
                             top: "-20px",
                             marginTop: "20px",
                             textAlign: "center",
-                            border: "1px solid grey",
                         }}> 
                         <div
                             style={{
@@ -1273,7 +1271,8 @@ export default function Default() {
                                 margin: "auto",
                                 float: "left",
                                 width: "50%",
-                                height: "230px",
+                                height: "35%",
+                                maxHeight: "230px",
                                 top: "-20px",
                                 marginTop: "20px",
                                 textAlign: "center",
@@ -1286,11 +1285,10 @@ export default function Default() {
                                     float: "left",
                                     width: "100%",
                                     height: "100%",
-                                    background: "rgba(256, 256, 256, 0.6)",
+                                    background: "rgba(256, 256, 256, 0.85)",
                                     borderRadius: "5px",
                                     top: "-20px",
                                     marginTop: "20px",
-                                    border: "1px solid grey", 
                                 }}>
                                 <div
                                     style={{
@@ -1518,7 +1516,8 @@ export default function Default() {
                                 margin: "auto",
                                 float: "left",
                                 width: "50%",
-                                height: "230px",
+                                height: "35%",
+                                maxHeight: "230px",
                                 top: "-20px",
                                 marginTop: "20px",
                                 textAlign: "center",
@@ -1531,11 +1530,10 @@ export default function Default() {
                                     float: "left",
                                     width: "100%",
                                     height: "100%",
-                                    background: "rgba(256, 256, 256, 0.6)",
+                                    background: "rgba(256, 256, 256, 0.85)",
                                     borderRadius: "5px",
                                     top: "-20px",
                                     marginTop: "20px",
-                                    border: "1px solid grey",
                                     zIndex: 400, 
                                 }}>
                                 <div
@@ -1680,96 +1678,113 @@ export default function Default() {
                                 </div>
                             </div> 
                         </div> 
-                    }         
+                    }       
                     <div
                         style={{
-                            position: "absolute",
-                            top:"250px",
-                            width: "100%",
-                            background: "rgba(256, 256, 256, 0.7)",
-                            border: "1px solid grey",
-                            borderRadius: "10px",
+                            position: "relative",
+                            float: "left",
                             height: "65%",
+                            width: "100%",
+                            top: "-1%",
+                            background: "rgba(256, 256, 256, 0.85)",
+                            borderRadius: "10px",
                         }}>
-                        <Typography 
-                            variant="h4" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.8)",
-                                margin:"auto",
-                                marginTop: "10px"
-                            }}>
-                            {documents.length} Resultados
-                        </Typography>
-                        <Box
-                            display="flex"
-                            alignItems="center"
+                        <div
                             style={{
                                 margin: "auto",
                                 position: "relative",
+                                height: "20%",
                                 width: "100%",
-                                marginTop: "10px",
                             }}>
-                            <Tooltip 
-                                title="Procurar por nome">
-                                <Autocomplete
-                                    style={{
-                                        margin: "auto",
-                                        width: "45%",
-                                    }}
-                                    freeSolo
-                                    fullWidth
-                                    options={all_name}
-                                    size="small"
-                                    renderInput={(params) => 
-                                    <TextField 
-                                        style={{
-                                            width: "100%",
-                                        }}
-                                        {...params} 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        size="small"
-                                        onKeyPress={(ev) => {
-                                            if (ev.key === 'Enter') {
-                                                get_document_by_name()
-                                                ev.preventDefault();
-                                            }
-                                        }}
-                                        onChange={(e)=>{
-                                            set_search(e.target.value)
-                                        }}
-                                    />}
-                                    onChange={(e, values)=>{
-                                        set_search(values)
-                                    }}/>
-                            </Tooltip>
-                            <Tooltip 
-                                title="Limpar filtros">
-                                <IconButton 
+                            <div
+                                style= {{
+                                    position: "relative",
+                                    margin: "auto",
+                                    float: "top",
+                                    width: "100%",
+                                }}>
+                                <Typography 
+                                    variant="h5" 
                                     style={{ 
+                                        top: "5px",
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        margin:"auto",
                                         position: "relative",
-                                        borderRadius: "5px",
-                                        float: "left",
-                                        background: 'rgba(0, 0, 0, 0.26)',
-                                        left: "-25%"
-                                    }}
-                                    onClick={()=> {
-                                        window.location.reload(false);
                                     }}>
-                                    <DeleteIcon 
+                                    {documents.length} Resultados
+                                </Typography>
+                            </div>
+                            <div
+                                style={{
+                                    margin: "auto",
+                                    position: "relative",
+                                    marginTop: "10px",
+                                    width: "100%",
+                                }}>
+                                <Tooltip 
+                                    title="Procurar por nome">
+                                    <Autocomplete
                                         style={{
-                                            color:"rgba(254,254,255,255)"
+                                            position: "relative",
+                                            margin: "auto",
+                                            float: "left",
+                                            marginLeft: "22.5%",
+                                            width: "45%",
+                                        }}
+                                        freeSolo
+                                        fullWidth
+                                        options={all_name}
+                                        size="small"
+                                        renderInput={(params) => 
+                                        <TextField 
+                                            style={{
+                                                width: "100%",
+                                            }}
+                                            {...params} 
+                                            label="Nome" 
+                                            variant="outlined" 
+                                            size="small"
+                                            onKeyPress={(ev) => {
+                                                if (ev.key === 'Enter') {
+                                                    get_document_by_name()
+                                                    ev.preventDefault();
+                                                }
+                                            }}
+                                            onChange={(e)=>{
+                                                set_search(e.target.value)
+                                            }}
+                                        />}
+                                        onChange={(e, values)=>{
+                                            set_search(values)
                                         }}/>
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
+                                </Tooltip>
+                                <Tooltip 
+                                    title="Limpar filtros">
+                                    <IconButton 
+                                        style={{ 
+                                            position: "relative",
+                                            float: "left",
+                                            borderRadius: "5px",
+                                            background: 'rgba(0, 0, 0, 0.26)',
+                                        }}
+                                        onClick={()=> {
+                                            window.location.reload(false);
+                                        }}>
+                                        <DeleteIcon 
+                                            style={{
+                                                color:"rgba(254,254,255,255)"
+                                            }}/>
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </div>
                         <div
                             style={{
                                 position: "relative",
                                 margin: "auto",
-                                marginTop: "20px",
+                                marginTop: "0px",
                                 width: "100%",
-                                height: "78%",
+                                height: "80%",
                                 overflow: "auto",}}>
                             {documents?.length>0 && documents.map((doc, index) => {
                                 let temp_type = get_type(doc[2])
@@ -1778,16 +1793,17 @@ export default function Default() {
                                         key={index} 
                                         style={{
                                             position: "relative",
-                                            margin: "auto",
+                                            marginTop: "15px",
                                             height: "50%", 
+                                            minHeight: "190px", 
                                             width: "33%", 
                                             float: "left",}}>
                                         <div
                                             style={{ 
                                                 margin:"auto",
                                                 position: "relative",
-                                                height: "90%",
-                                                minHeight: "220px", 
+                                                minHeight: "190px", 
+                                                height: "100%",
                                                 width: "90%",
                                                 borderRadius: "10px",
                                                 border: "3px solid grey",
@@ -1795,14 +1811,13 @@ export default function Default() {
                                             <Tooltip 
                                                 title="nome">
                                                 <Typography
-                                                    variant="h6" 
+                                                    variant="body1" 
                                                     component="h2" 
                                                     color="rgba(0, 0, 0, 0.9)"
                                                     style={{ 
                                                         position: "relative",
                                                         margin:"auto",
                                                         maxWidth: "90%",
-                                                        marginTop: "10px",
                                                     }}>
                                                     {doc[4]}
                                                 </Typography>
@@ -1810,7 +1825,7 @@ export default function Default() {
                                             <Tooltip 
                                                     title="Tipo de documento">
                                                 <Typography
-                                                    variant="body1" 
+                                                    variant="body2" 
                                                     component="h2" 
                                                     color="rgba(0, 0, 0, 0.5)"
                                                     style={{ 
@@ -1832,7 +1847,7 @@ export default function Default() {
                                                     style={{
                                                         position: "relative",
                                                         margin:"auto",
-                                                        marginTop: "10px",
+                                                        marginTop: "5px",
                                                     }}>
                                                         Visitar página
                                                 </Button>
@@ -1840,7 +1855,7 @@ export default function Default() {
                                             <Tooltip 
                                                     title="Contexto temporal">
                                                 <Typography
-                                                    variant="h6" 
+                                                    variant="body1" 
                                                     component="h2" 
                                                     color="rgba(0, 0, 0, 0.9)"
                                                     style={{ 

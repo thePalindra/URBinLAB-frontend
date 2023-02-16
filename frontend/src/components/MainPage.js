@@ -146,7 +146,7 @@ export default function Signup() {
                     }}>
                     <Button 
                         style = {{
-                            top: "20px",
+                            top: "10px",
                             zIndex: 400,    
                             height: "50px",
                             width: "200px",
@@ -162,7 +162,7 @@ export default function Signup() {
                     </Button>
                     <Button 
                         style = {{
-                            top: "20px",
+                            top: "10px",
                             zIndex: 400,  
                             height: "50px",
                             width: "200px",
@@ -193,7 +193,7 @@ export default function Signup() {
                     }}>
                     <Button 
                         style = {{
-                            top: "20px",    
+                            top: "10px",    
                             height: "50px",
                             width: "200px",
                             float:"left",
@@ -208,7 +208,7 @@ export default function Signup() {
                     </Button>
                     <Button 
                         style = {{
-                            top: "20px", 
+                            top: "10px", 
                             height: "50px",
                             width: "200px",
                             float:"left",
@@ -223,7 +223,7 @@ export default function Signup() {
                     </Button>
                     <Button 
                         style = {{
-                            top: "40px", 
+                            top: "20px", 
                             height: "50px",
                             width: "200px",
                             float:"left",
@@ -435,7 +435,7 @@ export default function Signup() {
                     height: "99%",
                 }} 
                 center={position} 
-                zoom={7} 
+                zoom={6} 
                 scrollWheelZoom={true} 
                 minZoom={4}>
                 <Button 
@@ -481,140 +481,131 @@ export default function Signup() {
                     position: "absolute",
                     margin: "auto",
                     float: "left",
-                    width: "30%",
-                    minWidth: "550px",
+                    width: "20%",
                     left: "10px",
                     top: "-10px",
                     marginTop: "20px",
                     textAlign: "center",
                     zIndex: 400}}>
-                <div
-                    style={{
-                        width: "66%",
+                <div 
+                    style={{   
+                        position: "relative",
+                        margin: "auto",
                         float: "left",
-                    }}>
-                    <div 
-                        style={{   
-                            position: "relative",
-                            margin: "auto",
-                            float: "left",
-                            width: "100%",
-                            background: "rgba(256, 256, 256, 0.6)",
-                            borderRadius: "5px",
-                            top: "-20px",
-                            marginTop: "20px",
-                            textAlign: "center",
-                            border: "1px solid grey",
-                            zIndex: 400, 
-                        }}>  
-                        <Typography 
-                            variant="h5" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.9)",
-                                margin:"auto",
-                                maxWidth: "70%",
-                                marginTop: "10px"
-                            }}>
-                            Pesquisar por contexto espacial
-                        </Typography>
-                        <Autocomplete
-                            disablePortal
-                            options={spatial_hierarchy_type}
-                            size="small"
-                            renderInput={(params) => <TextField 
-                                style={{
-                                    marginTop: "25px",
-                                    zIndex: 400,    
-                                    width: "70%"
-                                }} 
-                                {...params} 
-                                label="Tipo de contexto"/>}
-                            onChange={(e, values)=>{
-                                if (values) {
-                                    set_selected_spactial_hierarchy_type(values)
-                                    get_spatial_hierarchy(values)
-                                }
-                            }}/>
-                        <Autocomplete
-                            disablePortal
-                            options={spatial_hierarchy}
-                            size="small"
-                            renderInput={(params) => <TextField 
-                                style={{
-                                    marginTop: "2vh",
-                                    zIndex: 400,    
-                                    width: "70%"
-                                }} 
-                                {...params} 
-                                label="Nome"/>}
-                            onChange={(e, values)=>{
-                                if (values) {
-                                    set_selected_hierarchy(values)
-                                    get_spatial_level(values)
-                                }
-                            }}/>
-                        <Autocomplete
-                            disablePortal
-                            options={spatial_level}
-                            size="small"
-                            renderInput={(params) => <TextField 
-                                style={{
-                                    marginTop: "2vh",
-                                    zIndex: 400,    
-                                    width: "70%"
-                                }} 
-                                {...params} 
-                                label="Nível" 
-                                />}
-                            onChange={(e, values)=>{
-                                if (values) {
-                                    set_selected_level(values)
-                                    get_names_from_level(values)
-                                }
-                            }}/>
-                        <Autocomplete
-                            disablePortal
-                            options={all_spatial_names}
-                            size="small"
-                            renderInput={(params) => <TextField 
-                                style={{
-                                    marginTop: "2vh",
-                                    zIndex: 400,    
-                                    width: "70%"
-                                }} 
-                                {...params} 
-                                label={selected_level.charAt(0).toUpperCase() + selected_level.slice(1)}
-                                />
+                        width: "100%",
+                        background: "rgba(256, 256, 256, 0.85)",
+                        borderRadius: "5px",
+                        top: "-20px",
+                        marginTop: "20px",
+                        textAlign: "center",
+                        zIndex: 400, 
+                    }}>  
+                    <Typography 
+                        variant="h5" 
+                        style={{ 
+                            color: "rgba(0, 0, 0, 0.9)",
+                            margin:"auto",
+                            maxWidth: "70%",
+                            marginTop: "10px"
+                        }}>
+                        Pesquisar por contexto espacial
+                    </Typography>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_hierarchy_type}
+                        size="small"
+                        renderInput={(params) => <TextField 
+                            style={{
+                                marginTop: "15px",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label="Tipo de contexto"/>}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_spactial_hierarchy_type(values)
+                                get_spatial_hierarchy(values)
                             }
-                            onChange={(e, values)=>{
-                                if (values)
-                                    set_spatial_query(values)
-                            }}/>
-                        <Button 
-                            style = {{
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_hierarchy}
+                        size="small"
+                        renderInput={(params) => <TextField 
+                            style={{
                                 marginTop: "2vh",
                                 zIndex: 400,    
-                                background: color
-                            }}
-                            variant="contained" 
-                            onClick={get_spaces}>
-                                Procurar local
-                        </Button>
-                        <br/>
-                        <br/>
-                    </div>
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label="Nome"/>}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_hierarchy(values)
+                                get_spatial_level(values)
+                            }
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_level}
+                        size="small"
+                        renderInput={(params) => <TextField 
+                            style={{
+                                marginTop: "2vh",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label="Nível" 
+                            />}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_level(values)
+                                get_names_from_level(values)
+                            }
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={all_spatial_names}
+                        size="small"
+                        renderInput={(params) => <TextField 
+                            style={{
+                                marginTop: "2vh",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label={selected_level.charAt(0).toUpperCase() + selected_level.slice(1)}
+                            />
+                        }
+                        onChange={(e, values)=>{
+                            if (values)
+                                set_spatial_query(values)
+                        }}/>
+                    <Button 
+                        style = {{
+                            marginTop: "2vh",
+                            zIndex: 400,    
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={get_spaces}>
+                            Procurar local
+                    </Button>
+                    <br/>
+                    <br/>
                 </div>
                 <div 
                     style={{   
                         position: "relative",
                         margin: "auto",
                         float: "left",
-                        background: "rgba(256, 256, 256, 0.6)",
+                        background: "rgba(256, 256, 256, 0.85)",
                         width: "100%",
+                        minWidth: "550px",
                         borderRadius: "5px",
-                        marginTop: "100px",
                         textAlign: "center",
-                        border: "1px solid grey",
                     }}>  
                     <Typography 
                         variant="h5" 

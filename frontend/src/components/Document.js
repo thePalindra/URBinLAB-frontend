@@ -1406,7 +1406,7 @@ export default function Default() {
                 get_statistics()
                 break
             default:
-                set_type_translation("Documento não especificado")
+                set_type_translation("Outro")
                 break
         }
     }
@@ -4325,7 +4325,7 @@ export default function Default() {
                     width:"100%",
                     float: "left"}}
                 center={position} 
-                zoom={7} 
+                zoom={6} 
                 scrollWheelZoom={true} 
                 minZoom={4}>
                 <TileLayer
@@ -4345,15 +4345,14 @@ export default function Default() {
                     height: "92%",
                     minWidth: "550px",
                     border: "1px solid grey",
-                    background: "rgba(256, 256, 256, 0.70)",
-                    height: "400px",
+                    background: "rgba(256, 256, 256, 0.85)",
+                    height: "380px",
                     zIndex: 400
                     }}>
                 <div
                     style={{ 
                         borderRadius: "5px",
                         position: "relative",
-                        height: "400px",
                         width:"50%",
                         float: "left"
                         }}>
@@ -4453,8 +4452,8 @@ export default function Default() {
                                 style={{
                                     position: "relative",
                                     width: "100%",
-                                    height: "30px",
-                                    marginTop: "20px"
+                                    float: "left",
+                                    marginTop: "15px"
                                 }}>
                                 <Typography 
                                     variant="body2" 
@@ -4478,9 +4477,9 @@ export default function Default() {
                             </div>
                             <div 
                                 style={{
+                                    float: "left",
                                     position: "relative",
                                     width: "100%",
-                                    height: "30px",
                                 }}>
                                 <Typography 
                                     variant="body2" 
@@ -4506,7 +4505,8 @@ export default function Default() {
                                 style={{
                                     position: "relative",
                                     width: "100%",
-                                    height: "30px",
+                                    float: "left",
+                                    marginTop: "5px"
                                 }}>
                                 <Typography 
                                     variant="body2" 
@@ -4532,7 +4532,8 @@ export default function Default() {
                                 style={{
                                     position: "relative",
                                     width: "100%",
-                                    height: "30px",
+                                    float: "left",
+                                    marginTop: "5px"
                                 }}>
                                 <Typography 
                                     variant="body2" 
@@ -4558,7 +4559,8 @@ export default function Default() {
                                 style={{
                                     position: "relative",
                                     width: "100%",
-                                    height: "30px",
+                                    float: "left",
+                                    marginTop: "5px"
                                 }}>
                                 <Typography 
                                     variant="body2" 
@@ -4584,6 +4586,8 @@ export default function Default() {
                                 style={{
                                     position: "relative",
                                     width: "100%",
+                                    float: "left",
+                                    marginTop: "5px",
                                     height: "150px",
                                 }}>
                                 <div 
@@ -4591,7 +4595,6 @@ export default function Default() {
                                         margin: "auto",
                                         width: "95%",
                                         height: "100%",
-                                        border: "1px solid grey",
                                         borderRadius: "5px",
                                         overflow: "auto"
                                     }}>
@@ -4637,13 +4640,12 @@ export default function Default() {
                 style={{ 
                     margin: "auto",
                     position: "absolute",
-                    height: "45%",
-                    minHeight: "400px",
-                    top: "500px",
-                    width:"40%",
+                    height: "220px",
+                    bottom: "10px",
+                    width:"60%",
                     borderRadius: "5px",
                     float: "left",
-                    background: "rgba(256, 256, 256, 0.70)",
+                    background: "rgba(256, 256, 256, 0.85)",
                     border: "1px solid grey",
                     zIndex: 400,
                     marginLeft:"10px"}}>
@@ -4682,84 +4684,85 @@ export default function Default() {
                 </div>
                 <div
                     style={{
-                        marginTop: "10px",
+                        position: "absolute",
                         overflow: "auto",
-                        height: "83%"
-                    }}>
-                            
-                        {files?.length && files.map((doc, index) => {
-                            let temp_size = (doc[3] / (1024*1024)).toFixed(2);
-                            return(
+                        width: "100%",
+                        marginTop: "-10px",
+                        height: "165px"
+                    }}>  
+                    {files?.length && files.map((doc, index) => {
+                        let temp_size = (doc[3] / (1024*1024)).toFixed(2);
+                        return(
+                            <div
+                                key={index}
+                                style={{ 
+                                    position: "relative",
+                                    height: "140px", 
+                                    width: "20%",
+                                    marginTop: "30px",
+                                    float:"left",
+                                }}>
                                 <div
-                                    key={index}
                                     style={{ 
+                                        margin:"auto",
                                         position: "relative",
-                                        height: "40%", 
-                                        width: "25%",
-                                        marginTop: "30px",
-                                        float:"left",
+                                        height: "95%",
+                                        width: "80%",
+                                        borderRadius: "10px",
+                                        border: "3px solid grey",
                                     }}>
-                                    <div
+                                    <Typography
+                                        variant="body2" 
+                                        component="h2" 
+                                        color="rgba(0, 0, 0, 0.9)"
                                         style={{ 
-                                            margin:"auto",
                                             position: "relative",
-                                            height: "95%", 
-                                            width: "80%",
-                                            borderRadius: "10px",
-                                            border: "3px solid grey",
+                                            margin:"auto",
+                                            maxWidth: "90%",
+                                            marginTop: "5px",
                                         }}>
-                                        <Typography
-                                            variant="body2" 
-                                            component="h2" 
-                                            color="rgba(0, 0, 0, 0.9)"
-                                            style={{ 
-                                                position: "relative",
-                                                margin:"auto",
-                                                maxWidth: "90%",
-                                                marginTop: "5px",
-                                            }}>
-                                            {doc[1]}
-                                        </Typography>
-                                        <Typography
-                                            variant="body2" 
-                                            component="h2" 
-                                            color="rgba(0, 0, 0, 0.5)"
-                                            style={{ 
-                                                position: "relative",
-                                                margin:"auto",
-                                                maxWidth: "85%",
-                                                marginTop: "5px",
-                                            }}>
-                                            {doc[2]}
-                                        </Typography>
-                                        <UploadFileIcon
-                                            color= "action"
-                                            fontSize="large"
-                                            variant="contained" 
-                                            style={{
-                                                position: "relative",
-                                                margin:"auto", 
-                                                marginTop: "5px",
-                                                height: "20px",
-                                                width: "20px",
-                                            }}/>
-                                        <Typography
-                                            variant="body1" 
-                                            component="h2" 
-                                            color="rgba(0, 0, 0, 0.9)"
-                                            style={{ 
-                                                position: "relative",
-                                                margin:"auto",
-                                                maxWidth: "85%",
-                                                marginTop: "5px",
-                                            }}>
-                                            {temp_size} MB
-                                        </Typography>
-                                    </div>
+                                        {doc[1]}
+                                    </Typography>
+                                    <Typography
+                                        variant="body2" 
+                                        component="h2" 
+                                        color="rgba(0, 0, 0, 0.5)"
+                                        style={{ 
+                                            position: "relative",
+                                            margin:"auto",
+                                            maxWidth: "85%",
+                                            marginTop: "5px",
+                                        }}>
+                                        {doc[2]}
+                                    </Typography>
+                                    <UploadFileIcon
+                                        color= "action"
+                                        fontSize="large"
+                                        variant="contained" 
+                                        style={{
+                                            position: "relative",
+                                            margin:"auto", 
+                                            marginTop: "5px",
+                                            height: "20px",
+                                            width: "20px",
+                                        }}/>
+                                    <Typography
+                                        variant="body1" 
+                                        component="h2" 
+                                        color="rgba(0, 0, 0, 0.9)"
+                                        style={{ 
+                                            position: "relative",
+                                            margin:"auto",
+                                            maxWidth: "85%",
+                                            marginTop: "0px",
+                                        }}>
+                                        {temp_size} MB
+                                    </Typography>
                                 </div>
-                            )
-                        })}
-                    </div>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
         </>
     );
