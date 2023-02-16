@@ -52,7 +52,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -64,7 +64,7 @@ export default function Default() {
         let form = new FormData()
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/get_all", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_all", {
             method: "POST",
             body: form
         })
@@ -84,7 +84,7 @@ export default function Default() {
         form.append("name", new_list)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/add", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add", {
             method: "POST",
             body: form
         })
@@ -99,7 +99,7 @@ export default function Default() {
         form.append("name", search)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/get_by_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_by_name", {
             method: "POST",
             body: form
         })
@@ -114,7 +114,7 @@ export default function Default() {
         form.append("name", temp_name)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/get_by_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_by_name", {
             method: "POST",
             body: form
         })
@@ -131,7 +131,7 @@ export default function Default() {
         form.append("token", JSON.parse(window.localStorage.getItem("token")))
         console.log(window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/update_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/update_name", {
             method: "POST",
             body: form
         })
@@ -144,7 +144,7 @@ export default function Default() {
     function delete_list() {
         let form = new FormData()
         form.append("id", temp_id[0])
-        fetch("http://localhost:8080/lists/delete", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/delete", {
             method: "POST",
             body: form
         })

@@ -112,7 +112,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -173,7 +173,7 @@ export default function Default() {
     function get_all_documents() {
         let form = new FormData()
         form.append("limit", 1*100)
-        fetch("http://localhost:8080/generic/all", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/all", {
             method: "POST",
             
             body: form
@@ -186,7 +186,7 @@ export default function Default() {
     }
 
     function get_all_tags() {
-        fetch("http://localhost:8080/keyword/group", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/group", {
             method: "POST",
         })
         .then(res=>res.json())
@@ -196,7 +196,7 @@ export default function Default() {
     }
 
     function group_providers() {
-        fetch("http://localhost:8080/generic/group_provider", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_provider", {
             method: "POST",
         })
         .then(res=>res.json())
@@ -206,7 +206,7 @@ export default function Default() {
     }
 
     function group_years() {
-        fetch("http://localhost:8080/generic/group_year", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_year", {
             method: "POST",
             
         })
@@ -217,7 +217,7 @@ export default function Default() {
     }
 
     function group_types() {
-        fetch("http://localhost:8080/generic/group_type", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_type", {
             method: "POST",
             
         })
@@ -228,7 +228,7 @@ export default function Default() {
     }
 
     function group_archivists() {
-        fetch("http://localhost:8080/generic/group_archivist", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_archivist", {
             method: "POST",
             
         })
@@ -241,7 +241,7 @@ export default function Default() {
     function get_document_by_name() {
         let form = new FormData()
         form.append("name", search)
-        fetch("http://localhost:8080/generic/name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/name", {
             method: "POST",
             
             body: form
@@ -260,7 +260,7 @@ export default function Default() {
 
         let form = new FormData()
         form.append("list", temp)
-        fetch("http://localhost:8080/generic/" + url, {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/" + url, {
             method: "POST",
             
             body: form
@@ -277,7 +277,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/get_space", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -304,7 +304,7 @@ export default function Default() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_circle", {
                     method: "POST",
                     
                     body: form
@@ -318,7 +318,7 @@ export default function Default() {
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_marker", {
                     method: "POST",
                     
                     body: form
@@ -335,7 +335,7 @@ export default function Default() {
             default:
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
                     
                     body: form
@@ -385,7 +385,7 @@ export default function Default() {
         form.append("providers", providers_temp)
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
-        fetch("http://localhost:8080/generic/filter", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/filter", {
             method: "POST",
             
             body: form

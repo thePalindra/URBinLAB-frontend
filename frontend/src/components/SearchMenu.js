@@ -79,7 +79,7 @@ export default function Signup() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -126,7 +126,7 @@ export default function Signup() {
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://localhost:5050/es/search", {
+        const response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
             method: "POST",
             body: form
         })
@@ -147,7 +147,7 @@ export default function Signup() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://localhost:8080/generic/get_document_by_space_circle", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_circle", {
                     method: "POST",
                     
                     body: form
@@ -162,7 +162,7 @@ export default function Signup() {
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_marker", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_marker", {
                     method: "POST",
                     
                     body: form
@@ -176,7 +176,7 @@ export default function Signup() {
             default:
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_geometry", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_geometry", {
                     method: "POST",
                     
                     body: form
@@ -192,7 +192,7 @@ export default function Signup() {
     }
 
     function get_dictionary() {
-        fetch("http://localhost:5050/dictionary", {
+        fetch("http://urbingeo.fa.ulisboa.pt:5050/dictionary", {
                 method: "GET"
             })
             .then(res=>res.json())

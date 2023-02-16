@@ -138,7 +138,7 @@ export default function Default() {
         let form = new FormData();
         form.append("type", type)
         form.append("token", window.localStorage.getItem("token"))
-        let res = await fetch("http://localhost:8080/token/check", {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
             method: "POST",
             body: form
         })
@@ -199,7 +199,7 @@ export default function Default() {
         form.append("level", selected_level)
         form.append("hierarchy", selected_hierarchy)
 
-        fetch("http://localhost:8080/space/search_by_name", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/search_by_name", {
             method: "POST",
             
             body: form
@@ -215,7 +215,7 @@ export default function Default() {
             form = new FormData();
             form.append("list", JSON.parse(window.localStorage.getItem('results')))
             form.append("space", result[0][0])
-            fetch("http://localhost:8080/generic/get_by_space_id_list", {
+            fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_space_id_list", {
             method: "POST",
             
             body: form
@@ -232,7 +232,7 @@ export default function Default() {
     }
 
     function get_spatial_hierarchy_type() {
-        fetch("http://localhost:8080/space/get_hierarchy_type", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy_type", {
             method: "POST",
             
             body: []
@@ -246,7 +246,7 @@ export default function Default() {
     function get_spatial_hierarchy(value) {
         let form = new FormData()
         form.append("type", value)
-        fetch("http://localhost:8080/space/get_hierarchy", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
@@ -261,7 +261,7 @@ export default function Default() {
         let form = new FormData();
         form.append("hierarchy", hier)
 
-        fetch("http://localhost:8080/space/get_levels", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_levels", {
             method: "POST",
             
             body: form
@@ -277,7 +277,7 @@ export default function Default() {
         form.append("hierarchy", selected_hierarchy)
         form.append("level", level)
 
-        fetch("http://localhost:8080/space/get_names", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_names", {
             method: "POST",
             
             body: form
@@ -306,7 +306,7 @@ export default function Default() {
     async function get_all_documents() {
         let form = new FormData()
         form.append("list", JSON.parse(window.localStorage.getItem('results')))
-        const response = await fetch("http://localhost:8080/generic/from_list", {
+        const response = await fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/from_list", {
             method: "POST",
             
             body: form
@@ -327,7 +327,7 @@ export default function Default() {
         Atualizado para as tags refletirem sobre os resultados
     */
     function get_all_tags() {
-        fetch("http://localhost:8080/keyword/group", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/group", {
             method: "POST",
         })
         .then(res=>res.json())
@@ -338,7 +338,7 @@ export default function Default() {
     function group_providers(temp_doc) {
         let form = new FormData()
         form.append("list", get_all_ids(temp_doc))
-        fetch("http://localhost:8080/generic/group_provider_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_provider_list", {
             method: "POST",
             
             body: form
@@ -352,7 +352,7 @@ export default function Default() {
     function group_years(temp_doc) {
         let form = new FormData()
         form.append("list", get_all_ids(temp_doc))
-        fetch("http://localhost:8080/generic/group_year_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_year_list", {
             method: "POST",
             
             body: form
@@ -366,7 +366,7 @@ export default function Default() {
     function group_types(temp_doc) {
         let form = new FormData()
         form.append("list", get_all_ids(temp_doc))
-        fetch("http://localhost:8080/generic/group_type_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_type_list", {
             method: "POST",
             
             body: form
@@ -380,7 +380,7 @@ export default function Default() {
     function group_archivists(temp_doc) {
         let form = new FormData()
         form.append("list", get_all_ids(temp_doc))
-        fetch("http://localhost:8080/generic/group_archivist_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_archivist_list", {
             method: "POST",
             
             body: form
@@ -395,7 +395,7 @@ export default function Default() {
         let form = new FormData()
         form.append("list", get_all_ids())
         form.append("name", search)
-        fetch("http://localhost:8080/generic/get_by_name_in_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_name_in_list", {
             method: "POST",
             
             body: form
@@ -412,7 +412,7 @@ export default function Default() {
         let form = new FormData()
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/get_all", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/get_all", {
             method: "POST",
             body: form
         })
@@ -427,7 +427,7 @@ export default function Default() {
         form.append("name", new_list)
         form.append("token", window.localStorage.getItem("token"))
 
-        fetch("http://localhost:8080/lists/add", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add", {
             method: "POST",
             body: form
         })
@@ -445,7 +445,7 @@ export default function Default() {
             form.append("doc", selected)
             form.append("token", window.localStorage.getItem("token"))
 
-            fetch("http://localhost:8080/lists/add_to_fav", {
+            fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_fav", {
                 method: "POST",
                 body: form
             })
@@ -454,7 +454,7 @@ export default function Default() {
             let form = new FormData()
             form.append("doc", selected)
             form.append("list", list[i])
-            fetch("http://localhost:8080/lists/add_to_list", {
+            fetch("http://urbingeo.fa.ulisboa.pt:8080/lists/add_to_list", {
                 method: "POST",
                 body: form
             })
@@ -468,7 +468,7 @@ export default function Default() {
 
         let form = new FormData()
         form.append("list", temp)
-        fetch("http://localhost:8080/generic/" + url, {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/" + url, {
             method: "POST",
             
             body: form
@@ -485,7 +485,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://localhost:8080/generic/get_space", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
             method: "POST",
             
             body: form
@@ -506,7 +506,7 @@ export default function Default() {
         let form = new FormData();
         form.append("space", space)
 
-        fetch("http://localhost:8080/generic/get_by_space_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_space_id", {
             method: "POST",
             
             body: form
@@ -529,7 +529,7 @@ export default function Default() {
                 form.append("lat", lat)
                 form.append("size", size)
 
-                fetch("http://localhost:8080/generic/get_document_by_space_circle_list", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_circle_list", {
                     method: "POST",
                     
                     body: form
@@ -546,7 +546,7 @@ export default function Default() {
             case "marker":
                 form.append("space", space);
                 
-                fetch("http://localhost:8080/generic/get_document_by_space_marker_list", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_marker_list", {
                     method: "POST",
                     
                     body: form
@@ -563,7 +563,7 @@ export default function Default() {
             default:
                 form.append("space", space);
                 console.log(space)
-                fetch("http://localhost:8080/generic/get_document_by_space_geometry_list", {
+                fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_document_by_space_geometry_list", {
                     method: "POST",
                     
                     body: form
@@ -626,7 +626,7 @@ export default function Default() {
         form.append("archivers", archivers_temp)
         form.append("types", types_temp)
         form.append("list", temp)
-        fetch("http://localhost:8080/generic/filter_list", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/filter_list", {
             method: "POST",
             
             body: form
