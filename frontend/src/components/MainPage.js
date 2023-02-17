@@ -142,12 +142,10 @@ export default function Signup() {
                         margintop: "400px",
                         marginTop: "20px",
                         textAlign: "center",
-                        zIndex: 400, 
                     }}>
                     <Button 
                         style = {{
-                            top: "10px",
-                            zIndex: 400,    
+                            top: "10px",   
                             height: "50px",
                             width: "200px",
                             float:"left",
@@ -163,7 +161,6 @@ export default function Signup() {
                     <Button 
                         style = {{
                             top: "10px",
-                            zIndex: 400,  
                             height: "50px",
                             width: "200px",
                             float:"left",

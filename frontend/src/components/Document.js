@@ -4370,7 +4370,7 @@ export default function Default() {
                                 marginTop: "10px"
                             }}>
                             <Typography 
-                                variant="h4" 
+                                variant="h5" 
                                 style={{ 
                                     color: "rgba(0, 0, 0, 0.9)",
                                     margin:"auto",
