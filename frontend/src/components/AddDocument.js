@@ -779,12 +779,12 @@ export default function Default() {
                 if (index > 0) return;
                 const layer = drawnItems[layerid];
                 editable_FG.removeLayer(layer);
-            });
+            }); 
         }
         let form = new FormData();
         form.append("file", selected_file)
         
-        for (const temp of files) {
+        for (let temp of files) {
             if (selected_file!==temp)
                 form.append('aux', temp);
         }
@@ -1481,7 +1481,7 @@ export default function Default() {
                         boxShadow: 24,
                         borderRadius: "10px",
                         textAlign: "center",
-                        height: "40vh",
+                        height: "30vh",
                     }}>
                     <Box>
                         <Typography 
@@ -1527,6 +1527,7 @@ export default function Default() {
                                 auto_space2(values, file_type, files)
                             }}/>
                     </Box>
+                    {/*
                     <Box 
                         style={{
                             marginTop: "10vh"
@@ -1560,7 +1561,7 @@ export default function Default() {
                             }}>
                             Selecionar ficheiro automáticamente
                         </Button>
-                    </Box>
+                    </Box>*/}
                 </div>
             </Modal>
             <Modal
@@ -3701,31 +3702,6 @@ export default function Default() {
                                             arr.push(e.target.files[i])
                                     }
                                     set_files(arr)
-
-                                    let selected_file = ""
-                                    let file_type = ""
-                                    loop:
-                                    for (let i = 0; i<arr.length; i++) {
-                                        let temp = arr[i].name.split(".")
-                                        switch(temp[temp.length-1]) {
-                                            case "shp":
-                                                selected_file = arr[i]
-                                                file_type = "vector"
-                                                break loop
-                                            case "tif":
-                                                selected_file = arr[i]
-                                                file_type = "raster"
-                                                break
-                                            case "jpg":
-                                                selected_file = arr[i]
-                                                file_type = "raster"
-                                                break
-                                            default:
-                                                break
-                                        }
-                                    }
-                                    if (selected_file)
-                                        auto_space(selected_file, file_type, arr)
                                 }}/>
                         </Button>
                     </Box>
