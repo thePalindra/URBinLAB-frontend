@@ -818,19 +818,20 @@ export default function Default() {
                 let parse = require('wellknown');
                 setWKT(parse(polygonAux(resultBox.origin, resultBox.limit)))
                     
-                let resultVector = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/vector", {
+                /*let resultVector = await fetch("http://urbingeo.fa.ulisboa.pt:5050/transform/vector", {
                     method: "POST",
                     body: form
                 })
 
-                resultVector = await resultVector.json();
+                resultVector = await resultVector.json();*/
 
                 set_new_space(
-                    <GeoJSON data={resultVector}>
+                    <GeoJSON data={parse(polygonAux(resultBox.origin, resultBox.limit))}>
                     </GeoJSON>
                 )
                 set_modal6(false)
-            } set_modal8(true)
+            } else 
+            set_modal8(true)
         }
         set_modal7(false)
     }
