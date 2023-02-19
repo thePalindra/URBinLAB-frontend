@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip';
 import Autocomplete from '@mui/material/Autocomplete';
-import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
 
@@ -42,7 +42,6 @@ function polygon(e) {
 
 export default function Signup() {
     let navigate = useNavigate()
-    const position = [39.7, -10];
     const color_list = [
         "rgba(228,38,76,255)", 
         "rgba(121,183,46,255)", 
@@ -51,6 +50,8 @@ export default function Signup() {
     ]
 
     const [editable_FG, set_editable_FG] = React.useState(null);
+    const [position, set_position]=React.useState([39.7, -14])
+    const [zoom, set_zoom]=React.useState(7)
 
     const [spatial_list, set_spatial_list]=React.useState(<></>);
     const [search, set_search]=React.useState(true);
@@ -241,6 +242,12 @@ export default function Signup() {
             )
     }
 
+    function ChangeView({ center, zoom }) {
+        const map = useMap();
+        map.setView(center, zoom);
+        return null;
+    }
+
     function get_color() {
         let res = Math.floor(Math.random() * color_list.length)
         if (color_list[res] === color)
@@ -365,6 +372,17 @@ export default function Signup() {
         })
     }
 
+    function zoom_setter(temp_area) {
+        if (temp_area < 20000000) 
+            return [10, 0.5]
+        else if (temp_area < 200000000) 
+            return [9, 1.5]
+        else if (temp_area < 2000000000) 
+            return [8, 3]
+        else 
+            return [7, 5.5]
+    }
+
     const get_spaces =()=> {
         const drawnItems = editable_FG._layers;
         if (Object.keys(drawnItems).length > 0) {
@@ -387,6 +405,13 @@ export default function Signup() {
         })
         .then(res=>res.json())
         .then(result=>{
+            let temp_zoom = zoom_setter(result[0][4])
+            
+            let temp_pos = result[0][3].replace('POINT(', '').replace(')', '').split(" ").reverse()
+            temp_pos[1] = temp_pos[1] - temp_zoom[1]
+            set_position(temp_pos)
+            set_zoom(temp_zoom[0])
+
             let parse = require('wellknown');
             set_space(result[0][0])
                 
@@ -432,9 +457,10 @@ export default function Signup() {
                     height: "99%",
                 }} 
                 center={position} 
-                zoom={6} 
+                zoom={zoom} 
                 scrollWheelZoom={true} 
-                minZoom={4}>
+                minZoom={5}>
+                <ChangeView center={position} zoom={zoom} /> 
                 <Button 
                     variant="contained" 
                     disabled= {search}

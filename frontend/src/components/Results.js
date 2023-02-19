@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Container, Link } from '@mui/material';
-import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import Autocomplete from '@mui/material/Autocomplete';
 import Checkbox from '@mui/material/Checkbox';
@@ -71,8 +71,9 @@ function polygon(e) {
 
 export default function Default() {
     let navigate = useNavigate()
-    const position = [39.7, -10.5];
     const color_list = ["rgba(228,38,76,255)", "rgba(121,183,46,255)", "rgba(247,166,20,255)", "rgba(3,137,173,255)"]
+    const [position, set_position]=React.useState([39.7, -14])
+    const [zoom, set_zoom]=React.useState(7)
     const [spatial_list, set_spatial_list]=React.useState(<></>);
     const [editable_fg, set_editable_fg]=React.useState(null);
     const [tags, set_tags]=React.useState([]);
@@ -206,6 +207,14 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            console.log(result)
+
+            let temp_zoom = zoom_setter(result[0][4])
+            
+            let temp_pos = result[0][3].replace('POINT(', '').replace(')', '').split(" ").reverse()
+            temp_pos[1] = temp_pos[1] - temp_zoom[1]
+            set_position(temp_pos)
+            set_zoom(temp_zoom[0])
             let parse = require('wellknown');
             set_spatial_list(result.map(doc => (
                 <GeoJSON key={doc[0]} data={parse(doc[1])}>
@@ -229,6 +238,12 @@ export default function Default() {
                 group_types(result)
             })
         })
+    }
+
+    function ChangeView({ center, zoom }) {
+        const map = useMap();
+        map.setView(center, zoom);
+        return null;
     }
 
     function get_spatial_hierarchy_type() {
@@ -480,6 +495,17 @@ export default function Default() {
         });
     }
 
+    function zoom_setter(temp_area) {
+        if (temp_area < 20000000) 
+            return [10, 0.5]
+        else if (temp_area < 200000000) 
+            return [9, 1.5]
+        else if (temp_area < 2000000000) 
+            return [8, 3]
+        else 
+            return [7, 5.5]
+    }
+
     function get_space_from_document(id) {
         set_spatial_list(<></>)
         let form = new FormData();
@@ -492,6 +518,16 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            if (result.length == 0)
+                return
+
+            let temp_zoom = zoom_setter(result[0][3])
+            
+            let temp_pos = result[0][1].replace('POINT(', '').replace(')', '').split(" ").reverse()
+            temp_pos[1] = temp_pos[1] - temp_zoom[1]
+            console.log(temp_pos)
+            set_position(temp_pos)
+            set_zoom(temp_zoom[0])
             let parse = require('wellknown');
             set_spatial_list(
                 <>
@@ -1144,9 +1180,10 @@ export default function Default() {
                         height: "100%",
                     }} 
                     center={position} 
-                    zoom={6} 
+                    zoom={zoom} 
                     scrollWheelZoom={true} 
-                    minZoom={4}>
+                    minZoom={5}>
+                    <ChangeView center={position} zoom={zoom} /> 
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

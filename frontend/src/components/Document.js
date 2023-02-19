@@ -32,10 +32,12 @@ import Switch from '@mui/material/Switch';
 import RadioGroup from '@mui/material/RadioGroup';
 import Autocomplete from '@mui/material/Autocomplete';
 import JSZip from "jszip";
+import L from "leaflet"
 import { useNavigate, useParams } from "react-router-dom";
-import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
+
 
 let lat = 0
 let lng = 0
@@ -88,6 +90,7 @@ export default function Default() {
     let navigate = useNavigate()
     let { id } = useParams();
     const [position, set_position]=React.useState([39.7, -14])
+    const [zoom, set_zoom]=React.useState(7)
     const [space, set_space]=React.useState(<></>)
     const [tags, set_tags]=React.useState([]);
     const [document, set_document]=React.useState([])
@@ -158,7 +161,6 @@ export default function Default() {
         const start = async () => {
             let ignore = await check_token("A");
             if (ignore) {
-                
                 get_space()
                 get_document()
                 get_files()
@@ -180,6 +182,12 @@ export default function Default() {
         // store the featureGroup ref for future access to content
         set_editable_FG(reactFGref);
     };
+
+    function ChangeView({ center, zoom }) {
+        const map = useMap();
+        map.setView(center, zoom);
+        return null;
+    }
 
     const _created=e=> {
         set_new_space(<></>)
@@ -284,6 +292,17 @@ export default function Default() {
         })
     }
 
+    function zoom_setter(temp_area) {
+        if (temp_area < 20000000) 
+            return [10, 0.5]
+        else if (temp_area < 200000000) 
+            return [9, 1.5]
+        else if (temp_area < 2000000000) 
+            return [8, 3]
+        else 
+            return [7, 5.5]
+    }
+
     function get_space() {
         set_space(<></>)
         let form = new FormData();
@@ -299,8 +318,16 @@ export default function Default() {
             if (result.length == 0)
                 return
 
-            set_position(result[0][1].replace('POINT(', '').replace(')', '').split(" "))
+            let temp_zoom = zoom_setter(result[0][3])
+            
+            let temp_pos = result[0][1].replace('POINT(', '').replace(')', '').split(" ").reverse()
+            temp_pos[1] = temp_pos[1] - temp_zoom[1]
+            console.log(temp_pos)
+            set_position(temp_pos)
+            set_zoom(temp_zoom[0])
+            
             let parse = require('wellknown');
+            console.log(result)
             
             setWKT(result[0][2])
             set_space(
@@ -4325,9 +4352,10 @@ export default function Default() {
                     width:"100%",
                     float: "left"}}
                 center={position} 
-                zoom={6} 
+                zoom={zoom} 
                 scrollWheelZoom={true} 
-                minZoom={4}>
+                minZoom={5}>
+                <ChangeView center={position} zoom={zoom} /> 
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
