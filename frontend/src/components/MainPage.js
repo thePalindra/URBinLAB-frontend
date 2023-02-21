@@ -435,6 +435,7 @@ export default function Signup() {
         })
         .then(res=>res.json())
         .then(result=>{
+            console.log(result)
             window.localStorage.setItem('results', JSON.stringify(result));
             navigate(`/results`)
         })

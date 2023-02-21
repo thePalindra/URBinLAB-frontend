@@ -890,16 +890,17 @@ export default function Default() {
                     })
                     break;
                 case typeof "c":
-                    console.log("default")
-                    sform.append("lng", lng)
-                    sform.append("lat", lat)
-                    sform.append("size", size)
-                    sform.append("name", spatial_query)
-                    fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_circle", {
-                        method: "POST",
-                        
-                        body: sform
-                    })
+                    if (lng > 1 || lat > 1 || size > 1) {
+                        sform.append("lng", lng)
+                        sform.append("lat", lat)
+                        sform.append("size", size)
+                        sform.append("name", spatial_query)
+                        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/add_circle", {
+                            method: "POST",
+                            
+                            body: sform
+                        })
+                    }
                     break;
                 default:
                     console.log(wkt)
@@ -3823,31 +3824,6 @@ export default function Default() {
                                                     let arr = [...files]
                                                     arr.splice(index, 1)
                                                     set_files(arr)
-
-                                                    let selected_file = ""
-                                                    let file_type = ""
-                                                    loop:
-                                                    for (let i = 0; i<arr.length; i++) {
-                                                        let temp = arr[i].name.split(".")
-                                                        switch(temp[temp.length-1]) {
-                                                            case "shp":
-                                                                selected_file = arr[i]
-                                                                file_type = "vector"
-                                                                break loop
-                                                            case "tif":
-                                                                selected_file = arr[i]
-                                                                file_type = "raster"
-                                                                break
-                                                            case "jpg":
-                                                                selected_file = arr[i]
-                                                                file_type = "raster"
-                                                                break
-                                                            default:
-                                                                break
-                                                        }
-                                                    }
-                                                    if (selected_file)
-                                                        auto_space(selected_file, file_type, arr)
                                                 }}>
                                                 <DeleteIcon
                                                     style={{

@@ -1380,27 +1380,27 @@ export default function Default() {
                 set_type_translation("Ortofotomapa")
                 get_orto()
                 break
-            case "SATELLITE IMAGE":
+            case "SATELLITE IMAGES":
                 set_type_translation("Imagem satélite")
                 get_satellite()
                 break
-            case "CHOROGRAPHIC MAP":
+            case "CHOROGRAPHIC MAPS":
                 set_type_translation("Carta corográfica")
                 get_base_map()
                 break
-            case "TOPOGRAPHIC MAP":
+            case "TOPOGRAPHIC MAPS":
                 set_type_translation("Carta topográfica")
                 get_base_map()
                 break
-            case "GEOGRAPHIC MAP":
+            case "GEOGRAPHIC MAPS":
                 set_type_translation("Carta geográfica")
                 get_base_map()
                 break
-            case "TOPOGRAPHIC PLAN":
+            case "TOPOGRAPHIC PLANS":
                 set_type_translation("Plano topográfico")
                 get_base_map()
                 break
-            case "THEMATIC MAP":
+            case "THEMATIC MAPS":
                 set_type_translation("Carta temática")
                 get_thematic_map()
                 break

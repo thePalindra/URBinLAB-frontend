@@ -689,22 +689,22 @@ export default function Default() {
             case "ORTOS":
                 return "Ortofotomapa"
                 break
-            case "SATELLITE IMAGE":
+            case "SATELLITE IMAGES":
                 return "Imagem satélite"
                 break
-            case "CHOROGRAPHIC MAP":
+            case "CHOROGRAPHIC MAPS":
                 return "Carta corográfica"
                 break
-            case "TOPOGRAPHIC MAP":
+            case "TOPOGRAPHIC MAPS":
                 return "Carta topográfica"
                 break
-            case "GEOGRAPHIC MAP":
+            case "GEOGRAPHIC MAPS":
                 return "Carta geográfica"
                 break
-            case "TOPOGRAPHIC PLAN":
+            case "TOPOGRAPHIC PLANS":
                 return "Plano topográfico"
                 break
-            case "THEMATIC MAP":
+            case "THEMATIC MAPS":
                 return "Carta temática"
                 break
             case "DRAWINGS":
