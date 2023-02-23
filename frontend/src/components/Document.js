@@ -665,30 +665,6 @@ export default function Default() {
                                 marginTop: "0.5vh",
                                 float: "left"
                             }}>
-                                Natureza:
-                        </Typography>
-                        <Typography 
-                            variant="h6" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.9)",
-                                float: "left",
-                                marginLeft: "1%"
-                            }}>
-                                {result[1]}
-                        </Typography>
-                    </div>
-                    <div 
-                        style={{
-                            marginTop: "8vh"
-                        }}>
-                        <Typography 
-                            variant="b3" 
-                            style={{ 
-                                color: "rgba(0, 0, 0, 0.7)",
-                                marginLeft: "2%",
-                                marginTop: "0.5vh",
-                                float: "left"
-                            }}>
                                 Resolução de imagem:
                         </Typography>
                         <Typography 
@@ -703,7 +679,7 @@ export default function Default() {
                     </div>
                     <div 
                         style={{
-                            marginTop: "12vh"
+                            marginTop: "8vh"
                         }}>
                         <Typography 
                             variant="b3" 

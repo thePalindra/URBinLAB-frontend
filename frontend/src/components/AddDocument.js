@@ -951,6 +951,9 @@ export default function Default() {
             }
             navigate(`/document/${docId}`)
         }
+        set_modal7(false)
+        set_modal5(false)
+        set_modal4(true)
     }
     
     return (
@@ -1521,7 +1524,7 @@ export default function Default() {
                                 let temp = values.name.split(".")[values.name.split(".").length-1]
                                 let file_type = ""
                                 
-                                if (temp==="jpg" || temp==="jpeg" || temp==="tif" || temp==="png") 
+                                if (temp==="jpg" || temp==="jpeg" || temp==="tif" || temp==="png" || temp==="asc") 
                                     file_type = "raster"
                                 else
                                     file_type = "vector"
