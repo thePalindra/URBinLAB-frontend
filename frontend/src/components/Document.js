@@ -31,13 +31,15 @@ import { Container } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import RadioGroup from '@mui/material/RadioGroup';
 import Autocomplete from '@mui/material/Autocomplete';
+import CircularProgress from '@mui/material/CircularProgress';
 import JSZip from "jszip";
 import L from "leaflet"
 import { useNavigate, useParams } from "react-router-dom";
 import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup, useMap } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet-draw/dist/leaflet.draw.css"
-
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 let lat = 0
 let lng = 0
@@ -105,6 +107,7 @@ export default function Default() {
     const [modal3, set_modal3]=React.useState(false);
     const [modal4, set_modal4]=React.useState(false);
     const [modal5, set_modal5]=React.useState(false);
+    const [modal6, set_modal6]=React.useState(false);
     const [editable_FG, set_editable_FG] = React.useState(null);
     const [wkt, setWKT]=React.useState("[]");
     const [new_space, set_new_space]=React.useState("[]");
@@ -818,7 +821,7 @@ export default function Default() {
         let form = new FormData();
         form.append("id", id)
 
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/lidar/get_by_id", {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/LiDAR/get_by_id", {
             method: "POST",
             
             body: form
@@ -1516,10 +1519,10 @@ export default function Default() {
     }
 
     async function download_files() {
+        set_modal6(true)
         let zip = new JSZip();
         let FileSaver = require('file-saver');
         for (let i = 0; i<files.length; i++) {
-            console.log(files[i][0])
             let form = new FormData();
             form.append("id", files[i][0])
 
@@ -1535,6 +1538,7 @@ export default function Default() {
         zip.generateAsync({type:"blob"}).then(function(content) {
             FileSaver.saveAs(content, document[4] + ".zip");
         });
+        set_modal6(false)
     }
 
     async function upload_new_files() {
@@ -4321,6 +4325,18 @@ export default function Default() {
                     </div>
                 </div>
             </Modal>
+            <Modal
+                keepMounted
+                open={modal6}>
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)'
+                }}>
+                    <CircularProgress/>
+                </div>
+            </Modal>
             <MapContainer 
                 style={{ 
                     position: "absolute",
@@ -4423,7 +4439,6 @@ export default function Default() {
                         <div 
                             style={{
                                 height: "100%",
-                                overflow: "auto",
 
                             }}>{/*
                             <div 
@@ -4594,7 +4609,16 @@ export default function Default() {
                                     marginTop: "5px",
                                     height: "150px",
                                 }}>
-                                <div 
+                                <Typography 
+                                    variant="body1" 
+                                    style={{ 
+                                        color: "rgba(0, 0, 0, 0.7)",
+                                        marginLeft: "10px",
+                                        float: "left"
+                                    }}>
+                                        Descrição:
+                                </Typography>
+                                <PerfectScrollbar
                                     style={{
                                         margin: "auto",
                                         width: "95%",
@@ -4602,15 +4626,6 @@ export default function Default() {
                                         borderRadius: "5px",
                                         overflow: "auto"
                                     }}>
-                                    <Typography 
-                                        variant="body1" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.7)",
-                                            marginLeft: "10px",
-                                            float: "left"
-                                        }}>
-                                            Descrição:
-                                    </Typography>
                                     <Typography 
                                         variant="body2" 
                                         style={{ 
@@ -4624,7 +4639,7 @@ export default function Default() {
                                         }}>
                                             {document[5]} 
                                     </Typography>
-                                </div>
+                                </PerfectScrollbar>
                             </div>
                         </div>
                     </div>

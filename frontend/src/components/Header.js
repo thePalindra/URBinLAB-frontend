@@ -175,9 +175,9 @@ export default function Default() {
                             }}
                             onChange={(e)=>{
                                 setSearch(e.target.value)
-                                if (e.target.value.length > 0)
+                                if (e.target.value.length ==1)
                                     get_dictionary()
-                                else
+                                else if (e.target.value == 0)
                                     set_dictionary([])
                             }}
                         />}

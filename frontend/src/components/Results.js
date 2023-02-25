@@ -37,7 +37,8 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-
+import 'react-perfect-scrollbar/dist/css/styles.css';
+import PerfectScrollbar from 'react-perfect-scrollbar'
 
 let lat = 0
 let lng = 0
@@ -98,6 +99,7 @@ export default function Default() {
     const [list, set_list]=React.useState([])
     const [selected, set_selected]=React.useState(0)
     const [all_lists, set_all_lists]=React.useState([])
+    const [max_list, set_max_list]=React.useState(100)
 
     const [selected_hierarchy, set_selected_hierarchy]=React.useState("");
     const [selected_level, set_selected_level]=React.useState("");
@@ -162,15 +164,23 @@ export default function Default() {
         switch(e.layerType) {
             case "circle":
                 set_space(circle(e))
+                let radius = e.layer._mRadius
+                let center = e.layer._latlng
+                let temp = zoom_setter(radius*radius*3.1415)
+                set_zoom(temp[0])
+                set_position([center.lat, center.lng - temp[1]])
                 break;
             case "rectangle":
                 set_space(polygon(e))
+                let center2 = [(e.layer._latlngs[0][3].lat + e.layer._latlngs[0][1].lat)/2, (e.layer._latlngs[0][3].lng + e.layer._latlngs[0][1].lng)/2 - 1.5]
+                set_position(center2)
+                set_zoom(9)
                 break;
             case "marker":
                 set_space(point(e))
-                break;
-            case "polygon":
-                set_space(polygon(e))
+                let center3 = e.layer._latlng
+                set_position([center3.lat, center3.lng - 1.5])
+                set_zoom(9)
                 break;
             default:
                 break;
@@ -408,7 +418,7 @@ export default function Default() {
 
     function get_document_by_name() {
         let form = new FormData()
-        form.append("list", get_all_ids())
+        form.append("list", get_all_ids(documents))
         form.append("name", search)
         fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_name_in_list", {
             method: "POST",
@@ -417,7 +427,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log("by name")
+            console.log(result)
             set_documents(result)
             get_all_names(result)
         });
@@ -1281,24 +1291,21 @@ export default function Default() {
                             style={{
                                 width: "100%"
                             }}>
-                            <Tooltip 
-                                title="Filtros espaciais">
-                                <Button 
-                                    variant="filled" 
-                                    style={{ 
-                                        background: color,
-                                        marginTop: "25px"
-                                    }} 
-                                    onClick={()=> {
-                                        if (menu == 2)
-                                            set_menu(0)
-                                        else 
-                                            set_menu(2)
-                                    }}
-                                    startIcon={<TravelExploreIcon />}>
-                                    Procura espacial
-                                </Button>
-                            </Tooltip>
+                            <Button 
+                                variant="filled" 
+                                style={{ 
+                                    background: color,
+                                    marginTop: "25px"
+                                }} 
+                                onClick={()=> {
+                                    if (menu == 2)
+                                        set_menu(0)
+                                    else 
+                                        set_menu(2)
+                                }}
+                                startIcon={<TravelExploreIcon />}>
+                                Filtros espaciais
+                            </Button>
                         </div>
                     </div>   
                     {menu==1 &&
@@ -1327,21 +1334,25 @@ export default function Default() {
                                     top: "-20px",
                                     marginTop: "20px",
                                 }}>
-                                <div
+                                <Typography 
+                                    variant="h6" 
+                                    style={{ 
+                                        position: "relative",
+                                        height: "8%",
+                                        color: "rgba(0, 0, 0, 0.8)",
+                                        margin:"auto",
+                                        top:"2%",
+                                    }}>
+                                    Filtros (Beta)
+                                </Typography>
+                                <PerfectScrollbar
                                     style={{
+                                        position: "relative",
                                         width: "100%",
-                                        height: "100%",
+                                        height: "88%",
+                                        top:"4%",
                                         overflow: "auto"
                                     }}>
-                                    <Typography 
-                                        variant="h5" 
-                                        style={{ 
-                                            color: "rgba(0, 0, 0, 0.8)",
-                                            margin:"auto",
-                                            marginTop: "10px"
-                                        }}>
-                                        Filtros (Beta)
-                                    </Typography>
                                     <div 
                                         style={{
                                             position: "relative",   
@@ -1542,7 +1553,7 @@ export default function Default() {
                                             })}
                                         </FormGroup>
                                     </div>
-                                </div>
+                                </PerfectScrollbar>
                             </div>
                         </div>
                     }
@@ -1815,7 +1826,11 @@ export default function Default() {
                                 </Tooltip>
                             </div>
                         </div>
-                        <div
+                        <PerfectScrollbar
+                            onScroll={(e)=>{
+                                if (e.target.scrollHeight - e.target.scrollTop < e.target.scrollTop*0.33 && documents?.length > max_list)
+                                    set_max_list(max_list+100)
+                            }}
                             style={{
                                 position: "relative",
                                 margin: "auto",
@@ -1825,125 +1840,130 @@ export default function Default() {
                                 overflow: "auto",}}>
                             {documents?.length>0 && documents.map((doc, index) => {
                                 let temp_type = get_type(doc[2])
-                                return(
-                                    <div 
-                                        key={index} 
-                                        style={{
-                                            position: "relative",
-                                            marginTop: "15px",
-                                            height: "50%", 
-                                            minHeight: "190px", 
-                                            width: "33%", 
-                                            float: "left",}}>
-                                        <div
-                                            style={{ 
-                                                margin:"auto",
+                                if(index <= max_list)
+                                    return(
+                                        <div 
+                                            key={index} 
+                                            style={{
                                                 position: "relative",
+                                                marginTop: "15px",
+                                                height: "25%", 
                                                 minHeight: "190px", 
-                                                height: "100%",
-                                                width: "90%",
-                                                borderRadius: "10px",
-                                                border: "3px solid grey",
-                                            }}>
-                                            <Tooltip 
-                                                title="nome">
-                                                <Typography
-                                                    variant="body1" 
-                                                    component="h2" 
-                                                    color="rgba(0, 0, 0, 0.9)"
-                                                    style={{ 
-                                                        position: "relative",
-                                                        margin:"auto",
-                                                        maxWidth: "90%",
-                                                    }}>
-                                                    {doc[4]}
-                                                </Typography>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                    title="Tipo de documento">
-                                                <Typography
-                                                    variant="body2" 
-                                                    component="h2" 
-                                                    color="rgba(0, 0, 0, 0.5)"
-                                                    style={{ 
-                                                        position: "relative",
-                                                        margin:"auto",
-                                                        maxWidth: "85%",
-                                                        marginTop: "5px",
-                                                    }}>
-                                                    {temp_type}
-                                                </Typography>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                    title="Ir para a página do documento">
-                                                <Button 
-                                                    variant="contained" 
-                                                    onClick={()=>{
-                                                        navigate(`/document/${doc[0]}`)
-                                                    }}
-                                                    style={{
-                                                        position: "relative",
-                                                        margin:"auto",
-                                                        marginTop: "5px",
-                                                    }}>
-                                                        Visitar página
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                    title="Contexto temporal">
-                                                <Typography
-                                                    variant="body1" 
-                                                    component="h2" 
-                                                    color="rgba(0, 0, 0, 0.9)"
-                                                    style={{ 
-                                                        position: "relative",
-                                                        margin:"auto",
-                                                        maxWidth: "85%",
-                                                        marginTop: "10px",
-                                                    }}>
-                                                    {doc[5]}
-                                                </Typography>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                title="Adicionar a uma lista (Beta)">
-                                                <IconButton
-                                                    style={{ 
-                                                        background: color_list[3],
-                                                        position: "relative",
-                                                        margin: "auto",
-                                                        left:"-20px"
-                                                    }}
-                                                    onClick={()=>{
-                                                        set_selected(doc[0])
-                                                        set_modal2(true)
-                                                    }}>
-                                                    <AddIcon
+                                                width: "25%", 
+                                                float: "left",}}>
+                                            <div
+                                                style={{ 
+                                                    margin:"auto",
+                                                    position: "relative",
+                                                    minHeight: "190px", 
+                                                    height: "100%",
+                                                    width: "90%",
+                                                    borderRadius: "10px",
+                                                    border: "3px solid grey",
+                                                }}>
+                                                <Tooltip 
+                                                    title="nome">
+                                                    <Typography
+                                                        variant="body1" 
+                                                        component="h2" 
+                                                        color="rgba(0, 0, 0, 0.9)"
+                                                        style={{ 
+                                                            position: "relative",
+                                                            margin:"auto",
+                                                            maxWidth: "90%",
+                                                        }}>
+                                                        {doc[4]}
+                                                    </Typography>
+                                                </Tooltip>
+                                                <Tooltip 
+                                                        title="Tipo de documento">
+                                                    <Typography
+                                                        variant="body2" 
+                                                        component="h2" 
+                                                        color="rgba(0, 0, 0, 0.5)"
+                                                        style={{ 
+                                                            position: "relative",
+                                                            margin:"auto",
+                                                            maxWidth: "85%",
+                                                            marginTop: "5px",
+                                                        }}>
+                                                        {temp_type}
+                                                    </Typography>
+                                                </Tooltip>
+                                                <Tooltip 
+                                                        title="Ir para a página do documento">
+                                                    <Button 
+                                                        variant="contained" 
+                                                        onClick={()=>{
+                                                            navigate(`/document/${doc[0]}`)
+                                                        }}
                                                         style={{
-                                                            color:"rgba(254,254,255,255)"
-                                                        }}/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                title="Visualizar contexto espacial">
-                                                <IconButton 
-                                                    style={{ 
-                                                        background: color_list[0],
-                                                        left:"20px"
-                                                    }}
-                                                    onClick={()=>{
-                                                        get_space_from_document(doc[0])
-                                                    }}>
-                                                    <VisibilityIcon 
-                                                        style={{
-                                                            color:"rgba(254,254,255,255)"
-                                                        }}/>
-                                                </IconButton>
-                                            </Tooltip>
+                                                            position: "relative",
+                                                            margin:"auto",
+                                                            marginTop: "5px",
+                                                        }}>
+                                                            Visitar página
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip 
+                                                        title="Contexto temporal">
+                                                    <Typography
+                                                        variant="body1" 
+                                                        component="h2" 
+                                                        color="rgba(0, 0, 0, 0.9)"
+                                                        style={{ 
+                                                            position: "relative",
+                                                            margin:"auto",
+                                                            maxWidth: "85%",
+                                                            marginTop: "10px",
+                                                        }}>
+                                                        {doc[5]}
+                                                    </Typography>
+                                                </Tooltip>
+                                                <Tooltip 
+                                                    title="Adicionar a uma lista (Beta)">
+                                                    <IconButton
+                                                        style={{ 
+                                                            background: color_list[3],
+                                                            position: "relative",
+                                                            margin: "auto",
+                                                            left:"-20px"
+                                                        }}
+                                                        onClick={()=>{
+                                                            set_selected(doc[0])
+                                                            set_modal2(true)
+                                                        }}>
+                                                        <AddIcon
+                                                            style={{
+                                                                color:"rgba(254,254,255,255)"
+                                                            }}/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                                <Tooltip 
+                                                    title="Visualizar contexto espacial">
+                                                    <IconButton 
+                                                        style={{ 
+                                                            background: color_list[0],
+                                                            left:"20px"
+                                                        }}
+                                                        onClick={()=>{
+                                                            get_space_from_document(doc[0])
+                                                        }}>
+                                                        <VisibilityIcon 
+                                                            style={{
+                                                                color:"rgba(254,254,255,255)"
+                                                            }}/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
                                         </div>
-                                    </div>
-                                )
+                                    )
+                                else
+                                    return(
+                                        <></>
+                                    )
                             })}
-                        </div>
+                        </PerfectScrollbar>
                     </div>
                 </div>
             </div>

@@ -17,7 +17,6 @@ let size = 0
 
 function circle(e) {
     let result =  "c"
-    console.log(result)
     
     lng = e.layer._latlng.lng
     lat = e.layer._latlng.lat 
@@ -115,12 +114,23 @@ export default function Signup() {
         switch(e.layerType) {
             case "circle":
                 set_space(circle(e))
+                let radius = e.layer._mRadius
+                let center = e.layer._latlng
+                let temp = zoom_setter(radius*radius*3.1415)
+                set_zoom(temp[0])
+                set_position([center.lat, center.lng - temp[1]])
                 break;
             case "rectangle":
                 set_space(polygon(e))
+                let center2 = [(e.layer._latlngs[0][3].lat + e.layer._latlngs[0][1].lat)/2, (e.layer._latlngs[0][3].lng + e.layer._latlngs[0][1].lng)/2 - 1.5]
+                set_position(center2)
+                set_zoom(9)
                 break;
             case "marker":
                 set_space(point(e))
+                let center3 = e.layer._latlng
+                set_position([center3.lat, center3.lng - 1.5])
+                set_zoom(9)
                 break;
             default:
                 break;
