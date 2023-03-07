@@ -653,7 +653,7 @@ export default function Default() {
                                 float: "left",
                                 marginLeft: "1%"
                             }}>
-                                {result[0]}
+                                1:{result[0]}
                         </Typography>
                     </div>
                     <div 
@@ -917,7 +917,7 @@ export default function Default() {
                                 float: "left",
                                 marginLeft: "1%"
                             }}>
-                                {result[1]}
+                                1:{result[1]}
                         </Typography>
                     </div>
                 </>
@@ -1025,7 +1025,7 @@ export default function Default() {
                                 float: "left",
                                 marginLeft: "1%"
                             }}>
-                                {result[0]}
+                                1:{result[0]}
                         </Typography>
                     </div>
                     <div 
@@ -4407,8 +4407,8 @@ export default function Default() {
                                     }}
                                     onClick={()=> {
                                         
-                                        set_modal4(true)
-                                        /*getAllProviders()
+                                        /*set_modal4(true)
+                                        getAllProviders()
                                         getAllURLS()
                                         getAllDrawingsContext()
                                         getAllStatisticsThemes()

@@ -263,22 +263,19 @@ export default function Default() {
                         <>
                             <MenuItem 
                                 onClick={() => {
-                                    if(window.location.pathname=="/profile/lists")
-                                        window.location.reload(false);
-                                    else 
-                                        navigate(`/profile/lists`)
+                                    //navigate(`/profile/lists`)
                                 }}>
                                 Listas
                             </MenuItem>  
                             <MenuItem 
                                 onClick={() => { 
-                                    get_nav("Favoritos")
+                                    //get_nav("Favoritos")
                                 }}>
                                 Favoritos
                             </MenuItem>  
                             <MenuItem 
                                 onClick={() => {
-                                    get_nav("Histórico")
+                                    //get_nav("Histórico")
                                 }}>
                                 Histórico 
                             </MenuItem>  

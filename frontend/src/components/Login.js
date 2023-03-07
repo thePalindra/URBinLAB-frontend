@@ -23,26 +23,26 @@ export default function BasicTextFields() {
         start()
     },[]);
 
-    const login=(e)=> {
+   
+    const login= async (e)=> {
         window.localStorage.removeItem("token")
         e.preventDefault();
         let form = new FormData();
         form.append("name", name);
         form.append("password", password);
         
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/user/login", {
+        let temp = await fetch("http://urbingeo.fa.ulisboa.pt:8080/user/login", {
             method: "POST",
             
             body: form
         })
-        .then(res=>res.json())
-        .then(result=>{
-            const temp = JSON.stringify(result)
-            console.log(temp)
+
+        if (temp.ok) {
+            temp = await temp.json();
+            temp = JSON.stringify(temp)
             window.localStorage.setItem('token', temp);
             navigate(`/`)
-        });
-        
+        }
     };
 
     const register=(e)=> {

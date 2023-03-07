@@ -997,7 +997,7 @@ export default function Default() {
                                 <Checkbox
                                     checked={favorite}
                                     onClick={()=>{
-                                        set_favorite(!favorite)
+                                        //set_favorite(!favorite)
                                     }}/>
                         </Typography>
                     </div>
@@ -1034,15 +1034,15 @@ export default function Default() {
                                 label="Listas" 
                                 placeholder="Selecione as listas"
                                 onChange={(e)=> {
-                                    set_new_list(e.target.value)
+                                    //set_new_list(e.target.value)
                                 }}/>
                             )}
                             onChange={(e, values)=>{
-                                let ids = []
+                                /*let ids = []
                                 for (let i = 0; i<values.length; i++)
                                     ids.push(values[i][0])
 
-                                set_list(ids)
+                                set_list(ids)*/
                             }}
                         />
                         {/*<Tooltip
@@ -1075,9 +1075,9 @@ export default function Default() {
                                     width: "60px"
                                 }} 
                                 onClick={()=> {
-                                    add_to_lists()
+                                    /*add_to_lists()
                                     set_modal2(false)
-                                    set_favorite(false)
+                                    set_favorite(false)*/
                                 }}>
                                 <CheckIcon
                                     style={{
@@ -1345,7 +1345,7 @@ export default function Default() {
                                     }}>
                                     Filtros (Beta)
                                 </Typography>
-                                <PerfectScrollbar
+                                <div
                                     style={{
                                         position: "relative",
                                         width: "100%",
@@ -1553,7 +1553,7 @@ export default function Default() {
                                             })}
                                         </FormGroup>
                                     </div>
-                                </PerfectScrollbar>
+                                </div>
                             </div>
                         </div>
                     }
@@ -1826,7 +1826,7 @@ export default function Default() {
                                 </Tooltip>
                             </div>
                         </div>
-                        <PerfectScrollbar
+                        <div
                             onScroll={(e)=>{
                                 if (e.target.scrollHeight - e.target.scrollTop < e.target.scrollTop*0.33 && documents?.length > max_list)
                                     set_max_list(max_list+100)
@@ -1864,19 +1864,19 @@ export default function Default() {
                                                 <Tooltip 
                                                     title="nome">
                                                     <Typography
-                                                        variant="body1" 
+                                                        variant="body2" 
                                                         component="h2" 
                                                         color="rgba(0, 0, 0, 0.9)"
                                                         style={{ 
                                                             position: "relative",
                                                             margin:"auto",
                                                             maxWidth: "90%",
-                                                        }}>
+                                                        }}>                                                        
                                                         {doc[4]}
                                                     </Typography>
                                                 </Tooltip>
                                                 <Tooltip 
-                                                        title="Tipo de documento">
+                                                    title="Tipo de documento e ano">
                                                     <Typography
                                                         variant="body2" 
                                                         component="h2" 
@@ -1887,7 +1887,7 @@ export default function Default() {
                                                             maxWidth: "85%",
                                                             marginTop: "5px",
                                                         }}>
-                                                        {temp_type}
+                                                        {temp_type} - {doc[5]}
                                                     </Typography>
                                                 </Tooltip>
                                                 <Tooltip 
@@ -1906,32 +1906,18 @@ export default function Default() {
                                                     </Button>
                                                 </Tooltip>
                                                 <Tooltip 
-                                                        title="Contexto temporal">
-                                                    <Typography
-                                                        variant="body1" 
-                                                        component="h2" 
-                                                        color="rgba(0, 0, 0, 0.9)"
-                                                        style={{ 
-                                                            position: "relative",
-                                                            margin:"auto",
-                                                            maxWidth: "85%",
-                                                            marginTop: "10px",
-                                                        }}>
-                                                        {doc[5]}
-                                                    </Typography>
-                                                </Tooltip>
-                                                <Tooltip 
                                                     title="Adicionar a uma lista (Beta)">
                                                     <IconButton
                                                         style={{ 
                                                             background: color_list[3],
                                                             position: "relative",
                                                             margin: "auto",
+                                                            top: "15px",
                                                             left:"-20px"
                                                         }}
                                                         onClick={()=>{
                                                             set_selected(doc[0])
-                                                            set_modal2(true)
+                                                            //set_modal2(true)
                                                         }}>
                                                         <AddIcon
                                                             style={{
@@ -1943,6 +1929,7 @@ export default function Default() {
                                                     title="Visualizar contexto espacial">
                                                     <IconButton 
                                                         style={{ 
+                                                            top: "15px",
                                                             background: color_list[0],
                                                             left:"20px"
                                                         }}
@@ -1963,7 +1950,7 @@ export default function Default() {
                                         <></>
                                     )
                             })}
-                        </PerfectScrollbar>
+                        </div>
                     </div>
                 </div>
             </div>

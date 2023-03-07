@@ -257,6 +257,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             set_tags(result)
         })
     }
@@ -268,6 +269,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             set_all_collections(result)
         })
     }
@@ -323,6 +325,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllPhotoImageResolution(result)
         })
     }
@@ -335,6 +338,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllAerialPhotoImageResolution(result)
         })
     }
@@ -347,6 +351,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllAerialPhotoScale(result)
         })
     }
@@ -359,6 +364,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllDrawingsContext(result)
         })
     }
@@ -371,6 +377,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllStatisticsThemes(result)
         })
     }
@@ -383,6 +390,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllSatelliteResolution(result)
         })
     }
@@ -395,6 +403,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllSatellite(result)
         })
     }
@@ -407,6 +416,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllLiDARResolution(result)
         })
     }
@@ -419,6 +429,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllMapImageResolution(result)
         })
     }
@@ -431,6 +442,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllMapScale(result)
         })
     }
@@ -443,6 +455,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllMapGeometryType(result)
         })
     }
@@ -455,6 +468,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllMapType(result)
         })
     }
@@ -467,6 +481,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllMapTheme(result)
         })
     }
@@ -479,6 +494,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllOrtosScale(result)
         })
     }
@@ -491,6 +507,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllOrtosResolution(result)
         })
     }
@@ -503,6 +520,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllReportsContext(result)
         })
     }
@@ -515,6 +533,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllReportsTheme(result)
         })
     }
@@ -527,6 +546,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllSensorsVariable(result)
         })
     }
@@ -539,6 +559,7 @@ export default function Default() {
         })
         .then(res=>res.json())
         .then(result=>{
+            result = result.filter(Boolean)
             setAllProviders(result)
         })
         
@@ -551,7 +572,8 @@ export default function Default() {
             body: []
         })
         .then(res=>res.json())
-        .then(result=>{
+        .then(result=>{ 
+            result = result.filter(Boolean)
             setAllURLs(result)
         })
     }
@@ -1087,13 +1109,17 @@ export default function Default() {
                                     <IconButton
                                         style={{
                                             background: "rgba(3,137,173,255)",
+                                            height: "50px",
+                                            width:  "50px"
                                         }}
                                         onClick={()=>{
                                             set_modal6(true)
                                         }}>
                                         <FindInPageIcon 
                                             style={{
-                                                color: "rgba(256, 256, 256, 0.8)"
+                                                color: "rgba(256, 256, 256, 0.8)",
+                                                height: "30px",
+                                                width:  "30px"
                                             }}/>
                                     </IconButton>
                                 </Tooltip>
@@ -3773,7 +3799,7 @@ export default function Default() {
                                                 position: "relative",
                                                 margin:"auto",
                                                 maxWidth: "90%",
-                                                marginTop: "10%",
+                                                marginTop: "5px",
                                             }}>
                                             {doc.name}
                                         </Typography>
@@ -3961,7 +3987,7 @@ export default function Default() {
                                 placeholder="Selecione keywords"
                                 onChange={(e)=> {
                                     console.log(e.target.value)
-                                    set_tag_input(e.target.value)
+                                    //set_tag_input(e.target.value)
                                 }}/>
                             )}
                             onChange={(e, values)=>{
@@ -3969,7 +3995,7 @@ export default function Default() {
                                 for (let i = 0; i<values.length; i++)
                                     ids.push(values[i][0])
 
-                                set_new_tags(ids)
+                                //set_new_tags(ids)
                             }}
                         />
                         <Tooltip
@@ -3980,7 +4006,7 @@ export default function Default() {
                                     left: "20px"
                                 }} 
                                 onClick={()=> {
-                                    add_tag()
+                                    //add_tag()
                                 }}>
                                 <AddIcon
                                     style={{

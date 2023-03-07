@@ -225,7 +225,7 @@ export default function Signup() {
                         }}
                         variant="contained" 
                         onClick={()=> {
-                            navigate(`/profile/lists`)
+                            //navigate(`/profile/lists`)
                         }}>
                             Listas (Beta)
                     </Button>
@@ -486,7 +486,7 @@ export default function Signup() {
                         zIndex: 400,    
                         top: "20px", 
                     }}>
-                        Procurar aqui
+                        Pesquisar aqui
                 </Button>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
