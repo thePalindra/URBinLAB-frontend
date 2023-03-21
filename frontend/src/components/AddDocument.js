@@ -1106,22 +1106,16 @@ export default function Default() {
                                 }}>
                                 <Tooltip
                                     title="Escolher ficheiro para o contexto espacial">
-                                    <IconButton
-                                        style={{
-                                            background: "rgba(3,137,173,255)",
-                                            height: "50px",
-                                            width:  "50px"
+                                    <Button 
+                                        style = {{
+                                            marginTop: "2vh"
                                         }}
-                                        onClick={()=>{
-                                            set_modal6(true)
-                                        }}>
-                                        <FindInPageIcon 
-                                            style={{
-                                                color: "rgba(256, 256, 256, 0.8)",
-                                                height: "30px",
-                                                width:  "30px"
-                                            }}/>
-                                    </IconButton>
+                                        variant="contained" 
+                                            onClick={()=>{
+                                                set_modal6(true)
+                                            }}>
+                                            Escolher Ficheiro
+                                    </Button>
                                 </Tooltip>
                             </Box>
                         </div>
