@@ -30,22 +30,6 @@ export default function Default() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
-    React.useEffect(() => {
-        const start = async () => {
-            let ignore = false;
-            if (!ignore) {
-                let token = await check_token("A")
-                set_logged_in(token)
-                if (!token) {
-                    window.localStorage.removeItem("token")
-                    navigate(`/login`)
-                }
-            }
-            return () => { ignore = true; }
-        }
-        start()
-    },[]);
-
     async function get_search_result() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
@@ -246,24 +230,6 @@ export default function Default() {
                         vertical: 'top',
                         horizontal: 'right',
                     }}>
-                    {!logged_in && 
-                        <>
-                            <MenuItem 
-                                divider 
-                                onClick={() => {
-                                    navigate(`/login`)
-                                }}>
-                                Entrar
-                            </MenuItem>
-                            <MenuItem 
-                                onClick={() => {
-                                    navigate(`/signup`)
-                                }}>
-                                Registar
-                            </MenuItem>     
-                        </> 
-                    }
-                    {logged_in &&
                         <>
                             <MenuItem 
                                 onClick={() => {
@@ -294,7 +260,6 @@ export default function Default() {
                                 Logout
                             </MenuItem>     
                         </>
-                    }
                 </Menu> 
             </ThemeProvider>  
         </div>

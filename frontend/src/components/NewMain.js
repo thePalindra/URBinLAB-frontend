@@ -43,6 +43,7 @@ function polygon(e) {
 
 
 export default function Default() {
+    let navigate = useNavigate()
 
     const [editable_FG, set_editable_FG] = React.useState(null);
     const [position, set_position]=React.useState([39.7, -10])
@@ -53,10 +54,48 @@ export default function Default() {
     const [space, set_space]=React.useState([]);
     const [default_space, set_default_space]=React.useState(false);
 
-    const [search, set_earch]=React.useState('');
+    const [search, set_search]=React.useState('');
     const [dictionary, set_dictionary]=React.useState([])
+    const [temp_dictionary, set_temp_dictionary]=React.useState([])
 
-    const [results, set_results]=React.useState([[1,2], [3,4]])
+    const [results, set_results]=React.useState([[1,2], [3,4], [], [], [],[]])
+
+    React.useEffect(() => {
+        const start = async () => {
+            let ignore = await check_token("A");
+            if (ignore) {
+                get_dictionary()
+            } else {
+                navigate(`/login`)
+            }
+            return () => { ignore = true; }
+        }
+        start()
+    },[]);
+
+    function get_dictionary() {
+        fetch("http://urbingeo.fa.ulisboa.pt:5050/dictionary", {
+            method: "GET"
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_dictionary(result)
+        });
+    }
+
+    async function check_token(type) {
+        let form = new FormData();
+        form.append("type", type)
+        form.append("token", window.localStorage.getItem("token"))
+
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/token/check", {
+            method: "POST",
+            body: form
+        })
+
+        console.log(res.json())
+        return res.ok
+    }
 
     const onFeatureGroupReady = reactFGref => {
         // store the featureGroup ref for future access to content
@@ -119,6 +158,25 @@ export default function Default() {
         return null;
     }
 
+    async function get_results() {
+        let form = new FormData()
+        form.append("query", search.toLowerCase().trim())
+        const response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
+            method: "POST",
+            body: form
+        })
+
+        const ar = await response.json();
+        console.log(ar)
+
+        
+        /*window.localStorage.setItem('results', JSON.stringify(ar));
+        if(window.location.pathname=="/results")
+            window.location.reload(false);
+        else 
+            navigate(`/results`)*/
+    }
+
     return(
         <>
             <div
@@ -140,7 +198,7 @@ export default function Default() {
                     }}>
                     <Autocomplete
                         freeSolo
-                        options={dictionary}
+                        options={temp_dictionary}
                         style={{
                             width: "40%",
                             borderRadius: "5px",
@@ -150,12 +208,23 @@ export default function Default() {
                             label="O quê?" 
                             onKeyPress={(ev) => {
                                 if (ev.key === 'Enter') {
+                                    get_results()
                                 }
                             }}
                             onChange={(e)=>{
+                                set_search(e.target.value)
+                                if (e.target.value.length > 0)
+                                    set_temp_dictionary(dictionary)
+                                else
+                                    set_temp_dictionary([])
                             }}
                         />}
                         onChange={(e, values)=>{
+                            set_search(values)
+                            if (values.length > 0)
+                                set_temp_dictionary(dictionary)
+                            else
+                                set_temp_dictionary([])
                         }}/>  
 
                     <Autocomplete
@@ -180,7 +249,9 @@ export default function Default() {
                         }}/>
                     <Button 
                         variant="contained" 
-                        disabled= {search}
+                        disabled= {()=> {
+                            return true
+                        }}
                         onClick= {() => {
                         }}
                         style={{
@@ -195,7 +266,7 @@ export default function Default() {
                         position: "absolute",
                         width: "100%",
                         height: "90%",
-                        marginTop: "10%",
+                        top: "10%",
                         justifyContent: "center"
                     }}>
                     <Typography 
@@ -206,13 +277,14 @@ export default function Default() {
                             margin:"auto",
                             height:"5%"
                         }}>
-                        # Resultados
+                        {results.length} Resultados
                     </Typography>
                     <div
                         style={{
                             position: "absolute",
                             height: "95%",
                             width: "100%",
+                            overflow: "auto"
                         }}>
                         {results?.length>0 && results.map((doc, index) => {
                             return (
@@ -222,15 +294,15 @@ export default function Default() {
                                     }}>
                                     <div
                                         style={{
-                                            width: "4%",
-                                            position: "fixed",
+                                            width: "8%",
+                                            position: "absolute",
                                             height: "140px",
                                             marginTop: "10px",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center"
                                         }}>
-                                        <div
+                                        {/*<div
                                             style={{
                                                 background: "rgba(0, 0, 0, 0.3)",
                                                 height: "60px",
@@ -245,13 +317,13 @@ export default function Default() {
                                                 style={{
                                                     color: "rgba(256, 256, 256, 0.8)",
                                                 }}/>
-                                        </div>
+                                        </div>*/}
                                     </div>
                                     <hr
                                         style={{
-                                            width: "46%",
-                                            left: "4%",
-                                            position: "fixed",
+                                            width: "98%",
+                                            left: "2%",
+                                            position: "absolute",
                                             marginTop: "155px",
                                         }}/>
                                 </div>
