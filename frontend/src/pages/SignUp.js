@@ -7,7 +7,6 @@ export default function SignUp() {
   return (
     <>
         <div className="bg">
-            <Header/>
             <br/>
             <br/>
             <br/>

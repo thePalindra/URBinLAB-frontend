@@ -41,6 +41,7 @@ export default function BasicTextFields() {
             temp = await temp.json();
             temp = JSON.stringify(temp)
             window.localStorage.setItem('token', temp);
+            console.log(temp)
             navigate(`/`)
         }
     };

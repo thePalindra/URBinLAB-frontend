@@ -168,7 +168,7 @@ export default function Default() {
                 get_document()
                 get_files()
                 get_spatial_hierarchy_type()
-                let ignore2 = await check_token("R");
+                let ignore2 = await check_token("A");
                     if (ignore2) 
                         add_to_historic()
                     

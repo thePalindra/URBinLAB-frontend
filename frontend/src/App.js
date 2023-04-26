@@ -9,6 +9,9 @@ import MainPage from "./pages/MainPage"
 import Results from "./pages/Results"
 import Document from "./pages/Document"
 import Lists from "./pages/ProfileLists"
+import Authorize from "./pages/Authorizing"
+import Deleted from "./pages/Deleted"
+import AllUsers from "./pages/AllUsers"
 
 /*function checkToken() {
   return window.localStorage.getItem('token');
@@ -22,6 +25,9 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<MainPage/>}/>
+            <Route path="/admin/authorize" element={<Authorize/>}/>
+            <Route path="/admin/deleted" element={<Deleted/>}/>
+            <Route path="/admin/all" element={<AllUsers/>}/>
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/login" element={<LogIn/>}/>
             <Route path="/new_document" element={<AddDocument/>}/>

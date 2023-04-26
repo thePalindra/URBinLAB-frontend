@@ -36,7 +36,7 @@ export default function Default() {
 
     React.useEffect(() => {
         const start = async () => {
-            let ignore = await check_token("R");
+            let ignore = await check_token("A");
             if (ignore) {
                 get_all_lists()
             } else {

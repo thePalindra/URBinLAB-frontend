@@ -7,12 +7,8 @@ function LogIn() {
   return (
     <>
         <div className="bg">
-            <Header/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
             <div style={{   margin: "auto",
+                            marginTop: "10%",
                             width: "50%",
                             border: "1px solid black",
                             background: "rgba(256, 256, 256, 0.92)",

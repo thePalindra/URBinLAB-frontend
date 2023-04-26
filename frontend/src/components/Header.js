@@ -34,10 +34,12 @@ export default function Default() {
         const start = async () => {
             let ignore = false;
             if (!ignore) {
-                let token = await check_token("R")
+                let token = await check_token("A")
                 set_logged_in(token)
-                if (!token)
+                if (!token) {
                     window.localStorage.removeItem("token")
+                    navigate(`/login`)
+                }
             }
             return () => { ignore = true; }
         }
@@ -82,6 +84,7 @@ export default function Default() {
             body: form
         })
 
+        console.log(res.json())
         return res.ok
     }
 
@@ -134,7 +137,7 @@ export default function Default() {
                                 width:"50%"}}/>
                     </IconButton> 
                 </Tooltip>  
-                <Box
+                {/*<Box
                     display="flex"
                     alignItems="center"
                     style={{
@@ -201,7 +204,7 @@ export default function Default() {
                             }}>
                             <SearchIcon/>
                         </IconButton>  
-                    </Tooltip>
+                    </Tooltip></Box>*/}
                     <Tooltip
                         title="Perfil">
                         <IconButton
@@ -215,12 +218,13 @@ export default function Default() {
                                 right: "1%",
                                 borderRadius: "5px",
                                 background: "rgba(0, 0, 0, 0.26)",
+                                top: "2%"
                             }}>
                             <AccountCircleIcon/>
                         </IconButton> 
                         
                     </Tooltip>
-                </Box>
+                        
                 <Menu 
                     dense
                     id="pbasic-menu"
