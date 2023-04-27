@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import { createFilterOptions } from '@mui/material/Autocomplete';
+
 
 import FolderIcon from '@mui/icons-material/Folder';
 
@@ -44,9 +46,11 @@ function polygon(e) {
 
 export default function Default() {
     let navigate = useNavigate()
+    const OPTIONS_LIMIT = 20;
+    const defaultFilterOptions = createFilterOptions();
 
     const [editable_FG, set_editable_FG] = React.useState(null);
-    const [position, set_position]=React.useState([39.7, -10])
+    const [position, set_position]=React.useState([39.7, -9.3])
     const [zoom, set_zoom]=React.useState(7)
 
     const [spatial_list, set_spatial_list]=React.useState(<></>);
@@ -58,13 +62,18 @@ export default function Default() {
     const [dictionary, set_dictionary]=React.useState([])
     const [temp_dictionary, set_temp_dictionary]=React.useState([])
 
-    const [results, set_results]=React.useState([[1,2], [3,4], [], [], [],[]])
+    const [all_spaces, set_all_spaces]=React.useState([])
+    const [temp_all_spaces, set_temp_all_spaces]=React.useState([])
+    const [space_name, set_space_name]=React.useState([]);
+
+    const [results, set_results]=React.useState([])
 
     React.useEffect(() => {
         const start = async () => {
             let ignore = await check_token("A");
             if (ignore) {
                 get_dictionary()
+                get_spaces()
             } else {
                 navigate(`/login`)
             }
@@ -83,6 +92,14 @@ export default function Default() {
         });
     }
 
+    async function get_spaces() {
+        let res = await fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_spaces", {
+            method: "GET"
+        })
+        res = await res.json();
+        set_all_spaces(res)
+    }
+        
     async function check_token(type) {
         let form = new FormData();
         form.append("type", type)
@@ -93,14 +110,17 @@ export default function Default() {
             body: form
         })
 
-        console.log(res.json())
         return res.ok
+    }
+
+    const filterOptions = (options, state) => {
+        return defaultFilterOptions(options, state).slice(0, OPTIONS_LIMIT);
     }
 
     const onFeatureGroupReady = reactFGref => {
         // store the featureGroup ref for future access to content
         set_editable_FG(reactFGref);
-    };
+    }
 
     const _created=e=> {
         set_spatial_list(<></>)
@@ -161,13 +181,23 @@ export default function Default() {
     async function get_results() {
         let form = new FormData()
         form.append("query", search.toLowerCase().trim())
-        const response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
+        let response = await fetch("http://urbingeo.fa.ulisboa.pt:5050/es/search", {
             method: "POST",
             body: form
         })
 
-        const ar = await response.json();
+        let ar = await response.json();
         console.log(ar)
+
+        form = new FormData()
+        form.append("list", ar)
+        response = await fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/from_list", {
+            method: "POST",
+            body: form
+        })
+        ar = await response.json();
+
+        set_results(ar)
 
         
         /*window.localStorage.setItem('results', JSON.stringify(ar));
@@ -184,7 +214,7 @@ export default function Default() {
                     position: "fixed",
                     background: "rgba(256, 256, 256, 0.85)",
                     float: "left",
-                    width: "50%",
+                    width: "55%",
                     height: "92%",
                 }}>
                 <div
@@ -199,10 +229,23 @@ export default function Default() {
                     <Autocomplete
                         freeSolo
                         options={temp_dictionary}
+                        filterOptions={filterOptions}
                         style={{
-                            width: "40%",
+                            width: "32%",
                             borderRadius: "5px",
                         }}
+                        onInputChange={(e, values, reason) => {
+                            if (reason === 'clear') {
+                                set_search('')
+                                set_temp_dictionary([])
+                            } else {
+                                set_search(values)
+                                if (values.length >= 2)
+                                    set_temp_dictionary(dictionary)
+                                else    
+                                    set_temp_dictionary([])
+                            }
+                          }}
                         renderInput={(params) => <TextField 
                             {...params} 
                             label="O quê?" 
@@ -211,43 +254,35 @@ export default function Default() {
                                     get_results()
                                 }
                             }}
-                            onChange={(e)=>{
-                                set_search(e.target.value)
-                                if (e.target.value.length > 0)
-                                    set_temp_dictionary(dictionary)
-                                else
-                                    set_temp_dictionary([])
-                            }}
-                        />}
-                        onChange={(e, values)=>{
-                            set_search(values)
-                            if (values.length > 0)
-                                set_temp_dictionary(dictionary)
-                            else
-                                set_temp_dictionary([])
-                        }}/>  
-
+                        />}/>  
                     <Autocomplete
                         disablePortal
-                        options={[]}
+                        options={temp_all_spaces.map((option)=>({id: option[0], label: option[1]}))}
                         style={{
-                            width: "40%",
+                            width: "32%",
                             borderRadius: "5px",
                             marginLeft: "10px"
+                        }}
+                        getOptionLabel={option => option.label}
+                        onInputChange={(e, values, reason) => {
+                            console.log(values.id)
+                            if (reason === 'clear') {
+                                set_space_name('')
+                                set_temp_all_spaces([])
+                            } else {
+                                set_space_name(values)
+                                if (values.length >= 2)
+                                    set_temp_all_spaces(all_spaces)
+                                else    
+                                    set_temp_all_spaces([])
+                            }
                         }}
                         renderInput={(params) => <TextField 
                             {...params} 
                             label="Onde?" 
-                            onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                }
-                            }}
-                            onChange={(e)=>{
-                            }}
-                        />}
-                        onChange={(e, values)=>{
-                        }}/>
+                        />}/>
                     <Button 
+                        size="large"
                         variant="contained" 
                         disabled= {()=> {
                             return true
@@ -259,6 +294,20 @@ export default function Default() {
                             marginLeft: "10px"  
                         }}>
                             Pesquisar 
+                    </Button>
+                    <Button 
+                        size="large"
+                        variant="contained" 
+                        disabled= {()=> {
+                            return true
+                        }}
+                        onClick= {() => {
+                        }}
+                        style={{
+                            zIndex: 400,  
+                            marginLeft: "10px"  
+                        }}>
+                            Limpar 
                     </Button>
                 </div>
                 <div
@@ -335,8 +384,8 @@ export default function Default() {
             <MapContainer 
                 style={{
                     position: 'fixed',
-                    marginLeft: "50%",
-                    width: "50%",
+                    marginLeft: "55%",
+                    width: "45%",
                     boxShadow: 24,
                     height: "92%",
                 }} 
