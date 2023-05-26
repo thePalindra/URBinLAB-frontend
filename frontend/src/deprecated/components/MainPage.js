@@ -2,37 +2,13 @@ import * as React from 'react';
 import { useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Container, Link } from '@mui/material';
-import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup } from 'react-leaflet'
-import { EditControl } from "react-leaflet-draw"
-import Autocomplete from '@mui/material/Autocomplete';
-import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import IconButton from '@mui/material/IconButton';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import "leaflet-draw/dist/leaflet.draw.css"
-import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
+import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip';
-import Modal from '@mui/material/Modal';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import FormGroup from '@mui/material/FormGroup';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
+import { MapContainer, TileLayer, GeoJSON, Popup, FeatureGroup, useMap } from 'react-leaflet'
+import { EditControl } from "react-leaflet-draw"
+import "leaflet-draw/dist/leaflet.draw.css"
 
 
 let lat = 0
@@ -41,7 +17,6 @@ let size = 0
 
 function circle(e) {
     let result =  "c"
-    console.log(result)
     
     lng = e.layer._latlng.lng
     lat = e.layer._latlng.lat 
@@ -51,7 +26,6 @@ function circle(e) {
 
 function point(e) {
     let result = ["POINT","(" + e.layer._latlng.lng, e.layer._latlng.lat + ")"].join(" ")
-    console.log(result)
     return result;
 }
 
@@ -65,43 +39,43 @@ function polygon(e) {
     return result;
 }
 
-export default function Default() {
-    let space = ""
+export default function Signup() {
     let navigate = useNavigate()
-    const position = [38, -17.7];
-    const color_list = ["rgba(228,38,76,255)", "rgba(121,183,46,255)", "rgba(247,166,20,255)", "rgba(3,137,173,255)"]
+    const color_list = [
+        "rgba(228,38,76,255)", 
+        "rgba(121,183,46,255)", 
+        "rgba(247,166,20,255)", 
+        "rgba(3,137,173,255)"
+    ]
+
+    const [editable_FG, set_editable_FG] = React.useState(null);
+    const [position, set_position]=React.useState([39.7, -14])
+    const [zoom, set_zoom]=React.useState(7)
+
     const [spatial_list, set_spatial_list]=React.useState(<></>);
-    const [editable_fg, set_editable_fg]=React.useState(null);
-    const [tags, set_tags]=React.useState([]);
-    const [documents, set_documents]=React.useState([]);
-    const [years, set_years]=React.useState("")
-    const [types, set_types]=React.useState("")
-    const [all_name, set_all_name]=React.useState([]);
-    const [search, set_search]=React.useState("")
-    const [archivists, set_archivists]=React.useState([])
-    const [selected_years, set_selected_years]=React.useState([])
-    const [selected_providers, set_selected_providers]=React.useState([])
-    const [selected_archivers, set_selected_archivers]=React.useState([])
-    const [selected_types, set_selected_types]=React.useState([])
-    const [providers, set_providers]=React.useState("")
-    const [modal1, set_modal1]=React.useState(false);
-    const [color, set_color]=React.useState("")
-    const [order, set_order]=React.useState("")
+    const [search, set_search]=React.useState(true);
+
+    const [selected_hierarchy, set_selected_hierarchy]=React.useState("");
+    const [selected_level, set_selected_level]=React.useState("");
+    const [spatial_hierarchy, set_spatial_hierarchy]=React.useState([]);
+    const [spatial_hierarchy_type, set_spatial_hierarchy_type]=React.useState([]);
+    const [selected_spatial_hierarchy_type, set_selected_spactial_hierarchy_type]=React.useState([]);
+    const [spatial_level, set_spatial_level]=React.useState([]);
+    const [spatial_query, set_spatial_query] =React.useState("");
+    const [all_spatial_names, set_all_spatial_names]=React.useState([]);
+    
+    const [layer_type, set_layer_type]=React.useState([]);
+    const [space, set_space]=React.useState([]);
+    const [default_space, set_default_space]=React.useState(false);
+    const [color, set_color]=React.useState(false);
+    
 
     React.useEffect(() => {
         const start = async () => {
             let ignore = await check_token("A");
             if (ignore) {
-                get_all_documents()
-                get_all_tags()
-                get_color()
-                group_providers()
-                group_years()
-                group_types()
-                group_archivists()
-            } else {
-                window.localStorage.removeItem("token")
-                navigate(`/login`)
+                    get_color()
+                    get_spatial_hierarchy_type()
             }
             return () => { ignore = true; }
         }
@@ -119,47 +93,169 @@ export default function Default() {
 
         return res.ok
     }
-    
+
+    const onFeatureGroupReady = reactFGref => {
+        // store the featureGroup ref for future access to content
+        set_editable_FG(reactFGref);
+    };
+
     const _created=e=> {
         set_spatial_list(<></>)
-        const drawnItems = editable_fg._layers;
+        set_default_space(false)
+        const drawnItems = editable_FG._layers;
         if (Object.keys(drawnItems).length > 1) {
             Object.keys(drawnItems).forEach((layerid, index) => {
                 if (index > 0) return;
                 const layer = drawnItems[layerid];
-                editable_fg.removeLayer(layer);
+                editable_FG.removeLayer(layer);
             });
         }
         let parse = require('wellknown');
         switch(e.layerType) {
             case "circle":
-                space = circle(e)
+                set_space(circle(e))
+                let radius = e.layer._mRadius
+                let center = e.layer._latlng
+                let temp = zoom_setter(radius*radius*3.1415)
+                set_zoom(temp[0])
+                set_position([center.lat, center.lng - temp[1]])
                 break;
             case "rectangle":
-                space = polygon(e)
+                set_space(polygon(e))
+                let center2 = [(e.layer._latlngs[0][3].lat + e.layer._latlngs[0][1].lat)/2, (e.layer._latlngs[0][3].lng + e.layer._latlngs[0][1].lng)/2 - 1.5]
+                set_position(center2)
+                set_zoom(9)
                 break;
             case "marker":
-                space = point(e)
-                break;
-            case "polygon":
-                space = polygon(e)
+                set_space(point(e))
+                let center3 = e.layer._latlng
+                set_position([center3.lat, center3.lng - 1.5])
+                set_zoom(9)
                 break;
             default:
                 break;
         }
-        get_document_by_space_geometry(e.layerType)
+        set_search(false)
+        set_layer_type(e.layerType)
     }
 
-    const onFeatureGroupReady = reactFGref => {
-        // store the featureGroup ref for future access to content
-        set_editable_fg(reactFGref);
-    };
+    const get_menu =()=>{
+        if (!window.localStorage.getItem("token"))
+            return (
+                <div
+                    style={{   
+                        position: "relative",
+                        margin: "auto",
+                        float: "left",
+                        width: "100%",
+                        height: "100px",
+                        borderRadius: "5px",
+                        margintop: "400px",
+                        marginTop: "20px",
+                        textAlign: "center",
+                    }}>
+                    <Button 
+                        style = {{
+                            top: "10px",   
+                            height: "50px",
+                            width: "200px",
+                            float:"left",
+                            left: "50px",
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={()=> {
+                            navigate(`/login`)
+                        }}>
+                            Login
+                    </Button>
+                    <Button 
+                        style = {{
+                            top: "10px",
+                            height: "50px",
+                            width: "200px",
+                            float:"left",
+                            left: "100px",
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={()=> {
+                            navigate(`/signup`)
+                        }}>
+                            Signup
+                    </Button>
+                </div>
+            )
+            return (
+                <div
+                    style={{   
+                        position: "relative",
+                        margin: "auto",
+                        float: "left",
+                        width: "100%",
+                        height: "180px",
+                        borderRadius: "5px",
+                        margintop: "400px",
+                        marginTop: "20px",
+                        textAlign: "center", 
+                    }}>
+                    <Button 
+                        style = {{
+                            top: "10px",    
+                            height: "50px",
+                            width: "200px",
+                            float:"left",
+                            left: "50px",
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={()=> {
+                            navigate(`/new_document`)
+                        }}>
+                            Adicionar documento
+                    </Button>
+                    <Button 
+                        style = {{
+                            top: "10px", 
+                            height: "50px",
+                            width: "200px",
+                            float:"left",
+                            left: "100px",
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={()=> {
+                            //navigate(`/profile/lists`)
+                        }}>
+                            Listas (Beta)
+                    </Button>
+                    <Button 
+                        style = {{
+                            top: "20px", 
+                            height: "50px",
+                            width: "200px",
+                            float:"left",
+                            left: "170px",
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={()=> {
+                            window.localStorage.removeItem("token")
+                            if(window.location.pathname=="/")
+                                window.location.reload(false);
+                            else 
+                                navigate(`/`)
+                        }}>
+                            Logout
+                    </Button>
+                </div>
+            )
+    }
 
-    function get_all_names(js) {
-        let temp = []
-        for (let i = 0; i<js.length; i++) 
-            temp.push(js[i][4])
-        set_all_name(Array.from(new Set(temp)).sort())
+    function ChangeView({ center, zoom }) {
+        const map = useMap();
+        map.setView(center, zoom);
+        return null;
     }
 
     function get_color() {
@@ -168,135 +264,13 @@ export default function Default() {
             get_color()
         else
             set_color(color_list[res])
+        console.log(color_list[res])
     }
 
-    function get_all_documents() {
-        let form = new FormData()
-        form.append("limit", 1*100)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/all", {
-            method: "POST",
-            
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_documents(result)
-            get_all_names(result)
-        });
-    }
-
-    function get_all_tags() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/keyword/group", {
-            method: "POST",
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            console.log(result)
-        });
-    }
-
-    function group_providers() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_provider", {
-            method: "POST",
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_providers(result)
-        });
-    }
-
-    function group_years() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_year", {
-            method: "POST",
-            
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_years(result)
-        });
-    }
-
-    function group_types() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_type", {
-            method: "POST",
-            
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_types(result)
-        });
-    }
-
-    function group_archivists() {
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/group_archivist", {
-            method: "POST",
-            
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_archivists(result)
-        });
-    }
-
-    function get_document_by_name() {
-        let form = new FormData()
-        form.append("name", search)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/name", {
-            method: "POST",
-            
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_documents(result)
-            get_all_names(result)
-        });
-    }
-
-    function get_order(url) {
-        let temp = []
-        for (let i = 0; i<documents.length; i++)
-            temp.push(documents[i][0])
-
-        let form = new FormData()
-        form.append("list", temp)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/" + url, {
-            method: "POST",
-            
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            set_documents(result)
-            console.log(result)
-        });
-    }
-
-    function get_space_from_document(id) {
-        set_spatial_list(<></>)
+    function get_document_by_space_geometry() {
         let form = new FormData();
-        form.append("id", id)
-
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_space", {
-            method: "POST",
-            
-            body: form
-        })
-        .then(res=>res.json())
-        .then(result=>{
-            let parse = require('wellknown');
-            set_spatial_list(
-                <>
-                    <GeoJSON key={1} data={parse(result[0][0])}>
-                    </GeoJSON>
-                </>
-            )
-        })
-    }
-
-    function get_document_by_space_geometry(layer_type) {
-        let form = new FormData();
-        form.append("page", 0);
+        console.log(layer_type)
+        console.log(space)
 
         switch(layer_type) {
             case "circle":
@@ -313,6 +287,7 @@ export default function Default() {
                 .then(result=>{
                     window.localStorage.setItem('results', JSON.stringify(result));
                     navigate(`/results`)
+
                 });
                 break;
             case "marker":
@@ -342,561 +317,344 @@ export default function Default() {
                 })
                 .then(res=>res.json())
                 .then(result=>{
-                    console.log(result)
                     window.localStorage.setItem('results', JSON.stringify(result));
                     navigate(`/results`)
+
                 });
                 break;
         }
     }
-    
-    function filter(years_temp, providers_temp, archivers_temp, types_temp) {
+
+    function get_spatial_hierarchy_type() {
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy_type", {
+            method: "POST",
+            
+            body: []
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_spatial_hierarchy_type(result)
+        })
+    }
+
+    function get_spatial_hierarchy(value) {
         let form = new FormData()
-
-        if (years_temp.length == 0) {
-            for (let i = 0; i<years.length; i++)
-                years_temp.push(years[i][0])
-            set_selected_years([])
-        } else
-            set_selected_years(years_temp)
-        
-        if (providers_temp.length == 0) {
-            for (let i = 0; i<providers.length; i++)
-                providers_temp.push(providers[i][0])
-            set_selected_providers([])
-        } else
-            set_selected_providers(providers_temp)
-
-        if (archivers_temp.length == 0) {
-            for (let i = 0; i<archivists.length; i++)
-                archivers_temp.push(archivists[i][1])
-            set_selected_archivers([])
-        } else
-            set_selected_archivers(archivers_temp)
-
-        if (types_temp.length == 0) {
-            for (let i = 0; i<types.length; i++)
-                types_temp.push(types[i][0])
-            set_selected_types([])
-        } else
-            set_selected_types(types_temp)
-
-        form.append("years", years_temp)
-        form.append("providers", providers_temp)
-        form.append("archivers", archivers_temp)
-        form.append("types", types_temp)
-        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/filter", {
+        form.append("type", value)
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_hierarchy", {
             method: "POST",
             
             body: form
         })
         .then(res=>res.json())
         .then(result=>{
-            console.log(result);
-            set_documents(result)
-            get_all_names(result)
-        });
+            set_spatial_hierarchy(result)
+        })
+    }
+
+    function get_spatial_level(hier) {
+        let form = new FormData();
+        form.append("hierarchy", hier)
+
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_levels", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_spatial_level(result)
+        })
+    }
+
+    function get_names_from_level(level) {
+        let form = new FormData();
+        form.append("hierarchy", selected_hierarchy)
+        form.append("level", level)
+
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/get_names", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            set_all_spatial_names(result)
+        })
+    }
+
+    function zoom_setter(temp_area) {
+        if (temp_area < 20000000) 
+            return [10, 0.5]
+        else if (temp_area < 200000000) 
+            return [9, 1.5]
+        else if (temp_area < 2000000000) 
+            return [8, 3]
+        else 
+            return [7, 5.5]
+    }
+
+    const get_spaces =()=> {
+        const drawnItems = editable_FG._layers;
+        if (Object.keys(drawnItems).length > 0) {
+            Object.keys(drawnItems).forEach((layerid, index) => {
+                if (index > 0) return;
+                const layer = drawnItems[layerid];
+                editable_FG.removeLayer(layer);
+            });
+        }
+
+        let form = new FormData();
+        form.append("name", spatial_query)
+        form.append("level", selected_level)
+        form.append("hierarchy", selected_hierarchy)
+
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/space/search_by_name", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            let temp_zoom = zoom_setter(result[0][4])
+            
+            let temp_pos = result[0][3].replace('POINT(', '').replace(')', '').split(" ").reverse()
+            temp_pos[1] = temp_pos[1] - temp_zoom[1]
+            set_position(temp_pos)
+            set_zoom(temp_zoom[0])
+
+            let parse = require('wellknown');
+            set_space(result[0][0])
+                
+            set_spatial_list(result.map(doc => (
+                <GeoJSON key={doc[0]} data={parse(doc[1])}>
+                </GeoJSON>
+            )))
+            set_default_space(true)
+            set_search(false)
+        })
+    }
+
+    function get_document_by_space_id() {
+        let form = new FormData();
+        form.append("space", space)
+
+        fetch("http://urbingeo.fa.ulisboa.pt:8080/generic/get_by_space_id", {
+            method: "POST",
+            
+            body: form
+        })
+        .then(res=>res.json())
+        .then(result=>{
+            console.log(result)
+            window.localStorage.setItem('results', JSON.stringify(result));
+            navigate(`/results`)
+        })
     }
 
     return (
-        <>
-            <Modal
-                keepMounted
-                open={modal1}
-                onClose={()=>{
-                    set_modal1(false)
+        <Box
+            style={{ 
+                margin: "auto",
+                position: "relative",
+                border: "1px solid grey",
+                background: "rgba(256, 256, 256, 0.9)",
+                height: "93%",
+                width:"100%",}}>
+            <MapContainer 
+                style={{
+                    position: 'relative',
+                    width: "100%",
+                    boxShadow: 24,
+                    height: "99%",
+                }} 
+                center={position} 
+                zoom={zoom} 
+                scrollWheelZoom={true} 
+                minZoom={5}>
+                <ChangeView center={position} zoom={zoom} /> 
+                <Button 
+                    variant="contained" 
+                    disabled= {search}
+                    onClick= {() => {
+                        if(default_space) {
+                            console.log(space)
+                            get_document_by_space_id()
+                        } else
+                            get_document_by_space_geometry()
+                    }}
+                    style={{
+                        zIndex: 400,    
+                        top: "20px", 
+                    }}>
+                        Pesquisar aqui
+                </Button>
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <FeatureGroup ref={featureGroupRef => {
+                    onFeatureGroupReady(featureGroupRef);
                 }}>
-                <div 
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: "20%",
-                        background: "rgba(256, 256, 256, 0.9)",
-                        border: '1px solid #000',
-                        boxShadow: 24,
-                        borderRadius: "10px",
-                        textAlign: "left",
-                        maxHeight: "60vh",
-                        overflow: "auto"
-                    }}>
-                        <br/>
-                        <FormControl 
-                            style={{
-                                marginLeft:"20px"
-                            }}
-                            component="fieldset" 
-                            variant="standard">
-                            <FormLabel 
-                                style={{
-                                    color: "black"
-                                }}
-                                component="legend">
-                                Ano:</FormLabel>
-                            <FormGroup 
-                                style={{
-                                    float:"left",
-                                    marginLeft:"20px",
-                                    color: "grey"
-                                }}>                                
-                                {years?.length>0 && years.map((doc, index)=> {
-                                    return (
-                                        <div
-                                            key={index}>
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox 
-                                                    onChange={(e)=> {
-                                                        let temp=[...selected_years]
-                                                        if (temp.includes(doc[0])) 
-                                                            temp.splice(selected_years.indexOf(doc[0]), 1);
-                                                        else 
-                                                            temp.push(doc[0])
-
-                                                        filter(temp, selected_providers, selected_archivers, selected_types)
-                                                }}/>
-                                                }
-                                                label={doc[0] + " (" + doc[1] + ")"}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </FormGroup>
-                        </FormControl>
-                        <br/>
-                        <br/>
-                        <FormControl 
-                            style={{
-                                marginLeft:"20px"
-                            }}
-                            component="fieldset" 
-                            variant="standard">
-                            <FormLabel 
-                                component="legend"
-                                style={{
-                                    color: "black"
-                                }}>
-                                Fornecedor:</FormLabel>
-                            <FormGroup 
-                                style={{
-                                    float:"left",
-                                    marginLeft:"20px",
-                                    color: "grey"
-                                }}>                                 
-                                {providers?.length>0 && providers.map((doc, index)=> {
-                                    return (
-                                        <div
-                                            key={index}>
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox 
-                                                    onChange={(e)=> {
-                                                        let temp=[...selected_providers]
-                                                        if (temp.includes(doc[0])) 
-                                                            temp.splice(selected_providers.indexOf(doc[0]), 1);
-                                                        else 
-                                                            temp.push(doc[0])
-
-                                                        filter(selected_years, temp, selected_archivers, selected_types)
-                                                }}/>
-                                                }
-                                                label={doc[0] + " (" + doc[1] + ")"}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </FormGroup>
-                        </FormControl>
-                        <br/>
-                        <br/>
-                        <FormControl 
-                            style={{
-                                marginLeft:"20px"
-                            }}
-                            component="fieldset" 
-                            variant="standard">
-                            <FormLabel 
-                                component="legend"
-                                style={{
-                                    color: "black"
-                                }}>
-                                Arquivista:</FormLabel>
-                            <FormGroup 
-                                style={{
-                                    float:"left",
-                                    marginLeft:"20px",
-                                    color: "grey"
-                                }}>                                
-                                {archivists?.length>0 && archivists.map((doc, index)=> {
-                                    return (
-                                        <div
-                                            key={index}>
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox 
-                                                    onChange={(e)=> {
-                                                        let temp=[...selected_archivers]
-                                                        if (temp.includes(doc[1])) 
-                                                            temp.splice(selected_archivers.indexOf(doc[1]), 1);
-                                                        else 
-                                                            temp.push(doc[1])
-
-                                                        filter(selected_years, selected_providers, temp, selected_types)
-                                                }}/>
-                                                }
-                                                label={doc[0] + " (" + doc[2] + ")"}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </FormGroup>
-                        </FormControl>
-                        <br/>
-                        <br/>
-                        <FormControl 
-                            style={{
-                                marginLeft:"20px"
-                            }}
-                            component="fieldset" 
-                            variant="standard">
-                            <FormLabel 
-                                component="legend"
-                                style={{
-                                    color: "black"
-                                }}>
-                                Tipos de Documento:</FormLabel>
-                            <FormGroup 
-                                style={{
-                                    float:"left",
-                                    marginLeft:"20px",
-                                    color: "grey"
-                                }}>                                 
-                                {types?.length>0 && types.map((doc, index)=> {
-                                    return (
-                                        <div
-                                            key={index}>
-                                            <FormControlLabel
-                                                control={
-                                                <Checkbox 
-                                                    onChange={(e)=> {
-                                                        let temp=[...selected_types]
-                                                        if (temp.includes(doc[0])) 
-                                                            temp.splice(selected_types.indexOf(doc[0]), 1);
-                                                        else 
-                                                            temp.push(doc[0])
-
-                                                        filter(selected_years, selected_providers, selected_archivers, temp)
-                                                }}/>
-                                                }
-                                                label={doc[0] + " (" + doc[1] + ")"}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </FormGroup>
-                        </FormControl>
-                </div>
-            </Modal>
+                    <EditControl 
+                        position="topleft"
+                        onCreated={_created}
+                        onDeleted={()=>{
+                            set_search(true)
+                        }}
+                        draw= {{
+                            circlemarker: false,
+                            polyline: false,
+                            polygon: false
+                        }}
+                        edit={{edit:false}}/>
+                </FeatureGroup>       
+                {spatial_list}
+            </MapContainer> 
             <div 
-                style={{ 
+                style={{   
+                    position: "absolute",
                     margin: "auto",
-                    position: "relative",
-                    border: "1px solid grey",
-                    background: "rgba(256, 256, 256, 0.9)",
-                    height: "8vh",
-                    width:"120%",
-                    left: "-10%",}}>
-                <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    style={{
+                    float: "left",
+                    width: "20%",
+                    left: "10px",
+                    top: "-10px",
+                    marginTop: "20px",
+                    textAlign: "center",
+                    zIndex: 400}}>
+                <div 
+                    style={{   
                         position: "relative",
-                        width: "150%",
-                        left:"-25%",
-                        top: "20%",
-                    }}>                
-                    <IconButton 
-                        size="small" 
-                        onClick={() => {
-                            document.getElementById("overflowing").scrollBy(-300,0)
+                        margin: "auto",
+                        float: "left",
+                        width: "100%",
+                        background: "rgba(256, 256, 256, 0.85)",
+                        borderRadius: "5px",
+                        top: "-20px",
+                        marginTop: "20px",
+                        textAlign: "center",
+                        zIndex: 400, 
+                    }}>  
+                    <Typography 
+                        variant="h5" 
+                        style={{ 
+                            color: "rgba(0, 0, 0, 0.9)",
+                            margin:"auto",
+                            maxWidth: "70%",
+                            marginTop: "10px"
                         }}>
-                        <NavigateBeforeIcon 
-                            fontSize="large"/>
-                    </IconButton>
-                    <Box
-                        id="overflowing"
-                        display="flex"
-                        style={{
-                            background: "rgba(0, 0, 0, 0.4)",
-                            borderRadius: "17px",
-                            position:"relative",
-                            left:"1%",
-                            width: "35%",
-                            overflowY: "hidden",
-                            overflowX: "hidden"
-                        }}>
-                        {tags?.length>0 && tags.map((doc, index)=>{
-                            return(
-                                <FormControlLabel 
-                                    control={
-                                        <Checkbox 
-                                            style={{
-                                                marginLeft: "50px"
-                                            }}/>
-                                    } 
-                                    label={
-                                        <Typography 
-                                            variant="h6" 
-                                            style={{ 
-                                                color: "rgba(256, 256, 256, 0.9)",
-                                            }}>
-                                                {doc[0]} ({doc[1]})
-                                        </Typography>
-                                    }/>
-                                )
-                            }) 
-                        }
-                    </Box>
-                    <IconButton 
-                        size="small" 
-                        style={{left:"2%"}} 
-                        onClick={ () => {
-                            document.getElementById("overflowing").scrollBy(300,0)
-                        }}>
-                        <NavigateNextIcon 
-                            fontSize="large"/>
-                    </IconButton>
-                    <Tooltip 
-                        title="Filtrar resultados">
-                        <Button 
-                            variant="filled" 
+                        Pesquisar por contexto espacial
+                    </Typography>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_hierarchy_type}
+                        size="small"
+                        renderInput={(params) => <TextField 
                             style={{
-                                left:"2%", 
-                                background: color,
+                                marginTop: "15px",
+                                zIndex: 400,    
+                                width: "70%"
                             }} 
-                            onClick={()=> {
-                                set_modal1(true)
-                            }}
-                            startIcon={<FilterListIcon />}>
-                            Filtros
-                        </Button>
-                    </Tooltip>
-                </Box>
-            </div>
-            <div 
-                style={{ 
-                    margin: "auto",
-                    position: "relative",
-                    background: "rgba(256, 256, 256, 0.90)",
-                    height: "90vh",
-                    width:"100%"}}>
-                <div 
-                    style={{
-                        position:"relative",
-                        float:"left",
-                        width:"40%"                  
-                    }}>
-                        <div
+                            {...params} 
+                            label="Tipo de contexto"/>}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_spactial_hierarchy_type(values)
+                                get_spatial_hierarchy(values)
+                            }
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_hierarchy}
+                        size="small"
+                        renderInput={(params) => <TextField 
                             style={{
-                                width:"100%",
-                                height:"8vh"
-                            }}>
-                            <Typography
-                                variant="h7" 
-                                component="h2" 
-                                color="rgba(0, 0, 0, 0.5)"
-                                style={{
-                                    float:"left",
-                                    margin: "15px",
-                                    marginLeft: "25px"
-                                }}>
-                                {documents.length} Resultados
-                            </Typography>
-                            <FormControl 
-                                style={{
-                                    left: "18%",
-                                    top: "2vh",
-                                    width:"30%"
-                                }}
-                                fullWidth>
-                                <InputLabel>Ordenar</InputLabel>
-                                <Select
-                                    value={order}
-                                    size="small"
-                                    label="Ordenar"
-                                    onChange={(event: SelectChangeEvent)=>{
-                                        set_order(event.target.value)
-                                        get_order(event.target.value)
-                                    }}>
-                                    <MenuItem value={"year_asc"}>Ano (crescente)</MenuItem>
-                                    <MenuItem value={"year_desc"}>Ano (decrescente)</MenuItem>
-                                    <MenuItem value={"name_asc"}>Alfabética (crescente)</MenuItem>
-                                    <MenuItem value={"name_desc"}>Alfabética (decrescente)</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </div>
-                        <Box
-                            display="flex"
-                            alignItems="center"
+                                marginTop: "2vh",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label="Nome"/>}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_hierarchy(values)
+                                get_spatial_level(values)
+                            }
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={spatial_level}
+                        size="small"
+                        renderInput={(params) => <TextField 
                             style={{
-                                margin: "auto",
-                                position: "relative",
-                                width: "100%"
-                            }}>
-                            <Tooltip 
-                                title="Procurar por nome">
-                                <Autocomplete
-                                    freeSolo
-                                    fullWidth
-                                    options={all_name}
-                                    size="small"
-                                    renderInput={(params) => 
-                                    <TextField 
-                                        style={{
-                                            width: "65%",
-                                        }}
-                                        {...params} 
-                                        label="Nome" 
-                                        variant="outlined" 
-                                        size="small"
-                                        onKeyPress={(ev) => {
-                                            if (ev.key === 'Enter') {
-                                                get_document_by_name()
-                                                ev.preventDefault();
-                                            }
-                                        }}
-                                        onChange={(e)=>{
-                                            set_search(e.target.value)
-                                        }}
-                                    />}
-                                    onChange={(e, values)=>{
-                                        set_search(values)
-                                    }}/>
-                            </Tooltip>
-                            <Tooltip 
-                                title="Limpar procura">
-                                    <IconButton 
-                                        style={{ 
-                                            position: "relative",
-                                            borderRadius: "5px",
-                                            background: 'rgba(0, 0, 0, 0.26)',
-                                            left: "-16%"
-                                        }}
-                                        onClick={()=> {
-                                            window.location.reload(false);
-                                        }}>
-                                        <DeleteIcon 
-                                            style={{
-                                                color:"rgba(254,254,255,255)"
-                                            }}/>
-                                    </IconButton>
-                            </Tooltip>
-                        </Box>
-                        <List
+                                marginTop: "2vh",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label="Nível" 
+                            />}
+                        onChange={(e, values)=>{
+                            if (values) {
+                                set_selected_level(values)
+                                get_names_from_level(values)
+                            }
+                        }}/>
+                    <Autocomplete
+                        disablePortal
+                        options={all_spatial_names}
+                        size="small"
+                        renderInput={(params) => <TextField 
                             style={{
-                                marginTop: "1vh",
-                                height: "71vh",
-                                overflow: "auto"
-                            }}>
-                            {documents?.length>0 && documents.map((doc, index) => {
-                                return(
-                                    <div 
-                                        key={index} 
-                                        style={{
-                                            margin: "auto",
-                                            height: "12vh", 
-                                            border: "1px solid grey",}}>
-                                        <IconButton
-                                            style={{
-                                                float:"left",
-                                                margin: "15px",
-                                                marginLeft: "25px"
-                                            }}
-                                            onClick={()=> {
-                                                navigate(`/document/${doc[0]}`)
-                                            }}>
-                                            <Typography
-                                                variant="h6" 
-                                                component="h2" 
-                                                color="rgba(0, 0, 0, 0.9)">
-                                                {doc[4]}
-                                            </Typography>
-                                        </IconButton>
-                                        <div
-                                            style={{ 
-                                                marginLeft: "75%",
-                                                marginTop: "10px"
-                                            }}>
-                                            <Tooltip 
-                                                title="Adicionar a uma lista">
-                                                <IconButton
-                                                    style={{ 
-                                                        background: color_list[3],
-                                                    }}>
-                                                    <AddIcon
-                                                        style={{
-                                                            color:"rgba(254,254,255,255)"
-                                                        }}/>
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip 
-                                                title="Visualizar contexto espacial">
-                                                <IconButton 
-                                                    style={{ 
-                                                        background: color_list[0],
-                                                        left:"7%"
-                                                    }}
-                                                    onClick={()=>{
-                                                        get_space_from_document(doc[0])
-                                                    }}>
-                                                    <VisibilityIcon 
-                                                        style={{
-                                                            color:"rgba(254,254,255,255)"
-                                                        }}/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </List>
+                                marginTop: "2vh",
+                                zIndex: 400,    
+                                width: "70%"
+                            }} 
+                            {...params} 
+                            label={selected_level.charAt(0).toUpperCase() + selected_level.slice(1)}
+                            />
+                        }
+                        onChange={(e, values)=>{
+                            if (values)
+                                set_spatial_query(values)
+                        }}/>
+                    <Button 
+                        style = {{
+                            marginTop: "2vh",
+                            zIndex: 400,    
+                            background: color
+                        }}
+                        variant="contained" 
+                        onClick={get_spaces}>
+                            Procurar local
+                    </Button>
+                    <br/>
+                    <br/>
                 </div>
-                <MapContainer 
-                    style={{
-                        position: 'absolute',
-                        top: '46.7%',
-                        left: '70%',
-                        transform: 'translate(-50%, -50%)',
-                        width: "60%",
-                        boxShadow: 24,
-                        height: "84vh",
-                    }} 
-                    center={position} 
-                    zoom={6} 
-                    scrollWheelZoom={true} 
-                    minZoom={4}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <FeatureGroup ref={featureGroupRef => {
-                        onFeatureGroupReady(featureGroupRef);
-                    }}>
-                        <EditControl 
-                            position="topleft"
-                            onCreated={_created}
-                            draw= {{
-                                circlemarker: false,
-                                polyline: false,
-                                polygon: false
-                            }}
-                            edit={{edit:false}}/>
-                    </FeatureGroup>       
-                    {spatial_list}
-                </MapContainer> 
+                <div 
+                    style={{   
+                        position: "relative",
+                        margin: "auto",
+                        float: "left",
+                        background: "rgba(256, 256, 256, 0.85)",
+                        width: "100%",
+                        minWidth: "550px",
+                        borderRadius: "5px",
+                        textAlign: "center",
+                    }}>  
+                    <Typography 
+                        variant="h5" 
+                        style={{ 
+                            color: "rgba(0, 0, 0, 0.9)",
+                            margin:"auto",
+                            maxWidth: "70%",
+                            marginTop: "10px"
+                        }}>
+                        Menu
+                    </Typography>
+                    {get_menu()}
+                </div>
             </div>
-        </>
+        </Box>
+
     );
 }

@@ -1,22 +1,16 @@
 import React from 'react'
-import Result from "../components/Results"
-import Typography from '@mui/material/Typography';
+import Header from "../components/Header"
+import Results from "../components/Results"
+import Footer from "../components/Footer"
+import "../style/background.css"
 
-export default function AddDrawings() {
-    return (
-        <>
-            <div className="bg">
-                <div style={{
-                    paddingTop:"20px"
-                }}
-                >
-                    <Typography variant="h4" component="h2">
-                        Resultados
-                    </Typography>
-                </div>
-                <br/>
-                <Result/>
-            </div>
-        </>
-    )
+export default function Default() {
+  return (
+    <>
+        <div className="bg">
+            <Header/>
+            <Results/>
+        </div>
+    </>
+  )
 }

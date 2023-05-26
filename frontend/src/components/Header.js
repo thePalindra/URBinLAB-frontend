@@ -2,18 +2,12 @@ import React from "react";
 import urbinlab from "../images/urbinlab.png"
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import Autocomplete from '@mui/material/Autocomplete';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
 import Tooltip from '@mui/material/Tooltip';
 import CssBaseline from '@mui/material/CssBaseline';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
 
 
 const darkTheme = createTheme({
@@ -101,7 +95,6 @@ export default function Default() {
             style={{ 
                 background: "rgba(256, 256, 256, 0.98)",
                 height: "8%",
-                minHeight: "65px",
                 margin: "auto"}}>
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
@@ -109,8 +102,8 @@ export default function Default() {
                     title="Página principal">
                     <IconButton
                         style={{
-                            float: "left",
-                            left: "-5%"
+                            position: "fixed",
+                            left: "-90px"
                         }}
                         onClick={() => {
                             navigate(`/`)
@@ -120,95 +113,26 @@ export default function Default() {
                             style={{ 
                                 width:"50%"}}/>
                     </IconButton> 
-                </Tooltip>  
-                {/*<Box
-                    display="flex"
-                    alignItems="center"
-                    style={{
-                        position: "relative",
-                        top: "18%",
-                    }}>
-                    <div style={{position:"relative", width:"17%"}}/>
-                    <Autocomplete
-                        freeSolo
-                        options={dictionary}
-                        size="small"
-                        sx={{
-                            bgcolor: 'rgba(0, 0, 0, 0.26)',
-                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "darkslategrey"
-                            },
-                            "&.Mui-focused .MuiInputLabel-outlined": {
-                                color: "darkslategrey"
-                            }
-                        }}
+                </Tooltip> 
+                <Tooltip
+                    title="Perfil">
+                    <IconButton
+                        id="pbasic-button"
+                        aria-controls={open ? 'pbasic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClick}
                         style={{
-                            width: "25%",
+                            position: "absolute",
+                            right: "1%",
                             borderRadius: "5px",
-                        }}
-                        renderInput={(params) => <TextField 
-                            sx={{
-                                label: {
-                                    color: 'darkslategrey ',
-                                },
-                            }}
-                            {...params} 
-                            label="Pesquisa" 
-                            onKeyPress={(ev) => {
-                                if (ev.key === 'Enter') {
-                                    get_search_result()
-                                    ev.preventDefault();
-                                }
-                            }}
-                            onChange={(e)=>{
-                                setSearch(e.target.value)
-                                if (e.target.value.length ==1)
-                                    get_dictionary()
-                                else if (e.target.value == 0)
-                                    set_dictionary([])
-                            }}
-                        />}
-                        onChange={(e, values)=>{
-                            setSearch(values)
-                            if (values.length > 0)
-                                get_dictionary()
-                            else
-                                set_dictionary([])
-                        }}/>  
-    
-                    <Tooltip 
-                        title="Pesquisar"> 
-                        <IconButton 
-                            style={{
-                                position: "relative",
-                                borderRadius: "5px",
-                                background: "rgba(0, 0, 0, 0.26)"}}
-                            onClick={()=>{
-                                get_search_result()
-                            }}>
-                            <SearchIcon/>
-                        </IconButton>  
-                    </Tooltip></Box>*/}
-                    <Tooltip
-                        title="Perfil">
-                        <IconButton
-                            id="pbasic-button"
-                            aria-controls={open ? 'pbasic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                            style={{
-                                position: "absolute",
-                                right: "1%",
-                                borderRadius: "5px",
-                                background: "rgba(0, 0, 0, 0.26)",
-                                top: "2%"
-                            }}>
-                            <AccountCircleIcon/>
-                        </IconButton> 
-                        
-                    </Tooltip>
-                        
+                            background: "rgba(0, 0, 0, 0.26)",
+                            top: "1.5%"
+                        }}>
+                        <AccountCircleIcon/>
+                    </IconButton> 
+                    
+                </Tooltip>
                 <Menu 
                     dense
                     id="pbasic-menu"
@@ -233,9 +157,9 @@ export default function Default() {
                         <>
                             <MenuItem 
                                 onClick={() => {
-                                    //navigate(`/profile/lists`)
+                                    navigate(`/new_document`)
                                 }}>
-                                Listas
+                                Inserir Documento
                             </MenuItem>  
                             <MenuItem 
                                 onClick={() => { 

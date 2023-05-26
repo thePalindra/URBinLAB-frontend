@@ -4,9 +4,7 @@ import LogIn from "./pages/Login"
 import SignUp from "./pages/SignUp";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom"
 import AddDocument from "./pages/AddDocument"
-import SearchMenu from "./pages/SearchMenu"
 import MainPage from "./pages/MainPage"
-import Results from "./pages/Results"
 import Document from "./pages/Document"
 import Lists from "./pages/ProfileLists"
 import Authorize from "./pages/Authorizing"
@@ -31,8 +29,6 @@ function App() {
             <Route path="/signup" element={<SignUp/>}/>
             <Route path="/login" element={<LogIn/>}/>
             <Route path="/new_document" element={<AddDocument/>}/>
-            <Route path="/search_menu" element={<SearchMenu/>}/>
-            <Route path="/results" element={<Results/>}/>
             <Route path="/document/:id" element={<Document/>}/>
             <Route path="/profile/lists" element={<Lists/>}/>
             {/*<Route path="/search/:value/result" element={<ListDocumentQuickSearchByName/>}/>
